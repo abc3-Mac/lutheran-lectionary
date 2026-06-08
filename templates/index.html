@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>LCMS Liturgical Calendar</h1>
+  <p class="hero-sub">Lutheran Service Book &mdash; Three-Year Series (A/B/C) &amp; One-Year Historic Series</p>
+
+  <div id="today-card" class="today-card loading">
+    <div class="today-label">Today in the Church Year</div>
+    <div id="today-loading" class="today-loading">Loading…</div>
+    <div id="today-content" style="display:none;">
+      <div id="today-date" class="today-date"></div>
+      <div id="today-name" class="today-name"></div>
+      <div id="today-meta" class="today-meta"></div>
+      <div id="today-file" class="today-file"></div>
+    </div>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card">
+    <h2>📅 Full Year Calendar</h2>
+    <p>View the complete church year calendar with all readings for any year from {{ min_year }} to {{ max_year }}.</p>
+    <form action="/calendar" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Church Year
+          <input type="number" name="year" value="{{ current_advent_year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="minor" value="1" checked> Include minor feasts
+        </label>
+      </div>
+      <button type="submit" class="btn">View Calendar</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>🔍 Date Lookup</h2>
+    <p>Enter any date to find its place in the church year and look up the appointed readings.</p>
+    <form action="/lookup" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Date
+          <input type="date" name="date" value="{{ today.strftime('%Y-%m-%d') }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="btn">Look Up</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>📄 Download PDF</h2>
+    <p>Generate a printable PDF calendar matching the LCMS Church Year Calendar format.</p>
+    <form action="/pdf" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Church Year
+          <input type="number" name="year" value="{{ current_advent_year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="minor" value="1" checked> Include minor feasts
+        </label>
+      </div>
+      <button type="submit" class="btn btn-pdf">Download PDF</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>🏷️ File Naming</h2>
+    <p>Get a liturgically-correct filename for any date — useful for naming recordings, videos, or documents.</p>
+    <form action="/lookup" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Date
+          <input type="date" name="date" value="{{ today.strftime('%Y-%m-%d') }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-outline">Get File Label</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// Load today's liturgical info via API
+fetch('/api/today?lectionary=three_year')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('today-loading').style.display = 'none';
+    const c = document.getElementById('today-content');
+    c.style.display = 'block';
+    if (data.error) {
+      c.innerHTML = '<p>' + data.error + '</p>';
+      return;
+    }
+    document.getElementById('today-card').classList.remove('loading');
+    document.getElementById('today-date').textContent   = new Date(data.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('today-name').textContent   = data.name;
+    document.getElementById('today-meta').textContent   = data.season + ' • Series ' + data.series + ' • ' + data.church_year + ' Church Year';
+    document.getElementById('today-file').textContent   = '📁 ' + data.file_label;
+  })
+  .catch(() => {
+    document.getElementById('today-loading').textContent = 'Unable to load today\'s data.';
+  });
+</script>
+{% endblock %}

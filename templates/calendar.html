@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ advent_year }}–{{ advent_year+1 }} Calendar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ advent_year }}–{{ advent_year+1 }} Church Year Calendar</h1>
+  <p class="page-sub">
+    {% if lectionary == 'three_year' %}Three-Year Series <strong>{{ cal.series }}</strong>{% else %}One-Year (Historic) Series{% endif %}
+    &nbsp;|&nbsp;
+    {{ cal.advent_1.strftime('%-d %b %Y') }} &ndash; {{ cal.last_sunday.strftime('%-d %b %Y') }}
+  </p>
+</div>
+
+<div class="toolbar">
+  <form action="/calendar" method="get" class="toolbar-form">
+    <label>Year
+      <input type="number" name="year" value="{{ advent_year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5rem;">
+    </label>
+    <label>Lectionary
+      <select name="lectionary">
+        {% for val, label in series_choices %}
+        <option value="{{ val }}" {% if val == lectionary %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" name="minor" value="1" {% if include_minor %}checked{% endif %}> Minor feasts
+    </label>
+    <button type="submit" class="btn btn-sm">Refresh</button>
+    <a href="/pdf?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}"
+       class="btn btn-sm btn-pdf">⬇ PDF</a>
+    <a href="/lookup?lectionary={{ lectionary }}" class="btn btn-sm btn-outline">Date Lookup</a>
+  </form>
+</div>
+
+<div class="legend">
+  <span class="swatch season-blue">Advent</span>
+  <span class="swatch season-white">Christmas / Easter / Feasts</span>
+  <span class="swatch season-green">Epiphany / Ordinary Time</span>
+  <span class="swatch season-purple">Lent</span>
+  <span class="swatch season-red">Pentecost / Martyrs</span>
+</div>
+
+<div class="cal-table-wrap">
+<table class="cal-table">
+  <thead>
+    <tr>
+      <th class="col-season">Season</th>
+      <th class="col-date">Date</th>
+      <th class="col-name">Festival / Sunday</th>
+      <th class="col-reading">First Reading</th>
+      <th class="col-psalm">Psalm</th>
+      <th class="col-epistle">Epistle</th>
+      <th class="col-gospel">Gospel</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for section in sections %}
+    {% for ev in section.events %}
+    <tr class="ev-row {{ ev.color_class }} {% if ev.is_feast %}row-feast{% endif %} {% if ev.get('minor') %}row-minor{% endif %}">
+      <td class="col-season season-tag {{ ev.color_class }}">
+        {% if loop.first %}{{ section.season }}{% endif %}
+      </td>
+      <td class="col-date">
+        <span class="date-main">{{ ev.date.strftime('%-d %b') }}</span>
+        <span class="date-year">{{ ev.date.strftime('%Y') }}</span>
+        <span class="date-dow">{{ ev.date.strftime('%a') }}</span>
+      </td>
+      <td class="col-name">
+        <span class="ev-name {% if ev.is_feast %}feast-name{% endif %}">{{ ev.name }}</span>
+        {% if ev.get('proper') %}
+          <span class="proper-tag">Proper {{ ev.proper }}</span>
+        {% endif %}
+        {% if ev.get('alt_name') %}
+          <span class="alt-tag">or {{ ev.alt_name }}</span>
+        {% endif %}
+      </td>
+      {% for r in ev.readings_parsed %}
+      <td class="col-reading reading-cell">
+        <a href="{{ r.url }}" class="reading-ref scripture-link"
+           data-ref="{{ r.ref }}" data-url="{{ r.url }}"
+           title="Click to preview {{ r.ref }}"
+           onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;">{{ r.ref }}</a>
+        {% for i, alt in enumerate(r.alts) %}
+        <span class="reading-alt">
+          / <a href="{{ r.alt_urls[i] }}" class="reading-ref scripture-link"
+               data-ref="{{ alt }}" data-url="{{ r.alt_urls[i] }}"
+               onclick="showScripture(event, '{{ alt|e }}', '{{ r.alt_urls[i]|e }}'); return false;">{{ alt }}</a>
+        </span>
+        {% endfor %}
+      </td>
+      {% endfor %}
+      {# Pad missing columns if no readings #}
+      {% for _ in range(4 - ev.readings_parsed|length) %}
+      <td class="col-reading"></td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<div class="year-nav">
+  <a href="/calendar?year={{ advent_year-1 }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}" class="btn btn-outline">&larr; {{ advent_year-1 }}–{{ advent_year }}</a>
+  <a href="/calendar?year={{ advent_year+1 }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}" class="btn btn-outline">{{ advent_year+1 }}–{{ advent_year+2 }} &rarr;</a>
+</div>
+{% endblock %}

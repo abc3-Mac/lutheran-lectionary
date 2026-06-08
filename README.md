@@ -1,0 +1,60 @@
+# Lutheran Lectionary — LCMS Liturgical Calendar
+
+A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** following the **Lutheran Service Book (LSB)**.
+
+## Features
+
+- **Two lectionary series**: Three-Year (A/B/C) and One-Year Historic
+- **Full-year calendar view** with liturgical color coding
+- **Date lookup** — find the liturgical day for any date (1583–2299)
+- **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
+- **PDF export** — landscape calendar matching LCMS Church Year Calendar format
+- **Scripture popups** — click any reading to see ESV text via the ESV API
+- **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
+- Readings sourced from the official **LSB Propers of the Day** (CPH, 2007)
+
+## Screenshots
+
+_Coming soon_
+
+## Quick Start (Mac/Linux)
+
+```bash
+git clone https://github.com/abc3-Mac/lutheran-lectionary
+cd lutheran-lectionary
+pip install -r requirements.txt
+python app.py
+# Open http://localhost:5000
+```
+
+## Docker (home server)
+
+```bash
+docker build -t lutheran-lectionary .
+docker run -p 5000:5000 lutheran-lectionary
+```
+
+## Lectionary Data
+
+All readings are extracted from the **LSB Propers of the Day** (Concordia Publishing House, 2007):
+
+- **Three-Year Series**: 77 Sunday/feast slots × 3 series (A/B/C) = 231 reading sets
+- **One-Year Series**: 119 slots including Sundays after Trinity, pre-Lent Sundays, and the full sanctoral calendar
+
+Psalm references include antiphon notations. "Or" alternatives are preserved exactly as printed in the LSB.
+
+## Series Cycle
+
+| Church Year | Series |
+|-------------|--------|
+| 2025–2026   | A      |
+| 2026–2027   | B      |
+| 2027–2028   | C      |
+
+## License
+
+MIT — free for personal, parish, and educational use.
+
+---
+
+Albert Bernard Collver III, Ph.D.

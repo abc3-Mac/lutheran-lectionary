@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Liturgical Calendar{% endblock %} — LCMS Lutheran</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">✝ Liturgical Calendar</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/calendar">Full Calendar</a>
+        <a href="/lookup">Date Lookup</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>LCMS Lutheran Service Book Lectionary &mdash; Three-Year (A/B/C) &amp; One-Year (Historic) Series</p>
+    <p style="font-size:0.75rem;color:#999;">Readings sourced from the LSB. Always verify against official LCMS materials before liturgical use.</p>
+  </footer>
+
+  <!-- Scripture popup modal -->
+  <div id="scripture-modal" class="modal" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeScripture()">✕</button>
+      <div id="modal-ref" class="modal-ref"></div>
+      <div id="modal-body" class="modal-body">Loading…</div>
+      <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-bg-link">Open full passage at BibleGateway ↗</a>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

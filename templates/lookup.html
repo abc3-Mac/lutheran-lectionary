@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Date Lookup{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Date Lookup</h1>
+  <p class="page-sub">Find the liturgical position and appointed readings for any date ({{ min_year }}–{{ max_year + 1 }})</p>
+</div>
+
+<div class="lookup-form-wrap">
+  <form action="/lookup" method="get" class="lookup-form">
+    <div class="form-row">
+      <label>Date
+        <input type="date" name="date" value="{{ date_str or today }}"
+               min="{{ min_year }}-11-27" max="{{ max_year + 1 }}-11-26" required>
+      </label>
+      <label>Lectionary
+        <select name="lectionary">
+          {% for val, label in series_choices %}
+          <option value="{{ val }}" {% if val == lectionary %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn">Look Up</button>
+    </div>
+  </form>
+</div>
+
+{% if error %}
+<div class="alert alert-warn">{{ error }}</div>
+{% endif %}
+
+{% if result %}
+<div class="lookup-result">
+  <div class="result-header {{ result.color_class }}">
+    <div class="result-date">{{ result.date_str }}</div>
+    <div class="result-name">{{ result.name }}</div>
+    <div class="result-meta">
+      <span>{{ result.season }}</span>
+      {% if lectionary == 'three_year' %}
+      <span>Series {{ result.series }}</span>
+      {% endif %}
+      <span>{{ result.church_year }} Church Year</span>
+      {% if result.color %}
+      <span class="color-dot {{ result.color_class }}">{{ result.color }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="result-readings">
+    {% if result.readings_parsed %}
+    <h3>Appointed Readings</h3>
+    <div class="readings-grid">
+      {% for r in result.readings_parsed %}
+      <div class="reading-item">
+        <div class="reading-label">{{ r.label }}</div>
+        <div class="reading-refs">
+          <a href="{{ r.url }}" class="reading-ref scripture-link"
+             onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+             title="Click to preview">{{ r.ref }}</a>
+          {% for i, alt in enumerate(r.alts) %}
+          <span class="reading-or">or</span>
+          <a href="{{ r.alt_urls[i] }}" class="reading-ref scripture-link"
+             onclick="showScripture(event, '{{ alt|e }}', '{{ r.alt_urls[i]|e }}'); return false;"
+             title="Click to preview">{{ alt }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No readings assigned for this date in the selected lectionary.</p>
+    {% endif %}
+  </div>
+
+  <div class="result-file">
+    <h3>File Label</h3>
+    <div class="file-label-box">
+      <code id="file-label-text">{{ result.file_label }}</code>
+      <button class="btn btn-sm btn-outline" onclick="copyFileLabel()">Copy</button>
+    </div>
+    <p class="muted" style="margin-top:0.4rem;">Use this as a filename prefix for recordings, videos, or documents from this day.</p>
+  </div>
+
+  <div class="result-nav">
+    <a href="/calendar?year={{ result.church_year[:4] }}&lectionary={{ lectionary }}" class="btn btn-outline">
+      View full {{ result.church_year }} calendar
+    </a>
+  </div>
+</div>
+
+<script>
+function copyFileLabel() {
+  const text = document.getElementById('file-label-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+</script>
+{% endif %}
+{% endblock %}
