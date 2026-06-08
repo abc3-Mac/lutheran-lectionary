@@ -4,7 +4,12 @@
 {% block content %}
 <div class="hero">
   <h1>LCMS Liturgical Calendar</h1>
-  <p class="hero-sub">Lutheran Service Book &mdash; Three-Year Series (A/B/C) &amp; One-Year Historic Series</p>
+  <p class="hero-sub">
+    Lutheran Service Book &mdash;
+    <button id="toggle-3yr" class="lect-toggle" onclick="setLectionary('three_year')">Three-Year Series (A/B/C)</button>
+    &amp;
+    <button id="toggle-1yr" class="lect-toggle" onclick="setLectionary('one_year')">One-Year Historic Series</button>
+  </p>
 
   <div id="today-card" class="today-card loading">
     <div class="today-label">Today in the Church Year</div>
@@ -140,23 +145,40 @@
 
 <script>
 // ── Lectionary preference (localStorage) ───────────────────────────────────
-// Save the user's last-chosen lectionary so all dropdowns stay in sync
-// and the Today card reflects their preference.  Zero server burden.
 const PREF_KEY = 'lcms_lectionary';
 
 function getSavedLectionary() {
   return localStorage.getItem(PREF_KEY) || 'three_year';
 }
 
-// Pre-fill every lectionary <select> on this page from the stored preference
-(function prefillSelects() {
-  const saved = getSavedLectionary();
+function setLectionary(lect) {
+  localStorage.setItem(PREF_KEY, lect);
+
+  // Update all dropdowns on the page
   document.querySelectorAll('select[name="lectionary"]').forEach(sel => {
-    sel.value = saved;
+    sel.value = lect;
   });
+
+  // Bold the active toggle, un-bold the other
+  document.getElementById('toggle-3yr').classList.toggle('lect-toggle-active', lect === 'three_year');
+  document.getElementById('toggle-1yr').classList.toggle('lect-toggle-active', lect === 'one_year');
+
+  // Update the webcal subscribe links if present
+  updateSubscribeLinks(lect);
+
+  // Refresh the Today card with the new lectionary
+  loadTodayCard(lect);
+}
+
+// Initialise on page load
+(function init() {
+  const saved = getSavedLectionary();
+  document.querySelectorAll('select[name="lectionary"]').forEach(sel => { sel.value = saved; });
+  document.getElementById('toggle-3yr').classList.toggle('lect-toggle-active', saved === 'three_year');
+  document.getElementById('toggle-1yr').classList.toggle('lect-toggle-active', saved === 'one_year');
 })();
 
-// Save the preference whenever the user submits any form that has a lectionary select
+// Save when a form is submitted (so calendar/lookup pages also update the store)
 document.querySelectorAll('form').forEach(form => {
   form.addEventListener('submit', () => {
     const sel = form.querySelector('select[name="lectionary"]');
@@ -197,34 +219,39 @@ function copyWebcalUrl() {
 }
 
 // ── Today card ──────────────────────────────────────────────────────────────
-// Pass the browser's local date so the result reflects the user's timezone,
-// not the server's (which may be UTC or a different timezone).
-// Also pass the saved lectionary preference.
 const _localDate = new Date();
 const _pad = n => String(n).padStart(2, '0');
 const _todayParam = _localDate.getFullYear() + '-' + _pad(_localDate.getMonth()+1) + '-' + _pad(_localDate.getDate());
-fetch('/api/today?lectionary=' + getSavedLectionary() + '&date=' + _todayParam)
-  .then(r => r.json())
-  .then(data => {
-    document.getElementById('today-loading').style.display = 'none';
-    const c = document.getElementById('today-content');
-    c.style.display = 'block';
-    if (data.error) {
-      c.innerHTML = '<p>' + data.error + '</p>';
-      return;
-    }
-    document.getElementById('today-card').classList.remove('loading');
-    document.getElementById('today-date').textContent = new Date(data.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    document.getElementById('today-name').textContent = data.name;
-    let metaParts = [data.season];
-    if (!data.is_weekday) metaParts.push('Series ' + data.series);
-    metaParts.push(data.church_year + ' Church Year');
-    if (data.minor_feast) metaParts.push(data.minor_feast.name);
-    document.getElementById('today-meta').textContent = metaParts.join(' • ');
-    document.getElementById('today-file').textContent = '📁 ' + data.file_label;
-  })
-  .catch(() => {
-    document.getElementById('today-loading').textContent = 'Unable to load today\'s data.';
-  });
+
+function loadTodayCard(lect) {
+  // Show spinner while reloading
+  document.getElementById('today-loading').style.display = 'block';
+  document.getElementById('today-content').style.display = 'none';
+  document.getElementById('today-card').classList.add('loading');
+
+  fetch('/api/today?lectionary=' + lect + '&date=' + _todayParam)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('today-loading').style.display = 'none';
+      const c = document.getElementById('today-content');
+      c.style.display = 'block';
+      if (data.error) { c.innerHTML = '<p>' + data.error + '</p>'; return; }
+      document.getElementById('today-card').classList.remove('loading');
+      document.getElementById('today-date').textContent = new Date(data.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+      document.getElementById('today-name').textContent = data.name;
+      let metaParts = [data.season];
+      if (!data.is_weekday) metaParts.push('Series ' + data.series);
+      metaParts.push(data.church_year + ' Church Year');
+      if (data.minor_feast) metaParts.push(data.minor_feast.name);
+      document.getElementById('today-meta').textContent = metaParts.join(' • ');
+      document.getElementById('today-file').textContent = '📁 ' + data.file_label;
+    })
+    .catch(() => {
+      document.getElementById('today-loading').textContent = 'Unable to load today\'s data.';
+    });
+}
+
+// Initial load
+loadTodayCard(getSavedLectionary());
 </script>
 {% endblock %}
