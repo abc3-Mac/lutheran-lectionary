@@ -51,6 +51,14 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 | 2026–2027   | B      |
 | 2027–2028   | C      |
 
+## Roadmap
+
+- **Docker container** — home server deployment with a single `docker run` command
+- **Roman Catholic** — Roman Rite lectionary (Ordinary Form, 3-year cycle)
+- **Anglican / Episcopal** — Revised Common Lectionary as used in the Episcopal Church and Anglican Communion
+- **Eastern Orthodox** — Byzantine lectionary (Epistle and Gospel pericopes)
+- **Lutheran One-Year expanded** — full sanctoral calendar with collect and introit text
+
 ## License
 
 MIT — free for personal, parish, and educational use.
