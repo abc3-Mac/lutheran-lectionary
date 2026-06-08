@@ -7,3 +7,4 @@ services:
       - "5765:5765"
     environment:
       FLASK_ENV: production
+      TZ: America/Chicago  # Set to your local timezone so "Today" reflects the correct date
