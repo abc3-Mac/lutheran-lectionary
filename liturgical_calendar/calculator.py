@@ -450,6 +450,14 @@ class LiturgicalCalendar:
             elif slot.startswith("trinity_") and d in cal._pentecost_sundays:
                 info = dict(info)
                 info["name"] = cal._trinity_ordinal_name(d)
+            # Merge one-year propers (collect + introit) for any slot when using one-year
+            if lectionary == 'one_year' and not info.get("collect"):
+                from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
+                propers = ONE_YEAR_PROPERS.get(slot, {})
+                if propers:
+                    info = dict(info)
+                    info["collect"] = propers.get("collect")
+                    info["introit"] = propers.get("introit")
             # If the slot IS a sanctoral feast, don't double-report it as minor_feast
             if minor_feast_info and minor_feast_info.get("name") == info.get("name"):
                 minor_feast_info = None
@@ -636,9 +644,13 @@ def slot_info(slot: str, series: str, d: date) -> dict | None:
         return result
 
     if slot in ONE_YEAR_SLOTS:
+        from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
         entry = ONE_YEAR_SLOTS[slot]
         result = {k: v for k, v in entry.items() if k != "readings"}
         result["readings"] = entry.get("readings")
+        propers = ONE_YEAR_PROPERS.get(slot, {})
+        result["collect"] = propers.get("collect")
+        result["introit"] = propers.get("introit")
         return result
 
     # Trinity Sundays beyond what is pre-keyed — generate dynamically

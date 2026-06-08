@@ -345,14 +345,14 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 .result-meta span { margin-right: 0.75rem; }
 .color-dot { padding: 0.1rem 0.5rem; border-radius: 10px; background: rgba(255,255,255,0.2); }
 
-.result-readings, .result-file {
+.result-readings, .result-file, .result-propers {
   background: white;
   border: 1px solid var(--border);
   border-top: none;
   padding: 1.25rem 1.5rem;
 }
 .result-file { border-radius: 0 0 8px 8px; }
-.result-readings h3, .result-file h3 {
+.result-readings h3, .result-file h3, .result-propers h3 {
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -391,6 +391,37 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 .file-label-box code { font-size: 0.9rem; flex: 1; }
 
 .result-nav { margin-top: 1rem; }
+
+/* ---- One-Year Propers: introit + collect ---- */
+.proper-row { margin-bottom: 1rem; }
+.proper-row:last-of-type { margin-bottom: 0; }
+.proper-label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  font-family: Arial, sans-serif;
+}
+.proper-introit { font-size: 1rem; }
+.introit-name { font-style: italic; font-weight: 600; color: #1A3A5C; }
+.introit-ref  { font-size: 0.9rem; color: #555; }
+blockquote.collect-text {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: #f8f6f0;
+  border-left: 3px solid #b0a080;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #333;
+  font-style: italic;
+}
+.propers-source {
+  margin-top: 0.8rem;
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 0;
+}
 
 .result-week-note {
   font-size: 0.8rem;

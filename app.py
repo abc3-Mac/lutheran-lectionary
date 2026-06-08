@@ -204,6 +204,8 @@ def lookup():
                         "readings_parsed": parse_readings(readings_raw),
                         "file_label":      file_label(gov_date or d, sun_name),
                         "minor_feast":     minor_feast,
+                        "collect":         info.get("collect"),
+                        "introit":         info.get("introit"),
                     }
         except ValueError:
             error = "Invalid date format. Please use YYYY-MM-DD."

@@ -84,6 +84,33 @@
     {% endif %}
   </div>
 
+  {% if lectionary == 'one_year' and (result.introit or result.collect) %}
+  <div class="result-propers">
+
+    {% if result.introit %}
+    <div class="proper-row">
+      <h3 class="proper-label">Introit</h3>
+      <div class="proper-introit">
+        <span class="introit-name">{{ result.introit.name }}</span>
+        <span class="introit-ref">— {{ result.introit.ref }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if result.collect %}
+    <div class="proper-row">
+      <h3 class="proper-label">Collect of the Day</h3>
+      <blockquote class="collect-text">{{ result.collect }}</blockquote>
+    </div>
+    {% endif %}
+
+    <p class="propers-source">
+      Collect from <em>The Lutheran Hymnal</em> (TLH, 1941), public domain.
+      For LSB collect and introit texts, see the <em>LSB Altar Book</em>.
+    </p>
+  </div>
+  {% endif %}
+
   <div class="result-file">
     <h3>File Label</h3>
     <div class="file-label-box">
