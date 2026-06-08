@@ -260,7 +260,7 @@ class LiturgicalCalendar:
         # Season after Pentecost
         if d in self._pentecost_sundays:
             if lectionary == 'one_year':
-                n = (d - self.holy_trinity).days // 7 + 1
+                n = (d - self.holy_trinity).days // 7
                 return f"trinity_{n}"
             p = get_proper(d)
             return f"proper_{p}"
@@ -362,7 +362,7 @@ class LiturgicalCalendar:
 
         # Season after Pentecost
         for s in self._pentecost_sundays:
-            n_after = (s - self.holy_trinity).days // 7 + 1
+            n_after = (s - self.holy_trinity).days // 7  # trinity_1 = 1st Sunday after Trinity
             if lectionary == 'one_year':
                 slot = f"trinity_{n_after}"
                 info = slot_info(slot, self.series, s)
@@ -537,7 +537,7 @@ class LiturgicalCalendar:
         return f"{ord_word} Sunday after Pentecost"
 
     def _trinity_ordinal_name(self, d: date) -> str:
-        n = (d - self.holy_trinity).days // 7 + 1
+        n = (d - self.holy_trinity).days // 7  # 1st Sunday after Trinity = 7 days after holy_trinity
         ord_word = self._PENTECOST_ORDINALS[n] if n < len(self._PENTECOST_ORDINALS) else str(n)
         return f"{ord_word} Sunday after Trinity"
 
