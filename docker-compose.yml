@@ -1,0 +1,10 @@
+services:
+  lutheran-lectionary:
+    image: lutheran-lectionary:latest
+    build: .
+    container_name: lutheran-lectionary
+    restart: unless-stopped
+    ports:
+      - "5765:5765"
+    environment:
+      - FLASK_ENV=production

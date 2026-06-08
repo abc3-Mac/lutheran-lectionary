@@ -27,11 +27,36 @@ python app.py
 # Open http://localhost:5000
 ```
 
-## Docker (home server)
+## Docker / Home Server (Portainer on Ugreen NAS)
+
+### Option A — Portainer Stack (recommended)
+
+1. In Portainer, go to **Stacks → Add stack**
+2. Name it `lutheran-lectionary`
+3. Paste this into the Web editor:
+
+```yaml
+services:
+  lutheran-lectionary:
+    image: ghcr.io/abc3-mac/lutheran-lectionary:latest
+    container_name: lutheran-lectionary
+    restart: unless-stopped
+    ports:
+      - "5765:5765"
+    environment:
+      - FLASK_ENV=production
+```
+
+4. Click **Deploy the stack**
+5. Open `http://<your-nas-ip>:5765` in your browser
+
+### Option B — Build from source
 
 ```bash
+git clone https://github.com/abc3-Mac/lutheran-lectionary
+cd lutheran-lectionary
 docker build -t lutheran-lectionary .
-docker run -p 5000:5000 lutheran-lectionary
+docker run -d --restart unless-stopped -p 5765:5765 lutheran-lectionary
 ```
 
 ## Lectionary Data
