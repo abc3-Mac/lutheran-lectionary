@@ -3,14 +3,25 @@ Liturgical Calendar Web Application — LCMS Lutheran Service Book
 Flask web app with calendar view, date lookup, PDF export, and file naming.
 """
 
+import os
+import sys
 from datetime import date, datetime
 from flask import Flask, render_template, request, send_file, jsonify, abort
 import io
 
+# When launched from inside a macOS .app bundle, __file__ is inside Resources/.
+# Set the working directory to the folder containing app.py so that Flask can
+# find templates/ and static/ via relative paths.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+os.chdir(_HERE)
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+
 from liturgical_calendar.calculator import LiturgicalCalendar, advent1_for_year
 from liturgical_calendar.utils import parse_readings, file_label, season_color_class, bg_url
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
+            static_folder=os.path.join(_HERE, "static"))
 app.jinja_env.globals.update(enumerate=enumerate)
 
 SERIES_CHOICES = [
