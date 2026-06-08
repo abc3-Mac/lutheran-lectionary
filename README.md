@@ -45,43 +45,57 @@ In Portainer go to **Stacks → Add stack**, paste the contents of
 
 The included `docker-compose.yml` exposes port `5765` and is ready to use as-is.
 
-### Putting it behind a reverse proxy (Nginx Proxy Manager, Caddy, Traefik, etc.)
+### Putting it behind Nginx (with HTTPS)
 
-The container serves plain HTTP on port 5765. Your reverse proxy handles TLS termination.
+The container serves plain HTTP on port 5765. Nginx handles TLS termination.
 
-**Nginx Proxy Manager example:**
+**1. Get a certificate with Certbot:**
 
-| Field | Value |
-|-------|-------|
-| Scheme | `http` |
-| Forward Hostname / IP | your server IP, or the container name if on a shared Docker network |
-| Forward Port | `5765` |
-| SSL | Request a Let's Encrypt certificate, Force SSL, HTTP/2 on |
-| Block Common Exploits | On |
-
-**Shared Docker network (optional):** If NPM runs in Docker on the same host, you can
-put both containers on a shared network so NPM can reach the app by container name
-instead of IP:
-
-```yaml
-services:
-  lutheran-lectionary:
-    image: ghcr.io/abc3-mac/lutheran-lectionary:latest
-    container_name: lutheran-lectionary
-    restart: unless-stopped
-    ports:
-      - "5765:5765"
-    environment:
-      FLASK_ENV: production
-    networks:
-      - proxy_network   # replace with your NPM network name
-
-networks:
-  proxy_network:
-    external: true
+```bash
+certbot certonly --nginx -d lectionary.example.com
 ```
 
-Then set the Forward Hostname in NPM to `lutheran-lectionary` (the container name).
+**2. Nginx site config** (`/etc/nginx/sites-available/lutheran-lectionary`):
+
+```nginx
+server {
+    listen 80;
+    server_name lectionary.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name lectionary.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/lectionary.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/lectionary.example.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        proxy_pass         http://127.0.0.1:5765;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+**3. Enable and reload:**
+
+```bash
+ln -s /etc/nginx/sites-available/lutheran-lectionary /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+```
+
+### Putting it behind Nginx Proxy Manager or Traefik
+
+The container serves plain HTTP on port 5765 — point your proxy at
+`http://<host-ip>:5765` or, if on a shared Docker network, at the container name.
+Enable SSL/TLS termination at the proxy layer.
 
 ### Build from source
 
