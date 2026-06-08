@@ -11,6 +11,8 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Date lookup** — find the liturgical day for any date (1583–2299); weekdays show their governing Sunday's name ("Week of Second Sunday after Trinity") with the appointed readings
 - **Minor feast detection** — weekday lookups also surface any sanctoral observance for that date (e.g. "Also today: St. Barnabas, Apostle")
 - **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
+- **One-Year propers** — every Sunday in the One-Year series displays its introit (Latin name + Psalm reference) and Collect of the Day (TLH 1941, public domain) inline in the calendar via click-to-expand, and on a dedicated printable `/propers` page
+- **iCal export** — download a `.ics` file for any church year, or subscribe via `webcal://` for a live feed that auto-updates in Apple Calendar, Google Calendar, or Outlook
 - **PDF export** — landscape calendar matching LCMS Church Year Calendar format
 - **Scripture popups** — click any reading to see ESV text via the ESV API
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
@@ -136,7 +138,8 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 - **Roman Catholic** — Roman Rite lectionary (Ordinary Form, 3-year cycle)
 - **Anglican / Episcopal** — Revised Common Lectionary as used in the Episcopal Church and Anglican Communion
 - **Eastern Orthodox** — Byzantine lectionary (Epistle and Gospel pericopes)
-- **Lutheran One-Year expanded** — full sanctoral calendar with collect and introit text
+- **Lutheran One-Year expanded** ✅ — collects (TLH 1941) and introits for all 76 One-Year Sundays, inline in calendar and on a printable `/propers` page
+- **iCal / webcal export** ✅ — live subscription feed for Apple Calendar, Google Calendar, Outlook
 
 ## Analytics (Umami)
 
