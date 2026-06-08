@@ -15,9 +15,13 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
 - Readings sourced from the official **LSB Propers of the Day** (CPH, 2007)
 
+## Live Demo
+
+You can see it running at **[lectionary.collver.biz](https://lectionary.collver.biz)**
+
 ## Screenshots
 
-_Coming soon_
+![Live site](screenshots/live-site.png)
 
 ## Quick Start (Mac/Linux)
 
@@ -132,6 +136,21 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 - **Anglican / Episcopal** — Revised Common Lectionary as used in the Episcopal Church and Anglican Communion
 - **Eastern Orthodox** — Byzantine lectionary (Epistle and Gospel pericopes)
 - **Lutheran One-Year expanded** — full sanctoral calendar with collect and introit text
+
+## Analytics (Umami)
+
+The app has a built-in hook for [Umami](https://umami.is) analytics. No tracking code is stored in the repository — you supply it via environment variables at deploy time.
+
+Add these to your Portainer stack or `docker-compose.yml`:
+
+```yaml
+environment:
+  FLASK_ENV: production
+  UMAMI_SCRIPT_URL: https://analytics.example.com/script.js
+  UMAMI_WEBSITE_ID: your-website-id-here
+```
+
+If either variable is absent the script tag is simply not rendered, so the app works fine without it.
 
 ## License
 

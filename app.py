@@ -24,6 +24,18 @@ app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
             static_folder=os.path.join(_HERE, "static"))
 app.jinja_env.globals.update(enumerate=enumerate)
 
+# Umami analytics — injected via env vars so the tracking code never lives in the repo.
+# Set UMAMI_SCRIPT_URL and UMAMI_WEBSITE_ID in your Docker/Portainer environment to enable.
+_UMAMI_SCRIPT_URL = os.environ.get("UMAMI_SCRIPT_URL", "")
+_UMAMI_WEBSITE_ID = os.environ.get("UMAMI_WEBSITE_ID", "")
+
+@app.context_processor
+def inject_umami():
+    return {
+        "umami_script_url": _UMAMI_SCRIPT_URL,
+        "umami_website_id": _UMAMI_WEBSITE_ID,
+    }
+
 SERIES_CHOICES = [
     ("three_year", "Three-Year Series (A/B/C)"),
     ("one_year",   "One-Year (Historic) Series"),
