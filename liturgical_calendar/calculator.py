@@ -365,7 +365,7 @@ class LiturgicalCalendar:
                     "date":      s,
                     "slot":      slot,
                     "name":      computed_name,
-                    "season":    info["season"],
+                    "season":    "Trinity",
                     "color":     info["color"],
                     "series":    self.series,
                     "is_sunday": True,
@@ -450,6 +450,7 @@ class LiturgicalCalendar:
             elif slot.startswith("trinity_") and d in cal._pentecost_sundays:
                 info = dict(info)
                 info["name"] = cal._trinity_ordinal_name(d)
+                info["season"] = "Trinity"
             # Merge one-year propers (collect + introit) for any slot when using one-year
             if lectionary == 'one_year' and not info.get("collect"):
                 from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
@@ -494,6 +495,7 @@ class LiturgicalCalendar:
             governing["name"] = cal._pentecost_ordinal_name(gov_date)
         elif gov_slot.startswith("trinity_") and gov_date in cal._pentecost_sundays:
             governing["name"] = cal._trinity_ordinal_name(gov_date)
+            governing["season"] = "Trinity"
 
         return {
             "date":          d,
@@ -525,17 +527,20 @@ class LiturgicalCalendar:
         ord_word = self._PENTECOST_ORDINALS[n] if n < len(self._PENTECOST_ORDINALS) else str(n)
         return f"{ord_word} Sunday after Trinity"
 
-    def file_label(self, d: date) -> str:
+    def file_label(self, d: date, lectionary: str = 'three_year') -> str:
         """
         Return a filename-safe label:
-            2026-06-07 Second Sunday after Pentecost
+            2026-06-07 Second Sunday after Pentecost   (three-year)
+            2026-06-07 Second Sunday after Trinity     (one-year)
         """
-        slot = self.date_to_slot(d)
+        slot = self.date_to_slot(d, lectionary=lectionary)
         if slot is None:
             return d.strftime("%Y-%m-%d")
-        # For Proper Sundays, compute the ordinal name
+        # Compute human-readable name for season-after-Pentecost Sundays
         if slot.startswith("proper_") and d in self._pentecost_sundays:
             name = self._pentecost_ordinal_name(d)
+        elif slot.startswith("trinity_") and d in self._pentecost_sundays:
+            name = self._trinity_ordinal_name(d)
         else:
             info = slot_info(slot, self.series, d)
             name = info["name"] if info else slot

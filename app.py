@@ -202,7 +202,7 @@ def lookup():
                         "color":           info.get("color", ""),
                         "color_class":     season_color_class(info.get("color", "")),
                         "readings_parsed": parse_readings(readings_raw),
-                        "file_label":      file_label(gov_date or d, sun_name),
+                        "file_label":      cal.file_label(gov_date or d, lectionary=lectionary),
                         "minor_feast":     minor_feast,
                         "collect":         info.get("collect"),
                         "introit":         info.get("introit"),
@@ -269,8 +269,8 @@ def api_today():
     is_weekday = info.get("is_weekday", False)
     gov_date = info.get("governing_date")
     sun_name = info.get("name", "")
-    # Use calendar's file_label for correct ordinal naming of Proper Sundays
-    lbl = cal.file_label(gov_date or today)
+    # Use calendar's file_label for correct ordinal naming of Proper/Trinity Sundays
+    lbl = cal.file_label(gov_date or today, lectionary=lectionary)
 
     display_name = f"Week of {sun_name}" if is_weekday else sun_name
 
