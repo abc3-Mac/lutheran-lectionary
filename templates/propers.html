@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}One-Year Propers {{ advent_year }}–{{ advent_year+1 }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>One-Year Propers — {{ advent_year }}–{{ advent_year+1 }}</h1>
+  <p class="page-sub">Introit &amp; Collect of the Day for all Sundays &middot; One-Year (Historic) Series</p>
+</div>
+
+<div class="toolbar">
+  <form action="/propers" method="get" class="toolbar-form">
+    <label>Year
+      <input type="number" name="year" value="{{ advent_year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5rem;">
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/calendar?year={{ advent_year }}&lectionary=one_year" class="btn btn-sm btn-outline">← Calendar</a>
+    <button class="btn btn-sm btn-outline" onclick="window.print();return false;" type="button">🖨 Print</button>
+  </form>
+</div>
+
+<div class="propers-page">
+  {% for section in sections %}
+  <section class="propers-season">
+    <h2 class="propers-season-head {{ section.events[0].color_class }}">{{ section.season }}</h2>
+    {% for ev in section.events %}
+    <div class="propers-entry {{ ev.color_class }}">
+      <div class="propers-entry-head">
+        <span class="propers-entry-date">{{ ev.date_str }}</span>
+        <span class="propers-entry-name">{{ ev.name }}</span>
+      </div>
+      {% if ev.get('introit') %}
+      <div class="propers-entry-introit">
+        <span class="proper-label-block">Introit</span>
+        <em class="introit-name-block">{{ ev.introit.name }}</em>
+        <span class="introit-ref-block">— {{ ev.introit.ref }}</span>
+      </div>
+      {% endif %}
+      {% if ev.get('collect') %}
+      <div class="propers-entry-collect">
+        <span class="proper-label-block">Collect</span>
+        <p class="collect-text-block">{{ ev.collect }}</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+
+  <p class="propers-page-source">
+    Collects from <em>The Lutheran Hymnal</em> (TLH, 1941) / <em>Common Service Book of the Lutheran Church</em> (1917), public domain.
+    For LSB collect and introit texts, see the <em>LSB Altar Book</em>.
+  </p>
+</div>
+
+<script>
+// Save lectionary preference — this page is always one-year
+localStorage.setItem('lcms_lectionary', 'one_year');
+</script>
+{% endblock %}

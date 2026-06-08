@@ -284,6 +284,14 @@ class LiturgicalCalendar:
                 return
             if not include_minor and info.get("minor"):
                 return
+            # Merge one-year propers (collect + introit) for shared slots
+            collect = info.get("collect")
+            introit = info.get("introit")
+            if lectionary == 'one_year' and not collect:
+                from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
+                propers = ONE_YEAR_PROPERS.get(slot, {})
+                collect = propers.get("collect")
+                introit = propers.get("introit")
             events.append({
                 "date":      d,
                 "slot":      slot,
@@ -297,6 +305,8 @@ class LiturgicalCalendar:
                 "proper":    info.get("proper"),
                 "ordinal":   info.get("ordinal"),
                 "minor":     info.get("minor", False),
+                "collect":   collect,
+                "introit":   introit,
             })
 
         # Walk the calendar in order
@@ -361,6 +371,8 @@ class LiturgicalCalendar:
                 if not include_minor and info.get("minor"):
                     continue
                 computed_name = self._trinity_ordinal_name(s)
+                from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
+                _propers = ONE_YEAR_PROPERS.get(slot, {})
                 events.append({
                     "date":      s,
                     "slot":      slot,
@@ -373,6 +385,8 @@ class LiturgicalCalendar:
                     "readings":  info.get("readings"),
                     "ordinal":   n_after,
                     "minor":     False,
+                    "collect":   _propers.get("collect"),
+                    "introit":   _propers.get("introit"),
                 })
             else:
                 p = get_proper(s)

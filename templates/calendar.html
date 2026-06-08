@@ -33,6 +33,9 @@
     <a href="/export/ical?year={{ advent_year }}&lectionary={{ lectionary }}"
        class="btn btn-sm btn-outline">⬇ .ics</a>
     <a href="/lookup?lectionary={{ lectionary }}" class="btn btn-sm btn-outline">Date Lookup</a>
+    {% if lectionary == 'one_year' %}
+    <a href="/propers?year={{ advent_year }}" class="btn btn-sm btn-outline">Propers List</a>
+    {% endif %}
   </form>
 </div>
 
@@ -60,7 +63,9 @@
   <tbody>
     {% for section in sections %}
     {% for ev in section.events %}
-    <tr class="ev-row {{ ev.color_class }} {% if ev.is_feast %}row-feast{% endif %} {% if ev.get('minor') %}row-minor{% endif %}">
+    {% set has_propers = lectionary == 'one_year' and ev.is_sunday and (ev.get('introit') or ev.get('collect')) %}
+    <tr class="ev-row {{ ev.color_class }} {% if ev.is_feast %}row-feast{% endif %} {% if ev.get('minor') %}row-minor{% endif %}{% if has_propers %} has-propers{% endif %}"
+        {% if has_propers %}onclick="togglePropers(this)" style="cursor:pointer;" title="Click to show collect &amp; introit"{% endif %}>
       <td class="col-season season-tag {{ ev.color_class }}">
         {% if loop.first %}{{ section.season }}{% endif %}
       </td>
@@ -77,6 +82,10 @@
         {% if ev.get('alt_name') %}
           <span class="alt-tag">or {{ ev.alt_name }}</span>
         {% endif %}
+        {% if has_propers and ev.get('introit') %}
+          <span class="introit-subtitle"><em>{{ ev.introit.name }}</em></span>
+        {% endif %}
+        {% if has_propers %}<span class="propers-toggle-hint">▸</span>{% endif %}
       </td>
       {% for r in ev.readings_parsed %}
       <td class="col-reading reading-cell">
@@ -98,6 +107,28 @@
       <td class="col-reading"></td>
       {% endfor %}
     </tr>
+    {% if has_propers %}
+    <tr class="propers-row" style="display:none;">
+      <td colspan="7">
+        <div class="propers-expand">
+          {% if ev.get('introit') %}
+          <div class="propers-expand-introit">
+            <span class="proper-label-sm">Introit:</span>
+            <em>{{ ev.introit.name }}</em>
+            <span class="introit-ref-sm">— {{ ev.introit.ref }}</span>
+          </div>
+          {% endif %}
+          {% if ev.get('collect') %}
+          <div class="propers-expand-collect">
+            <span class="proper-label-sm">Collect:</span>
+            <span class="collect-text-inline">{{ ev.collect }}</span>
+          </div>
+          {% endif %}
+          <p class="propers-expand-source">TLH 1941, public domain</p>
+        </div>
+      </td>
+    </tr>
+    {% endif %}
     {% endfor %}
     {% endfor %}
   </tbody>
@@ -110,6 +141,16 @@
 </div>
 
 <script>
+// Toggle expand-on-click propers row
+function togglePropers(row) {
+  const next = row.nextElementSibling;
+  if (!next || !next.classList.contains('propers-row')) return;
+  const open = next.style.display !== 'none';
+  next.style.display = open ? 'none' : 'table-row';
+  const arrow = row.querySelector('.propers-toggle-hint');
+  if (arrow) arrow.textContent = open ? '▸' : '▾';
+}
+
 // Save lectionary preference when submitting; pre-fill from stored preference.
 const PREF_KEY = 'lcms_lectionary';
 (function prefillSelects() {

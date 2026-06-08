@@ -294,6 +294,52 @@ def api_today():
     })
 
 
+@app.route("/propers")
+def propers():
+    """One-year propers reference page — all Sundays with introit + collect."""
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+
+    cal    = LiturgicalCalendar(advent_year)
+    events = cal.all_events(include_minor=False, lectionary='one_year')
+    # Keep only Sundays (and feasts with propers)
+    sundays = [
+        ev for ev in events
+        if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
+    ]
+    for ev in sundays:
+        ev["color_class"] = season_color_class(ev.get("color", "Green"))
+        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
+
+    # Group by season for display
+    sections = []
+    current_season = None
+    current_group  = []
+    for ev in sundays:
+        s = ev.get("season", "")
+        if s != current_season:
+            if current_group:
+                sections.append({"season": current_season, "events": current_group})
+            current_season = s
+            current_group  = [ev]
+        else:
+            current_group.append(ev)
+    if current_group:
+        sections.append({"season": current_season, "events": current_group})
+
+    return render_template(
+        "propers.html",
+        advent_year=advent_year,
+        sections=sections,
+        min_year=MIN_YEAR,
+        max_year=MAX_YEAR,
+        series_choices=SERIES_CHOICES,
+    )
+
+
 @app.route("/export/ical")
 def export_ical():
     """Download a .ics file for one complete church year."""

@@ -533,6 +533,157 @@ blockquote.collect-text {
   text-align: right;
 }
 
+/* ---- One-Year Propers in Calendar ---- */
+.introit-subtitle {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+  font-style: italic;
+}
+.propers-toggle-hint {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-left: 0.3rem;
+  font-style: normal;
+  vertical-align: middle;
+  transition: transform 0.15s;
+}
+.has-propers:hover .propers-toggle-hint { color: #444; }
+.propers-row td {
+  padding: 0;
+  border-top: none;
+}
+.propers-expand {
+  padding: 0.6rem 1rem 0.7rem 2rem;
+  background: #f9f7f3;
+  border-left: 3px solid var(--border);
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+.propers-expand-introit {
+  margin-bottom: 0.3rem;
+  color: #555;
+}
+.propers-expand-collect {
+  color: var(--text);
+}
+.proper-label-sm {
+  font-weight: bold;
+  font-style: normal;
+  margin-right: 0.25rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+.introit-ref-sm {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.collect-text-inline {
+  font-style: italic;
+}
+.propers-expand-source {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: normal;
+  font-family: Arial, sans-serif;
+}
+
+/* ---- /propers page ---- */
+.propers-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1rem 0 3rem;
+}
+.propers-season {
+  margin-bottom: 2.5rem;
+}
+.propers-season-head {
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+  color: #fff;
+}
+.propers-season-head.season-blue   { background: var(--blue); }
+.propers-season-head.season-white  { background: var(--white); color: #fff; }
+.propers-season-head.season-green  { background: var(--green); }
+.propers-season-head.season-purple { background: var(--purple); }
+.propers-season-head.season-red    { background: var(--red); }
+.propers-entry {
+  border-left: 4px solid var(--border);
+  padding: 0.6rem 0.75rem 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  background: var(--card-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  box-shadow: var(--shadow);
+}
+.propers-entry.season-blue   { border-left-color: var(--blue); }
+.propers-entry.season-white  { border-left-color: var(--white); }
+.propers-entry.season-green  { border-left-color: var(--green); }
+.propers-entry.season-purple { border-left-color: var(--purple); }
+.propers-entry.season-red    { border-left-color: var(--red); }
+.propers-entry-head {
+  margin-bottom: 0.4rem;
+}
+.propers-entry-date {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.propers-entry-name {
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+  margin-top: 0.1rem;
+}
+.propers-entry-introit,
+.propers-entry-collect {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+}
+.proper-label-block {
+  display: inline-block;
+  font-family: Arial, sans-serif;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+}
+.introit-name-block { font-style: italic; }
+.introit-ref-block  { color: var(--muted); font-size: 0.83rem; }
+.collect-text-block {
+  display: inline;
+  font-style: italic;
+  color: var(--text);
+}
+.propers-page-source {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+@media print {
+  .toolbar, .year-nav, nav, footer { display: none !important; }
+  .propers-entry { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  .propers-season { break-inside: avoid; }
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .cards { grid-template-columns: 1fr; }
