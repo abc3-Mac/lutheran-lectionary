@@ -88,6 +88,36 @@
   </div>
 
   <div class="card">
+    <h2>📆 Calendar Export (.ics)</h2>
+    <p>Download the liturgical calendar as an <strong>.ics</strong> file to import into Apple Calendar, Google Calendar, Outlook, or any iCal-compatible app.</p>
+    <form action="/export/ical" method="get" class="quick-form" id="ical-form">
+      <div class="form-row">
+        <label>Church Year
+          <input type="number" name="year" value="{{ current_advent_year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-outline">Download .ics</button>
+    </form>
+
+    <div class="ical-subscribe">
+      <p class="subscribe-label">Or <strong>subscribe</strong> — your calendar app auto-updates, no re-importing needed:</p>
+      <div class="subscribe-row">
+        <code id="webcal-url" class="webcal-url">webcal://lectionary.collver.biz/export/ical/subscribe?lectionary=three_year</code>
+        <button class="btn btn-sm btn-outline" onclick="copyWebcalUrl()" type="button">Copy</button>
+      </div>
+      <p class="subscribe-hint">Or: <a id="webcal-link" href="webcal://lectionary.collver.biz/export/ical/subscribe?lectionary=three_year">Open in Calendar app</a> &nbsp;·&nbsp; <a id="gcal-link" href="https://calendar.google.com/calendar/r?cid=https%3A%2F%2Flectionary.collver.biz%2Fexport%2Fical%2Fsubscribe%3Flectionary%3Dthree_year" target="_blank" rel="noopener">Add to Google Calendar</a></p>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>🏷️ File Naming</h2>
     <p>Get a liturgically-correct filename for any date — useful for naming recordings, videos, or documents.</p>
     <form action="/lookup" method="get" class="quick-form">
@@ -133,6 +163,38 @@ document.querySelectorAll('form').forEach(form => {
     if (sel) localStorage.setItem(PREF_KEY, sel.value);
   });
 });
+
+// Keep the webcal / Google Calendar links in sync with the iCal form's lectionary select
+function updateSubscribeLinks(lect) {
+  const base     = 'lectionary.collver.biz/export/ical/subscribe?lectionary=' + lect;
+  const webcal   = 'webcal://' + base;
+  const httpsEnc = encodeURIComponent('https://' + base);
+  const gcal     = 'https://calendar.google.com/calendar/r?cid=' + httpsEnc;
+  const el = document.getElementById('webcal-url');
+  const wl = document.getElementById('webcal-link');
+  const gl = document.getElementById('gcal-link');
+  if (el) el.textContent = webcal;
+  if (wl) wl.href = webcal;
+  if (gl) gl.href = gcal;
+}
+const icalForm = document.getElementById('ical-form');
+if (icalForm) {
+  const icalSel = icalForm.querySelector('select[name="lectionary"]');
+  if (icalSel) {
+    updateSubscribeLinks(icalSel.value);
+    icalSel.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
+  }
+}
+
+function copyWebcalUrl() {
+  const txt = document.getElementById('webcal-url').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
 
 // ── Today card ──────────────────────────────────────────────────────────────
 // Pass the browser's local date so the result reflects the user's timezone,

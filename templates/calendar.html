@@ -30,6 +30,8 @@
     <button type="submit" class="btn btn-sm">Refresh</button>
     <a href="/pdf?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}"
        class="btn btn-sm btn-pdf">⬇ PDF</a>
+    <a href="/export/ical?year={{ advent_year }}&lectionary={{ lectionary }}"
+       class="btn btn-sm btn-outline">⬇ .ics</a>
     <a href="/lookup?lectionary={{ lectionary }}" class="btn btn-sm btn-outline">Date Lookup</a>
   </form>
 </div>

@@ -292,5 +292,46 @@ def api_today():
     })
 
 
+@app.route("/export/ical")
+def export_ical():
+    """Download a .ics file for one complete church year."""
+    from liturgical_calendar.ical_export import build_ical_year
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    lectionary = request.args.get("lectionary", "three_year")
+
+    ics_bytes = build_ical_year(advent_year, lectionary)
+    lect_tag  = "3yr" if lectionary == "three_year" else "1yr"
+    filename  = f"LCMS_Lectionary_{advent_year}-{advent_year+1}_{lect_tag}.ics"
+    return send_file(
+        io.BytesIO(ics_bytes),
+        mimetype="text/calendar; charset=utf-8",
+        as_attachment=True,
+        download_name=filename,
+    )
+
+
+@app.route("/export/ical/subscribe")
+def export_ical_subscribe():
+    """
+    Live webcal:// subscription endpoint.
+    Always returns the current + next church year so subscribers' calendars
+    auto-update without re-importing.
+    """
+    from liturgical_calendar.ical_export import build_ical_subscription
+    lectionary = request.args.get("lectionary", "three_year")
+    ics_bytes  = build_ical_subscription(lectionary)
+    response   = app.response_class(
+        ics_bytes,
+        mimetype="text/calendar; charset=utf-8",
+    )
+    # Tell calendar clients to refresh daily
+    response.headers["Content-Disposition"] = "inline"
+    response.headers["Cache-Control"] = "no-cache, max-age=86400"
+    return response
+
+
 if __name__ == "__main__":
     app.run(debug=False, port=5765)

@@ -104,6 +104,21 @@ footer {
 .btn-pdf { background: #8B0000; }
 .btn-pdf:hover { background: #AA0000; }
 
+/* ---- iCal subscribe section ---- */
+.ical-subscribe { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e0d0; }
+.subscribe-label { margin: 0 0 0.5rem; font-size: 0.9rem; }
+.subscribe-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+.webcal-url {
+  font-family: monospace;
+  font-size: 0.78rem;
+  background: #f0ede4;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+  flex: 1;
+}
+.subscribe-hint { font-size: 0.82rem; color: #555; margin: 0; }
+
 /* ---- Forms ---- */
 label { font-family: Arial, sans-serif; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
 input[type="number"], input[type="date"], select {
