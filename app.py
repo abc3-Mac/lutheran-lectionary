@@ -60,7 +60,7 @@ def _build_year_choices():
 
 def _events_for_display(cal: LiturgicalCalendar, lectionary: str, include_minor: bool):
     """Return calendar events enriched with display data."""
-    events = cal.all_events(include_minor=include_minor)
+    events = cal.all_events(include_minor=include_minor, lectionary=lectionary)
     for ev in events:
         ev["color_class"] = season_color_class(ev.get("color", "Green"))
         ev["date_str"]    = ev["date"].strftime("%b %-d, %Y")
@@ -160,7 +160,7 @@ def lookup():
             else:
                 ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
                 cal = LiturgicalCalendar(ay)
-                info = cal.lookup(d)
+                info = cal.lookup(d, lectionary=lectionary)
                 if info is None:
                     error = f"No liturgical data found for {d.strftime('%B %-d, %Y')}."
                 else:
@@ -260,7 +260,7 @@ def api_today():
     lectionary = request.args.get("lectionary", "three_year")
     ay = today.year if today >= advent1_for_year(today.year) else today.year - 1
     cal = LiturgicalCalendar(ay)
-    info = cal.lookup(today)
+    info = cal.lookup(today, lectionary=lectionary)
     if info is None:
         return jsonify({"error": "No liturgical data for today."})
 

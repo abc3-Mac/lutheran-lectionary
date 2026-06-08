@@ -114,19 +114,27 @@ class LiturgicalCalendar:
         # --- Easter & dependent dates ---
         self.easter = calc_easter(cy)
         self.ash_wednesday   = self.easter - timedelta(46)
-        # Transfiguration = Sunday immediately before Ash Wednesday
+        # Transfiguration (Three-Year) = Sunday immediately before Ash Wednesday
         # Ash Wed is always Wednesday; 3 days back = Sunday ✓
         self.transfiguration = self.ash_wednesday - timedelta(3)
 
-        # Sundays after Epiphany (2nd … last-before-Transfiguration)
+        # --- Pre-Lent (One-Year series only) ---
+        self.septuagesima  = self.easter - timedelta(63)
+        self.sexagesima    = self.easter - timedelta(56)
+        self.quinquagesima = self.easter - timedelta(49)
+
+        # Transfiguration (One-Year) = Sunday before Septuagesima = Easter - 70 days
+        self.transfiguration_1yr = self.septuagesima - timedelta(7)
+
+        # Sundays after Epiphany:
+        #   Three-Year: 2nd … last before Transfiguration (Sunday before Ash Wed)
+        #   One-Year:   2nd … last before one-year Transfiguration (Sunday before Septuagesima)
         self._epiphany_sundays = list(
             _sunday_range(self.baptism_of_lord + timedelta(7), self.transfiguration)
         )
-
-        # --- Pre-Lent (One-Year series only) ---
-        self.septuagesima = self.easter - timedelta(63)
-        self.sexagesima   = self.easter - timedelta(56)
-        self.quinquagesima = self.easter - timedelta(49)
+        self._epiphany_sundays_1yr = list(
+            _sunday_range(self.baptism_of_lord + timedelta(7), self.transfiguration_1yr)
+        )
 
         # --- Lent ---
         self.lent_1      = self.ash_wednesday + timedelta(4)   # first Sunday in Lent
@@ -171,10 +179,12 @@ class LiturgicalCalendar:
     # Public API
     # ------------------------------------------------------------------
 
-    def date_to_slot(self, d: date) -> str | None:
+    def date_to_slot(self, d: date, lectionary: str = 'three_year') -> str | None:
         """
         Given a date, return the liturgical slot key (e.g. 'advent_1',
         'proper_15', 'easter') or None if the date is outside this church year.
+
+        lectionary: 'three_year' (default) or 'one_year'
         """
         if d < self.advent_1 or d >= self.next_advent_1:
             return None
@@ -205,11 +215,20 @@ class LiturgicalCalendar:
 
         if d == self.baptism_of_lord:   return "baptism_of_lord"
 
-        if d in self._epiphany_sundays:
-            n = self._epiphany_sundays.index(d) + 2  # 2nd, 3rd, …
-            return f"epiphany_{n}"
+        if lectionary == 'one_year':
+            if d in self._epiphany_sundays_1yr:
+                n = self._epiphany_sundays_1yr.index(d) + 2
+                return f"epiphany_{n}"
+            if d == self.transfiguration_1yr:  return "transfiguration"
+            if d == self.septuagesima:         return "septuagesima"
+            if d == self.sexagesima:           return "sexagesima"
+            if d == self.quinquagesima:        return "quinquagesima"
+        else:
+            if d in self._epiphany_sundays:
+                n = self._epiphany_sundays.index(d) + 2  # 2nd, 3rd, …
+                return f"epiphany_{n}"
+            if d == self.transfiguration:      return "transfiguration"
 
-        if d == self.transfiguration:   return "transfiguration"
         if d == self.lent_1:            return "lent_1"
         if d == self.lent_2:            return "lent_2"
         if d == self.lent_3:            return "lent_3"
@@ -240,17 +259,22 @@ class LiturgicalCalendar:
 
         # Season after Pentecost
         if d in self._pentecost_sundays:
+            if lectionary == 'one_year':
+                n = (d - self.holy_trinity).days // 7 + 1
+                return f"trinity_{n}"
             p = get_proper(d)
             return f"proper_{p}"
 
         return None  # unknown / unassigned
 
-    def all_events(self, include_minor: bool = True) -> list[dict]:
+    def all_events(self, include_minor: bool = True, lectionary: str = 'three_year') -> list[dict]:
         """
         Return an ordered list of all liturgical events for this church year.
 
         Each dict has keys:
             date, slot, name, season, color, series, is_sunday, is_feast
+
+        lectionary: 'three_year' (default) or 'one_year'
         """
         events = []
 
@@ -294,10 +318,18 @@ class LiturgicalCalendar:
         add(self.epiphany, "epiphany")
         add(self.baptism_of_lord, "baptism_of_lord")
 
-        for i, s in enumerate(self._epiphany_sundays):
-            add(s, f"epiphany_{i+2}")
+        if lectionary == 'one_year':
+            for i, s in enumerate(self._epiphany_sundays_1yr):
+                add(s, f"epiphany_{i+2}")
+            add(self.transfiguration_1yr, "transfiguration")
+            add(self.septuagesima, "septuagesima")
+            add(self.sexagesima, "sexagesima")
+            add(self.quinquagesima, "quinquagesima")
+        else:
+            for i, s in enumerate(self._epiphany_sundays):
+                add(s, f"epiphany_{i+2}")
+            add(self.transfiguration, "transfiguration")
 
-        add(self.transfiguration, "transfiguration")
         add(self.ash_wednesday, "ash_wednesday")
         add(self.lent_1, "lent_1")
         add(self.lent_2, "lent_2")
@@ -320,41 +352,54 @@ class LiturgicalCalendar:
 
         # Season after Pentecost
         for s in self._pentecost_sundays:
-            p = get_proper(s)
-            n_after_pentecost = (s - self.holy_trinity).days // 7 + 1
-            slot = f"proper_{p}"
-            info = slot_info(slot, self.series, s)
-            if info:
-                info = dict(info)
-                info["ordinal"] = n_after_pentecost
-            if info is None:
-                continue
-            if not include_minor and info.get("minor"):
-                continue
-            ordinals = [
-                "", "First", "Second", "Third", "Fourth", "Fifth",
-                "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
-                "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
-                "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
-                "Twenty-first", "Twenty-second", "Twenty-third", "Twenty-fourth",
-                "Twenty-fifth", "Twenty-sixth", "Twenty-seventh",
-            ]
-            ord_word = ordinals[n_after_pentecost] if n_after_pentecost < len(ordinals) else str(n_after_pentecost)
-            computed_name = f"{ord_word} Sunday after Pentecost"
-            events.append({
-                "date":    s,
-                "slot":    slot,
-                "name":    computed_name,
-                "season":  info["season"],
-                "color":   info["color"],
-                "series":  self.series,
-                "is_sunday": True,
-                "is_feast":  False,
-                "readings":  info.get("readings"),
-                "proper":    p,
-                "ordinal":   n_after_pentecost,
-                "minor":     False,
-            })
+            n_after = (s - self.holy_trinity).days // 7 + 1
+            if lectionary == 'one_year':
+                slot = f"trinity_{n_after}"
+                info = slot_info(slot, self.series, s)
+                if info is None:
+                    continue
+                if not include_minor and info.get("minor"):
+                    continue
+                computed_name = self._trinity_ordinal_name(s)
+                events.append({
+                    "date":      s,
+                    "slot":      slot,
+                    "name":      computed_name,
+                    "season":    info["season"],
+                    "color":     info["color"],
+                    "series":    self.series,
+                    "is_sunday": True,
+                    "is_feast":  False,
+                    "readings":  info.get("readings"),
+                    "ordinal":   n_after,
+                    "minor":     False,
+                })
+            else:
+                p = get_proper(s)
+                slot = f"proper_{p}"
+                info = slot_info(slot, self.series, s)
+                if info:
+                    info = dict(info)
+                    info["ordinal"] = n_after
+                if info is None:
+                    continue
+                if not include_minor and info.get("minor"):
+                    continue
+                computed_name = self._pentecost_ordinal_name(s)
+                events.append({
+                    "date":    s,
+                    "slot":    slot,
+                    "name":    computed_name,
+                    "season":  info["season"],
+                    "color":   info["color"],
+                    "series":  self.series,
+                    "is_sunday": True,
+                    "is_feast":  False,
+                    "readings":  info.get("readings"),
+                    "proper":    p,
+                    "ordinal":   n_after,
+                    "minor":     False,
+                })
 
             # Possibly overlay Reformation / All Saints / St. Michael
             if include_minor:
@@ -377,12 +422,14 @@ class LiturgicalCalendar:
         events.sort(key=lambda e: e["date"])
         return events
 
-    def lookup(self, d: date) -> dict | None:
+    def lookup(self, d: date, lectionary: str = 'three_year') -> dict | None:
         """Return liturgical info for any date, or None if outside valid range.
 
         For Sundays/feasts: returns that day's info directly.
         For weekdays: returns the governing Sunday's info with is_weekday=True,
         plus minor_feast if a sanctoral observance falls on that date.
+
+        lectionary: 'three_year' (default) or 'one_year'
         """
         ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
         if d < date(self.MIN_ADVENT_YEAR, 11, 27) or d > date(self.MAX_ADVENT_YEAR + 1, 11, 26):
@@ -392,14 +439,17 @@ class LiturgicalCalendar:
         # Check for a sanctoral feast on this exact calendar date (by month/day)
         minor_feast_info = _sanctoral_feast_for_date(d.month, d.day)
 
-        slot = cal.date_to_slot(d)
+        slot = cal.date_to_slot(d, lectionary=lectionary)
 
         if slot is not None:
             info = slot_info(slot, cal.series, d)
-            # Compute human-readable ordinal name for Proper Sundays
+            # Compute human-readable ordinal name for season-after-Pentecost Sundays
             if slot.startswith("proper_") and d in cal._pentecost_sundays:
                 info = dict(info)
                 info["name"] = cal._pentecost_ordinal_name(d)
+            elif slot.startswith("trinity_") and d in cal._pentecost_sundays:
+                info = dict(info)
+                info["name"] = cal._trinity_ordinal_name(d)
             # If the slot IS a sanctoral feast, don't double-report it as minor_feast
             if minor_feast_info and minor_feast_info.get("name") == info.get("name"):
                 minor_feast_info = None
@@ -419,7 +469,7 @@ class LiturgicalCalendar:
             prev = d - timedelta(delta)
             if prev < cal.advent_1:
                 break
-            prev_slot = cal.date_to_slot(prev)
+            prev_slot = cal.date_to_slot(prev, lectionary=lectionary)
             if prev_slot:
                 gov_info = slot_info(prev_slot, cal.series, prev)
                 if gov_info:
@@ -431,9 +481,11 @@ class LiturgicalCalendar:
 
         gov_slot = governing["slot"]
         gov_date = governing["date"]
-        # Compute human-readable name for Proper Sundays
+        # Compute human-readable name for season-after-Pentecost Sundays
         if gov_slot.startswith("proper_") and gov_date in cal._pentecost_sundays:
             governing["name"] = cal._pentecost_ordinal_name(gov_date)
+        elif gov_slot.startswith("trinity_") and gov_date in cal._pentecost_sundays:
+            governing["name"] = cal._trinity_ordinal_name(gov_date)
 
         return {
             "date":          d,
@@ -459,6 +511,11 @@ class LiturgicalCalendar:
         n = (d - self.holy_trinity).days // 7 + 1
         ord_word = self._PENTECOST_ORDINALS[n] if n < len(self._PENTECOST_ORDINALS) else str(n)
         return f"{ord_word} Sunday after Pentecost"
+
+    def _trinity_ordinal_name(self, d: date) -> str:
+        n = (d - self.holy_trinity).days // 7 + 1
+        ord_word = self._PENTECOST_ORDINALS[n] if n < len(self._PENTECOST_ORDINALS) else str(n)
+        return f"{ord_word} Sunday after Trinity"
 
     def file_label(self, d: date) -> str:
         """
@@ -577,6 +634,32 @@ def slot_info(slot: str, series: str, d: date) -> dict | None:
         readings = entry.get(series) or entry.get("all")
         result["readings"] = readings
         return result
+
+    if slot in ONE_YEAR_SLOTS:
+        entry = ONE_YEAR_SLOTS[slot]
+        result = {k: v for k, v in entry.items() if k != "readings"}
+        result["readings"] = entry.get("readings")
+        return result
+
+    # Trinity Sundays beyond what is pre-keyed — generate dynamically
+    if slot.startswith("trinity_"):
+        n = int(slot.split("_")[1])
+        ordinals = [
+            "", "First", "Second", "Third", "Fourth", "Fifth",
+            "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
+            "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
+            "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
+            "Twenty-first", "Twenty-second", "Twenty-third", "Twenty-fourth",
+            "Twenty-fifth", "Twenty-sixth", "Twenty-seventh",
+        ]
+        name = f"{ordinals[n]} Sunday after Trinity" if n < len(ordinals) else f"Sunday {n} after Trinity"
+        return {
+            "name":     name,
+            "season":   "Pentecost",
+            "color":    "Green",
+            "feast":    False,
+            "readings": None,
+        }
 
     # Epiphany Sundays beyond what is pre-keyed — generate dynamically
     if slot.startswith("epiphany_"):
