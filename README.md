@@ -5,9 +5,10 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 ## Features
 
 - **Timezone-aware**: "Today" is determined from the user's browser, so the correct date is shown regardless of where the server is hosted. Falls back to server UTC if JavaScript is unavailable.
-- **Two lectionary series**: Three-Year (A/B/C) and One-Year Historic
+- **Two lectionary series**: Three-Year (A/B/C) and One-Year Historic — with full One-Year support: Gesima Sundays (Septuagesima, Sexagesima, Quinquagesima), correct Transfiguration placement (Sunday before Septuagesima), and "N Sunday after Trinity" naming throughout the season after Pentecost
+- **Remembered preference** — lectionary choice is saved in `localStorage` so every page (including the Today card) reflects your last selection; no server session or login required
 - **Full-year calendar view** with liturgical color coding
-- **Date lookup** — find the liturgical day for any date (1583–2299); weekdays show their governing Sunday's name ("Week of Second Sunday after Pentecost") with the appointed readings
+- **Date lookup** — find the liturgical day for any date (1583–2299); weekdays show their governing Sunday's name ("Week of Second Sunday after Trinity") with the appointed readings
 - **Minor feast detection** — weekday lookups also surface any sanctoral observance for that date (e.g. "Also today: St. Barnabas, Apostle")
 - **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
 - **PDF export** — landscape calendar matching LCMS Church Year Calendar format

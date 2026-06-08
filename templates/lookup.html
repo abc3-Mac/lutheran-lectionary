@@ -109,6 +109,18 @@ function copyFileLabel() {
     setTimeout(() => btn.textContent = 'Copy', 1500);
   });
 }
+// Save lectionary preference when submitting; update store from server-rendered value.
+const PREF_KEY = 'lcms_lectionary';
+(function() {
+  const sel = document.querySelector('select[name="lectionary"]');
+  if (sel) localStorage.setItem(PREF_KEY, sel.value);
+})();
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', () => {
+    const sel = form.querySelector('select[name="lectionary"]');
+    if (sel) localStorage.setItem(PREF_KEY, sel.value);
+  });
+});
 </script>
 {% endif %}
 {% endblock %}

@@ -106,4 +106,22 @@
   <a href="/calendar?year={{ advent_year-1 }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}" class="btn btn-outline">&larr; {{ advent_year-1 }}–{{ advent_year }}</a>
   <a href="/calendar?year={{ advent_year+1 }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}" class="btn btn-outline">{{ advent_year+1 }}–{{ advent_year+2 }} &rarr;</a>
 </div>
+
+<script>
+// Save lectionary preference when submitting; pre-fill from stored preference.
+const PREF_KEY = 'lcms_lectionary';
+(function prefillSelects() {
+  const saved = localStorage.getItem(PREF_KEY);
+  // Server already set the correct value via Jinja; just update the store
+  // so other pages read the value the user last explicitly chose here.
+  const sel = document.querySelector('select[name="lectionary"]');
+  if (sel) localStorage.setItem(PREF_KEY, sel.value);
+})();
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', () => {
+    const sel = form.querySelector('select[name="lectionary"]');
+    if (sel) localStorage.setItem(PREF_KEY, sel.value);
+  });
+});
+</script>
 {% endblock %}
