@@ -5,3 +5,5 @@ __pycache__/
 *.pdf
 .env
 *.log
+*.app/
+.app_build/
