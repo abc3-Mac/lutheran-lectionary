@@ -4,6 +4,7 @@ following the Lutheran Service Book (LSB) lectionary.
 """
 
 from datetime import date, timedelta
+import re as _re
 
 
 # ---------------------------------------------------------------------------
@@ -377,23 +378,87 @@ class LiturgicalCalendar:
         return events
 
     def lookup(self, d: date) -> dict | None:
-        """Return liturgical info for any date, or None if outside valid range."""
-        # Determine which church year this date belongs to
+        """Return liturgical info for any date, or None if outside valid range.
+
+        For Sundays/feasts: returns that day's info directly.
+        For weekdays: returns the governing Sunday's info with is_weekday=True,
+        plus minor_feast if a sanctoral observance falls on that date.
+        """
         ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
         if d < date(self.MIN_ADVENT_YEAR, 11, 27) or d > date(self.MAX_ADVENT_YEAR + 1, 11, 26):
             return None
         cal = LiturgicalCalendar(ay) if ay != self.advent_year else self
+
+        # Check for a sanctoral feast on this exact calendar date (by month/day)
+        minor_feast_info = _sanctoral_feast_for_date(d.month, d.day)
+
         slot = cal.date_to_slot(d)
-        if slot is None:
+
+        if slot is not None:
+            info = slot_info(slot, cal.series, d)
+            # Compute human-readable ordinal name for Proper Sundays
+            if slot.startswith("proper_") and d in cal._pentecost_sundays:
+                info = dict(info)
+                info["name"] = cal._pentecost_ordinal_name(d)
+            # If the slot IS a sanctoral feast, don't double-report it as minor_feast
+            if minor_feast_info and minor_feast_info.get("name") == info.get("name"):
+                minor_feast_info = None
+            return {
+                "date":         d,
+                "slot":         slot,
+                "church_year":  f"{ay}–{ay+1}",
+                "series":       cal.series,
+                "is_weekday":   False,
+                "minor_feast":  minor_feast_info,
+                **info,
+            }
+
+        # Weekday with no direct slot — find governing Sunday
+        governing = None
+        for delta in range(1, 8):
+            prev = d - timedelta(delta)
+            if prev < cal.advent_1:
+                break
+            prev_slot = cal.date_to_slot(prev)
+            if prev_slot:
+                gov_info = slot_info(prev_slot, cal.series, prev)
+                if gov_info:
+                    governing = {"date": prev, "slot": prev_slot, **gov_info}
+                break
+
+        if governing is None:
             return None
-        info = slot_info(slot, cal.series, d)
+
+        gov_slot = governing["slot"]
+        gov_date = governing["date"]
+        # Compute human-readable name for Proper Sundays
+        if gov_slot.startswith("proper_") and gov_date in cal._pentecost_sundays:
+            governing["name"] = cal._pentecost_ordinal_name(gov_date)
+
         return {
-            "date":         d,
-            "slot":         slot,
-            "church_year":  f"{ay}–{ay+1}",
-            "series":       cal.series,
-            **info,
+            "date":          d,
+            "slot":          gov_slot,
+            "church_year":   f"{ay}–{ay+1}",
+            "series":        cal.series,
+            "is_weekday":    True,
+            "governing_date": gov_date,
+            "minor_feast":   minor_feast_info,
+            **{k: v for k, v in governing.items() if k not in ("date", "slot")},
         }
+
+    _PENTECOST_ORDINALS = [
+        "", "First", "Second", "Third", "Fourth", "Fifth",
+        "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
+        "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
+        "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
+        "Twenty-first", "Twenty-second", "Twenty-third", "Twenty-fourth",
+        "Twenty-fifth", "Twenty-sixth", "Twenty-seventh",
+    ]
+
+    def _pentecost_ordinal_name(self, d: date) -> str:
+        n = (d - self.holy_trinity).days // 7 + 1
+        ord_word = self._PENTECOST_ORDINALS[n] if n < len(self._PENTECOST_ORDINALS) else str(n)
+        return f"{ord_word} Sunday after Pentecost"
 
     def file_label(self, d: date) -> str:
         """
@@ -405,17 +470,7 @@ class LiturgicalCalendar:
             return d.strftime("%Y-%m-%d")
         # For Proper Sundays, compute the ordinal name
         if slot.startswith("proper_") and d in self._pentecost_sundays:
-            ordinals = [
-                "", "First", "Second", "Third", "Fourth", "Fifth",
-                "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
-                "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
-                "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
-                "Twenty-first", "Twenty-second", "Twenty-third", "Twenty-fourth",
-                "Twenty-fifth", "Twenty-sixth", "Twenty-seventh",
-            ]
-            n = (d - self.holy_trinity).days // 7 + 1
-            ord_word = ordinals[n] if n < len(ordinals) else str(n)
-            name = f"{ord_word} Sunday after Pentecost"
+            name = self._pentecost_ordinal_name(d)
         else:
             info = slot_info(slot, self.series, d)
             name = info["name"] if info else slot
@@ -460,6 +515,47 @@ def _nth_thursday(year: int, month: int, n: int) -> date:
     # isoweekday: Thu=4
     first_thu = d + timedelta((4 - d.isoweekday()) % 7)
     return first_thu + timedelta(7 * (n - 1))
+
+
+# ---------------------------------------------------------------------------
+# Sanctoral feast lookup by calendar date
+# ---------------------------------------------------------------------------
+
+_MONTH_ABBR = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,
+               'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
+
+def _sanctoral_date_map():
+    """Build {(month, day): slot_key} from SANCTORAL_SLOTS date_str fields."""
+    from liturgical_calendar.data.sanctoral import SANCTORAL_SLOTS
+    result = {}
+    for key, info in SANCTORAL_SLOTS.items():
+        ds = info.get("date_str", "")
+        parts = ds.strip().split()
+        if len(parts) == 2:
+            m = _MONTH_ABBR.get(parts[0])
+            try:
+                day = int(parts[1])
+            except ValueError:
+                continue
+            if m:
+                result[(m, day)] = key
+    return result
+
+_SANCTORAL_MAP_CACHE = None
+
+def _sanctoral_feast_for_date(month: int, day: int) -> dict | None:
+    """Return sanctoral slot info for a given month/day, or None."""
+    global _SANCTORAL_MAP_CACHE
+    if _SANCTORAL_MAP_CACHE is None:
+        _SANCTORAL_MAP_CACHE = _sanctoral_date_map()
+    slot_key = _SANCTORAL_MAP_CACHE.get((month, day))
+    if slot_key is None:
+        return None
+    from liturgical_calendar.data.sanctoral import SANCTORAL_SLOTS
+    info = SANCTORAL_SLOTS.get(slot_key)
+    if info:
+        return {"slot": slot_key, **info}
+    return None
 
 
 # ---------------------------------------------------------------------------

@@ -377,6 +377,27 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 
 .result-nav { margin-top: 1rem; }
 
+.result-week-note {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.minor-feast-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: #FFFBF0;
+  border-left: 3px solid #B48C32;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+.minor-feast-label { color: #666; font-weight: 500; }
+.minor-feast-name  { font-weight: 600; color: #333; }
+.minor-feast-color { color: #888; font-size: 0.8rem; }
+
 /* ---- Alerts ---- */
 .alert {
   padding: 0.75rem 1rem;

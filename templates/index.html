@@ -121,10 +121,14 @@ fetch('/api/today?lectionary=three_year')
       return;
     }
     document.getElementById('today-card').classList.remove('loading');
-    document.getElementById('today-date').textContent   = new Date(data.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    document.getElementById('today-name').textContent   = data.name;
-    document.getElementById('today-meta').textContent   = data.season + ' • Series ' + data.series + ' • ' + data.church_year + ' Church Year';
-    document.getElementById('today-file').textContent   = '📁 ' + data.file_label;
+    document.getElementById('today-date').textContent = new Date(data.date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('today-name').textContent = data.name;
+    let metaParts = [data.season];
+    if (!data.is_weekday) metaParts.push('Series ' + data.series);
+    metaParts.push(data.church_year + ' Church Year');
+    if (data.minor_feast) metaParts.push(data.minor_feast.name);
+    document.getElementById('today-meta').textContent = metaParts.join(' • ');
+    document.getElementById('today-file').textContent = '📁 ' + data.file_label;
   })
   .catch(() => {
     document.getElementById('today-loading').textContent = 'Unable to load today\'s data.';

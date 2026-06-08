@@ -148,34 +148,51 @@ def lookup():
             else:
                 ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
                 cal = LiturgicalCalendar(ay)
-                slot = cal.date_to_slot(d)
-                if slot is None:
-                    error = f"{d.strftime('%B %-d, %Y')} has no specific liturgical assignment (weekday with no feast)."
+                info = cal.lookup(d)
+                if info is None:
+                    error = f"No liturgical data found for {d.strftime('%B %-d, %Y')}."
                 else:
-                    from liturgical_calendar.calculator import slot_info
-                    info = slot_info(slot, cal.series, d)
-                    if info is None:
-                        error = f"No lectionary data found for this date."
-                    else:
-                        readings_raw = info.get("readings")
-                        if lectionary == "one_year":
-                            from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
-                            od = ONE_YEAR_SLOTS.get(slot)
-                            if od:
-                                readings_raw = od.get("readings")
-                        result = {
-                            "date":         d,
-                            "date_str":     d.strftime("%A, %B %-d, %Y"),
-                            "slot":         slot,
-                            "church_year":  f"{ay}–{ay+1}",
-                            "series":       cal.series,
-                            "name":         info.get("name", slot),
-                            "season":       info.get("season", ""),
-                            "color":        info.get("color", ""),
-                            "color_class":  season_color_class(info.get("color", "")),
-                            "readings_parsed": parse_readings(readings_raw),
-                            "file_label":   file_label(d, info.get("name", "")),
+                    slot = info["slot"]
+                    is_weekday = info.get("is_weekday", False)
+                    gov_date = info.get("governing_date")
+
+                    readings_raw = info.get("readings")
+                    if lectionary == "one_year":
+                        from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+                        od = ONE_YEAR_SLOTS.get(slot)
+                        if od:
+                            readings_raw = od.get("readings")
+
+                    sun_name = info.get("name", slot)
+                    display_name = f"Week of {sun_name}" if is_weekday else sun_name
+
+                    mf = info.get("minor_feast")
+                    minor_feast = None
+                    if mf:
+                        minor_feast = {
+                            "name":          mf.get("name", ""),
+                            "color":         mf.get("color", ""),
+                            "color_class":   season_color_class(mf.get("color", "")),
+                            "readings_parsed": parse_readings(mf.get("readings")),
                         }
+
+                    result = {
+                        "date":            d,
+                        "date_str":        d.strftime("%A, %B %-d, %Y"),
+                        "slot":            slot,
+                        "church_year":     info["church_year"],
+                        "series":          info["series"],
+                        "name":            display_name,
+                        "sun_name":        sun_name,
+                        "governing_date":  gov_date,
+                        "is_weekday":      is_weekday,
+                        "season":          info.get("season", ""),
+                        "color":           info.get("color", ""),
+                        "color_class":     season_color_class(info.get("color", "")),
+                        "readings_parsed": parse_readings(readings_raw),
+                        "file_label":      file_label(gov_date or d, sun_name),
+                        "minor_feast":     minor_feast,
+                    }
         except ValueError:
             error = "Invalid date format. Please use YYYY-MM-DD."
 
@@ -223,25 +240,35 @@ def api_today():
     lectionary = request.args.get("lectionary", "three_year")
     ay = today.year if today >= advent1_for_year(today.year) else today.year - 1
     cal = LiturgicalCalendar(ay)
-    slot = cal.date_to_slot(today)
-    if slot is None:
-        return jsonify({"error": "No liturgical slot for today."})
-    from liturgical_calendar.calculator import slot_info
-    info = slot_info(slot, cal.series, today)
+    info = cal.lookup(today)
     if info is None:
-        return jsonify({"error": "No data."})
-    # Use the calendar's file_label which computes ordinal names correctly
-    lbl = cal.file_label(today)
-    name = lbl.split(" ", 1)[1] if " " in lbl else info.get("name", "")
+        return jsonify({"error": "No liturgical data for today."})
+
+    is_weekday = info.get("is_weekday", False)
+    gov_date = info.get("governing_date")
+    sun_name = info.get("name", "")
+    # Use calendar's file_label for correct ordinal naming of Proper Sundays
+    lbl = cal.file_label(gov_date or today)
+
+    display_name = f"Week of {sun_name}" if is_weekday else sun_name
+
+    mf = info.get("minor_feast")
+    minor_feast = None
+    if mf:
+        minor_feast = {"name": mf.get("name", ""), "color": mf.get("color", "")}
+
     return jsonify({
-        "date":        today.isoformat(),
-        "church_year": f"{ay}–{ay+1}",
-        "series":      cal.series,
-        "slot":        slot,
-        "name":        name,
-        "season":      info.get("season"),
-        "color":       info.get("color"),
-        "file_label":  lbl,
+        "date":         today.isoformat(),
+        "church_year":  info["church_year"],
+        "series":       info["series"],
+        "slot":         info["slot"],
+        "name":         display_name,
+        "sun_name":     sun_name,
+        "is_weekday":   is_weekday,
+        "season":       info.get("season"),
+        "color":        info.get("color"),
+        "file_label":   lbl,
+        "minor_feast":  minor_feast,
     })
 
 

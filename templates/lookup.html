@@ -35,9 +35,12 @@
   <div class="result-header {{ result.color_class }}">
     <div class="result-date">{{ result.date_str }}</div>
     <div class="result-name">{{ result.name }}</div>
+    {% if result.is_weekday %}
+    <div class="result-week-note">Readings appointed for {{ result.governing_date.strftime('%A, %B %-d') }}</div>
+    {% endif %}
     <div class="result-meta">
       <span>{{ result.season }}</span>
-      {% if lectionary == 'three_year' %}
+      {% if lectionary == 'three_year' and not result.is_weekday %}
       <span>Series {{ result.series }}</span>
       {% endif %}
       <span>{{ result.church_year }} Church Year</span>
@@ -47,9 +50,17 @@
     </div>
   </div>
 
+  {% if result.minor_feast %}
+  <div class="minor-feast-banner">
+    <span class="minor-feast-label">Also today:</span>
+    <span class="minor-feast-name {{ result.minor_feast.color_class }}">{{ result.minor_feast.name }}</span>
+    {% if result.minor_feast.color %}<span class="minor-feast-color">{{ result.minor_feast.color }}</span>{% endif %}
+  </div>
+  {% endif %}
+
   <div class="result-readings">
     {% if result.readings_parsed %}
-    <h3>Appointed Readings</h3>
+    <h3>{% if result.is_weekday %}Appointed Readings for {{ result.sun_name }}{% else %}Appointed Readings{% endif %}</h3>
     <div class="readings-grid">
       {% for r in result.readings_parsed %}
       <div class="reading-item">
