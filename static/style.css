@@ -5,12 +5,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue:    #4B6FA5;
-  --white:   #C8A951;
-  --green:   #2E7A4F;
-  --purple:  #6B2FA0;
-  --red:     #B22222;
-  --black:   #333;
+  /* Exact LCMS liturgical colors matching the Church Year Calendar PDF */
+  --blue:    #0070C0;   /* Advent */
+  --white:   #A07820;   /* White seasons (feasts) — gold accent */
+  --green:   #00B050;   /* Ordinary Time */
+  --purple:  #7030A0;   /* Lent */
+  --scarlet: #C00000;   /* Holy Week */
+  --red:     #FF0000;   /* Pentecost, Reformation, martyrs */
+  --black:   #000000;   /* Ash Wednesday, Good Friday */
   --bg:      #F7F5F0;
   --card-bg: #FFFFFF;
   --border:  #DDD8CE;
@@ -195,13 +197,14 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
   font-size: 0.75rem;
 }
 
-/* ---- Liturgical color classes ---- */
-.season-blue   { background-color: #4B6FA5; }
-.season-white  { background-color: #B8A040; }
-.season-green  { background-color: #2E7A4F; }
-.season-purple { background-color: #6B2FA0; }
-.season-red    { background-color: #B22222; }
-.season-black  { background-color: #333; }
+/* ---- Liturgical color classes — exact LCMS PDF colors ---- */
+.season-blue   { background-color: #0070C0; }   /* Advent */
+.season-white  { background-color: #D4AA40; }   /* White seasons — gold accent */
+.season-green  { background-color: #00B050; }   /* Ordinary Time */
+.season-purple { background-color: #7030A0; }   /* Lent */
+.season-scarlet{ background-color: #C00000; }   /* Holy Week */
+.season-red    { background-color: #FF0000; }   /* Pentecost / Reformation */
+.season-black  { background-color: #000000; }   /* Ash Wednesday / Good Friday */
 
 /* ---- Calendar Table ---- */
 .cal-table-wrap { overflow-x: auto; }
@@ -254,16 +257,26 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
   vertical-align: top;
 }
 /* Each season color for the tag cell */
-.ev-row.season-blue .season-tag   { background: #4B6FA5; }
-.ev-row.season-white .season-tag  { background: #B8A040; }
-.ev-row.season-green .season-tag  { background: #2E7A4F; }
-.ev-row.season-purple .season-tag { background: #6B2FA0; }
-.ev-row.season-red .season-tag    { background: #B22222; }
-.ev-row.season-black .season-tag  { background: #333; }
+.ev-row.season-blue    .season-tag { background: #0070C0; }
+.ev-row.season-white   .season-tag { background: #D4AA40; }
+.ev-row.season-green   .season-tag { background: #00B050; }
+.ev-row.season-purple  .season-tag { background: #7030A0; }
+.ev-row.season-scarlet .season-tag { background: #C00000; }
+.ev-row.season-red     .season-tag { background: #FF0000; }
+.ev-row.season-black   .season-tag { background: #000000; }
 
 .row-feast td { background: #FFFBF0 !important; }
 .row-minor td { opacity: 0.85; }
 .cal-table tbody tr:nth-child(even) td { background: #FAFAFA; }
+
+/* Left color stripe matching the PDF's season column */
+.ev-row.season-blue    td:first-child { border-left: 4px solid #0070C0; }
+.ev-row.season-white   td:first-child { border-left: 4px solid #D4AA40; }
+.ev-row.season-green   td:first-child { border-left: 4px solid #00B050; }
+.ev-row.season-purple  td:first-child { border-left: 4px solid #7030A0; }
+.ev-row.season-scarlet td:first-child { border-left: 4px solid #C00000; }
+.ev-row.season-red     td:first-child { border-left: 4px solid #FF0000; }
+.ev-row.season-black   td:first-child { border-left: 4px solid #000000; }
 
 .date-main { font-weight: bold; }
 .date-year { color: var(--muted); font-size: 0.75rem; display: block; }

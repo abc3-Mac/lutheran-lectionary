@@ -77,6 +77,6 @@ def season_color_class(color: str) -> str:
         "Green":   "season-green",
         "Purple":  "season-purple",
         "Black":   "season-black",
-        "Scarlet": "season-red",
+        "Scarlet": "season-scarlet",
     }
     return mapping.get(color, "season-green")
