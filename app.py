@@ -235,8 +235,16 @@ def generate_pdf():
 
 @app.route("/api/today")
 def api_today():
-    """JSON endpoint: liturgical info for today."""
-    today = date.today()
+    """JSON endpoint: liturgical info for today.
+
+    Accepts ?date=YYYY-MM-DD from the browser so the result reflects the
+    user's local date rather than the server's timezone.
+    """
+    date_param = request.args.get("date", "")
+    try:
+        today = datetime.strptime(date_param, "%Y-%m-%d").date() if date_param else date.today()
+    except ValueError:
+        today = date.today()
     lectionary = request.args.get("lectionary", "three_year")
     ay = today.year if today >= advent1_for_year(today.year) else today.year - 1
     cal = LiturgicalCalendar(ay)
