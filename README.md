@@ -29,11 +29,12 @@ python app.py
 
 ## Docker / Home Server (Portainer on Ugreen NAS)
 
-### Option A — Portainer Stack (recommended)
+### Option A — Portainer Stack with Nginx Proxy Manager (recommended)
 
-1. In Portainer, go to **Stacks → Add stack**
-2. Name it `lutheran-lectionary`
-3. Paste this into the Web editor:
+If you use Nginx Proxy Manager on the same Docker host, attach the container to its network so NPM can proxy it by container name:
+
+1. In Portainer, go to **Stacks → Add stack**, name it `lutheran-lectionary`
+2. Paste this into the Web editor:
 
 ```yaml
 services:
@@ -44,13 +45,49 @@ services:
     ports:
       - "5765:5765"
     environment:
-      - FLASK_ENV=production
+      FLASK_ENV: production
+      FLASK_RUN_HOST: 0.0.0.0
+      FLASK_RUN_PORT: 5765
+    networks:
+      - npm_npm_network
+
+networks:
+  npm_npm_network:
+    external: true
 ```
 
-4. Click **Deploy the stack**
-5. Open `http://<your-nas-ip>:5765` in your browser
+3. Click **Deploy the stack**
 
-### Option B — Build from source
+**Nginx Proxy Manager config:**
+
+| Field | Value |
+|-------|-------|
+| Domain | `your-domain.example.com` |
+| Scheme | `http` ← must be http (Gunicorn is plain HTTP inside Docker) |
+| Forward Hostname | `lutheran-lectionary` (container name) |
+| Forward Port | `5765` |
+| SSL | Request a new Let's Encrypt certificate, Force SSL, HTTP/2 on |
+| Block Common Exploits | On |
+
+Connection path: `Browser HTTPS → Nginx Proxy Manager → HTTP (npm_npm_network) → lutheran-lectionary:5765`
+
+### Option B — Simple (no proxy manager)
+
+```yaml
+services:
+  lutheran-lectionary:
+    image: ghcr.io/abc3-mac/lutheran-lectionary:latest
+    container_name: lutheran-lectionary
+    restart: unless-stopped
+    ports:
+      - "5765:5765"
+    environment:
+      FLASK_ENV: production
+```
+
+Then open `http://<your-nas-ip>:5765` directly.
+
+### Option C — Build from source
 
 ```bash
 git clone https://github.com/abc3-Mac/lutheran-lectionary
