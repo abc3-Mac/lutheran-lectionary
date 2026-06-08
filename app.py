@@ -22,7 +22,7 @@ from liturgical_calendar.utils import parse_readings, file_label, season_color_c
 
 app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
             static_folder=os.path.join(_HERE, "static"))
-app.jinja_env.globals.update(enumerate=enumerate)
+app.jinja_env.globals.update(enumerate=enumerate, bg_url=bg_url)
 
 # Umami analytics — injected via env vars so the tracking code never lives in the repo.
 # Set UMAMI_SCRIPT_URL and UMAMI_WEBSITE_ID in your Docker/Portainer environment to enable.

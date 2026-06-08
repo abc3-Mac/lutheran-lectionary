@@ -115,7 +115,13 @@
           <div class="propers-expand-introit">
             <span class="proper-label-sm">Introit:</span>
             <em>{{ ev.introit.name }}</em>
-            <span class="introit-ref-sm">— {{ ev.introit.ref }}</span>
+            <span class="introit-ref-sm">—
+              {% set _iurl = bg_url(ev.introit.ref) %}
+              <a href="{{ _iurl }}" class="reading-ref scripture-link"
+                 data-ref="{{ ev.introit.ref }}" data-url="{{ _iurl }}"
+                 title="Click to preview {{ ev.introit.ref }}"
+                 onclick="showScripture(event, '{{ ev.introit.ref|e }}', '{{ _iurl|e }}'); return false;">{{ ev.introit.ref }}</a>
+            </span>
           </div>
           {% endif %}
           {% if ev.get('collect') %}
