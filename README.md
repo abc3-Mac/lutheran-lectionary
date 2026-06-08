@@ -27,51 +27,41 @@ python app.py
 # Open http://localhost:5000
 ```
 
-## Docker / Home Server (Portainer on Ugreen NAS)
+## Docker / Home Server
 
-### Option A — Portainer Stack with Nginx Proxy Manager (recommended)
+### Quick start
 
-If you use Nginx Proxy Manager on the same Docker host, attach the container to its network so NPM can proxy it by container name:
-
-1. In Portainer, go to **Stacks → Add stack**, name it `lutheran-lectionary`
-2. Paste this into the Web editor:
-
-```yaml
-services:
-  lutheran-lectionary:
-    image: ghcr.io/abc3-mac/lutheran-lectionary:latest
-    container_name: lutheran-lectionary
-    restart: unless-stopped
-    ports:
-      - "5765:5765"
-    environment:
-      FLASK_ENV: production
-      FLASK_RUN_HOST: 0.0.0.0
-      FLASK_RUN_PORT: 5765
-    networks:
-      - npm_npm_network
-
-networks:
-  npm_npm_network:
-    external: true
+```bash
+docker run -d --restart unless-stopped -p 5765:5765 \
+  ghcr.io/abc3-mac/lutheran-lectionary:latest
 ```
 
-3. Click **Deploy the stack**
+Then open `http://localhost:5765` (or replace `localhost` with your server's IP).
 
-**Nginx Proxy Manager config:**
+### Portainer stack
+
+In Portainer go to **Stacks → Add stack**, paste the contents of
+[`docker-compose.yml`](docker-compose.yml), and click **Deploy the stack**.
+
+The included `docker-compose.yml` exposes port `5765` and is ready to use as-is.
+
+### Putting it behind a reverse proxy (Nginx Proxy Manager, Caddy, Traefik, etc.)
+
+The container serves plain HTTP on port 5765. Your reverse proxy handles TLS termination.
+
+**Nginx Proxy Manager example:**
 
 | Field | Value |
 |-------|-------|
-| Domain | `your-domain.example.com` |
-| Scheme | `http` ← must be http (Gunicorn is plain HTTP inside Docker) |
-| Forward Hostname | `lutheran-lectionary` (container name) |
+| Scheme | `http` |
+| Forward Hostname / IP | your server IP, or the container name if on a shared Docker network |
 | Forward Port | `5765` |
-| SSL | Request a new Let's Encrypt certificate, Force SSL, HTTP/2 on |
+| SSL | Request a Let's Encrypt certificate, Force SSL, HTTP/2 on |
 | Block Common Exploits | On |
 
-Connection path: `Browser HTTPS → Nginx Proxy Manager → HTTP (npm_npm_network) → lutheran-lectionary:5765`
-
-### Option B — Simple (no proxy manager)
+**Shared Docker network (optional):** If NPM runs in Docker on the same host, you can
+put both containers on a shared network so NPM can reach the app by container name
+instead of IP:
 
 ```yaml
 services:
@@ -83,11 +73,17 @@ services:
       - "5765:5765"
     environment:
       FLASK_ENV: production
+    networks:
+      - proxy_network   # replace with your NPM network name
+
+networks:
+  proxy_network:
+    external: true
 ```
 
-Then open `http://<your-nas-ip>:5765` directly.
+Then set the Forward Hostname in NPM to `lutheran-lectionary` (the container name).
 
-### Option C — Build from source
+### Build from source
 
 ```bash
 git clone https://github.com/abc3-Mac/lutheran-lectionary

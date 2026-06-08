@@ -7,11 +7,3 @@ services:
       - "5765:5765"
     environment:
       FLASK_ENV: production
-      FLASK_RUN_HOST: 0.0.0.0
-      FLASK_RUN_PORT: 5765
-    networks:
-      - npm_npm_network
-
-networks:
-  npm_npm_network:
-    external: true
