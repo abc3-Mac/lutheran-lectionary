@@ -6,7 +6,8 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 
 - **Two lectionary series**: Three-Year (A/B/C) and One-Year Historic
 - **Full-year calendar view** with liturgical color coding
-- **Date lookup** — find the liturgical day for any date (1583–2299)
+- **Date lookup** — find the liturgical day for any date (1583–2299); weekdays show their governing Sunday's name ("Week of Second Sunday after Pentecost") with the appointed readings
+- **Minor feast detection** — weekday lookups also surface any sanctoral observance for that date (e.g. "Also today: St. Barnabas, Apostle")
 - **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
 - **PDF export** — landscape calendar matching LCMS Church Year Calendar format
 - **Scripture popups** — click any reading to see ESV text via the ESV API
