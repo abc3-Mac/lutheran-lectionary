@@ -698,21 +698,19 @@ blockquote.collect-text {
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .cards { grid-template-columns: 1fr; }
-  .col-reading, .col-epistle { display: none; }
-  .col-season { display: none; }
   .hero h1 { font-size: 1.4rem; }
   .toolbar-form { flex-direction: column; }
   .cal-table { font-size: 0.75rem; }
 }
 
-/* Portrait phones — hide Psalm/Gospel, show Date + Festival/Sunday only.
-   Uses orientation rather than pixel width so it works on any phone model.
-   Landscape restores Psalm/Gospel automatically. */
-@media (max-width: 768px) and (orientation: portrait) {
-  .col-psalm, .col-gospel { display: none; }
+/* Portrait phones — show only Date + Festival/Sunday.
+   All reading columns and Season hidden; landscape shows everything. */
+@media (orientation: portrait) and (max-width: 768px) {
+  .col-season, .col-reading, .col-psalm, .col-epistle, .col-gospel { display: none; }
   .col-name { width: auto; }
   .cal-table-mobile-hint { display: block; }
 }
-@media (min-width: 769px), (orientation: landscape) {
+@media (orientation: landscape), (min-width: 769px) {
+  .col-season, .col-reading, .col-psalm, .col-epistle, .col-gospel { display: revert; }
   .cal-table-mobile-hint { display: none; }
 }
