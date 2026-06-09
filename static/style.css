@@ -68,7 +68,7 @@ nav a {
 nav a:hover { color: white; text-decoration: none; }
 
 /* ---- Main / Footer ---- */
-main { flex: 1; padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%; min-width: 0; overflow-x: hidden; }
+main { flex: 1; padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%; min-width: 0; }
 footer {
   background: #1A3A5C;
   color: #AAB8C8;
@@ -247,14 +247,21 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
   -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
   border-radius: 6px;
   box-shadow: var(--shadow);
+  /* iOS Safari requires an explicit width constraint on the scroll container */
+  width: 100%;
+  display: block;
+  max-width: 100%;
 }
 .cal-table {
-  width: 100%;
+  /* min-width instead of width:100% — on iOS, width:100% makes the table
+     match the (already-stretched) container and scroll never triggers.
+     min-width forces the table wider than the phone screen so the wrapper
+     has something to scroll. Full column total ≈ 64.5rem. */
+  min-width: 40rem; /* comfortable minimum even with season/reading cols hidden */
+  width: max-content; /* grow to fit all columns on desktop */
   border-collapse: collapse;
   font-size: 0.82rem;
   background: white;
-  /* border-radius and overflow:hidden moved to wrapper to prevent iOS WebKit
-     clipping the horizontal scroll on Safari/Chrome for iPhone */
 }
 .cal-table thead tr {
   background: #1A3A5C;
