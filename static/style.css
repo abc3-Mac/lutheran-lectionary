@@ -705,14 +705,14 @@ blockquote.collect-text {
   .cal-table { font-size: 0.75rem; }
 }
 
-/* Mobile — hide Psalm/Gospel on all phones, show Date + Festival/Sunday only.
-   The color bar on each row still shows the liturgical season.
-   Users can rotate to landscape or use Date Lookup for full readings. */
-@media (max-width: 768px) {
+/* Portrait phones — hide Psalm/Gospel, show Date + Festival/Sunday only.
+   Uses orientation rather than pixel width so it works on any phone model.
+   Landscape restores Psalm/Gospel automatically. */
+@media (max-width: 768px) and (orientation: portrait) {
   .col-psalm, .col-gospel { display: none; }
   .col-name { width: auto; }
   .cal-table-mobile-hint { display: block; }
 }
-@media (min-width: 769px) {
+@media (min-width: 769px), (orientation: landscape) {
   .cal-table-mobile-hint { display: none; }
 }

@@ -87,8 +87,10 @@
         {% endif %}
         {% if has_propers %}<span class="propers-toggle-hint">▸</span>{% endif %}
       </td>
+      {# Assign the correct column class to each reading td so CSS can target them individually #}
+      {% set _col_classes = ['col-reading', 'col-psalm', 'col-epistle', 'col-gospel'] %}
       {% for r in ev.readings_parsed %}
-      <td class="col-reading reading-cell">
+      <td class="{{ _col_classes[loop.index0] }} reading-cell">
         <a href="{{ r.url }}" class="reading-ref scripture-link"
            data-ref="{{ r.ref }}" data-url="{{ r.url }}"
            title="Click to preview {{ r.ref }}"
@@ -103,8 +105,8 @@
       </td>
       {% endfor %}
       {# Pad missing columns if no readings #}
-      {% for _ in range(4 - ev.readings_parsed|length) %}
-      <td class="col-reading"></td>
+      {% for i in range(4 - ev.readings_parsed|length) %}
+      <td class="{{ _col_classes[ev.readings_parsed|length + i] }}"></td>
       {% endfor %}
     </tr>
     {% if has_propers %}
