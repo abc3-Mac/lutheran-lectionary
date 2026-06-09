@@ -141,6 +141,7 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 - **Lutheran One-Year expanded** ✅ — collects (TLH 1941) and introits for all 76 One-Year Sundays, inline in calendar and on a printable `/propers` page
 - **iCal / webcal export** ✅ — live subscription feed for Apple Calendar, Google Calendar, Outlook
 - **Trinity Sunday ordinal fix** ✅ — corrected off-by-one in Trinity season numbering; "First Sunday after Trinity" now correctly assigned to the Sunday immediately following Trinity Sunday
+- **Mobile-responsive calendar** ✅ — portrait view shows Date + Festival/Sunday only (no truncation); rotate to landscape to see all readings (First Reading, Psalm, Epistle, Gospel); works on Safari, Chrome, and Brave on iOS
 
 ## Analytics (Umami)
 
