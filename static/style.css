@@ -242,15 +242,19 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 .season-black  { background-color: #000000; }   /* Ash Wednesday / Good Friday */
 
 /* ---- Calendar Table ---- */
-.cal-table-wrap { overflow-x: auto; }
+.cal-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+}
 .cal-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.82rem;
   background: white;
-  box-shadow: var(--shadow);
-  border-radius: 6px;
-  overflow: hidden;
+  /* border-radius and overflow:hidden moved to wrapper to prevent iOS WebKit
+     clipping the horizontal scroll on Safari/Chrome for iPhone */
 }
 .cal-table thead tr {
   background: #1A3A5C;
@@ -688,6 +692,8 @@ blockquote.collect-text {
 @media (max-width: 768px) {
   .cards { grid-template-columns: 1fr; }
   .col-reading, .col-epistle { display: none; }
+  .col-season { display: none; } /* season color is on the row itself; redundant on mobile */
   .hero h1 { font-size: 1.4rem; }
   .toolbar-form { flex-direction: column; }
+  .cal-table { font-size: 0.75rem; }
 }
