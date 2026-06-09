@@ -68,7 +68,7 @@ nav a {
 nav a:hover { color: white; text-decoration: none; }
 
 /* ---- Main / Footer ---- */
-main { flex: 1; padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+main { flex: 1; padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%; min-width: 0; overflow-x: hidden; }
 footer {
   background: #1A3A5C;
   color: #AAB8C8;
