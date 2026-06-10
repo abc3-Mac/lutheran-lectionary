@@ -18,11 +18,61 @@ def ordinal(n: int) -> str:
     return ORDINALS[n] if 0 < n < len(ORDINALS) else str(n)
 
 
+def clean_passage_for_bible_gateway(ref: str) -> str:
+    if not ref:
+        return ""
+    
+    # Map specific canticles/non-standard references to actual scripture books/ranges
+    canticle_mapping = {
+        "the song of moses and israel": "Exodus 15:1-18",
+        "the song of moses": "Exodus 15:1-18",
+    }
+    ref_clean_lower = ref.strip().lower()
+    if ref_clean_lower in canticle_mapping:
+        return canticle_mapping[ref_clean_lower]
+    
+    # Remove antiphon annotations (e.g. "(antiphon: v. 7)")
+    ref = re.sub(r'\s*\(\s*antiphon:[^)]*\)', '', ref, flags=re.IGNORECASE)
+    
+    # Remove other non-scripture parenthesized notes like "(Palm Sunday Procession)"
+    def clean_parenthesized_notes(match):
+        inside = match.group(1)
+        if re.search(r'[e-uw-z]{2,}', inside, flags=re.IGNORECASE) or re.search(r'[a-z]{4,}', inside, flags=re.IGNORECASE):
+            return ""
+        return match.group(0)
+    
+    ref = re.sub(r'\s*\(([^)]+)\)', clean_parenthesized_notes, ref)
+
+    # Handle parentheses around verse ranges:
+    ref = re.sub(r':\s*\(\s*([^)]+)\)\s*', r':\1, ', ref)
+    ref = re.sub(r'\s+\(\s*([^)]+)\)', r', \1', ref)
+    ref = re.sub(r'\(([^)]+)\)', r', \1', ref)
+
+    # Handle multiple alternatives split by 'or' or '|'
+    ref = ref.replace(" | ", "; ")
+    ref = re.sub(r'\s+or\s+', '; ', ref, flags=re.IGNORECASE)
+    
+    # Clean up dashes: convert en-dash (–) or em-dash (—) to standard hyphen (-)
+    ref = ref.replace('–', '-').replace('—', '-')
+    
+    # Remove verse letters (a, b, etc.) at the end of numbers in ranges
+    ref = re.sub(r'(\d+)[a-z]\b', r'\1', ref, flags=re.IGNORECASE)
+    
+    # Clean up whitespace and punctuation
+    ref = re.sub(r'\s+', ' ', ref)
+    ref = re.sub(r',\s*,', ',', ref)
+    ref = re.sub(r':\s*,', ':', ref)
+    ref = re.sub(r';\s*;', ';', ref)
+    ref = ref.strip().strip(',').strip(';').strip()
+    
+    return ref
+
+
 def bg_url(reference: str, version: str = "ESV") -> str:
     """Return a BibleGateway URL for a scripture reference."""
     if not reference:
         return "#"
-    ref_clean = reference.strip()
+    ref_clean = clean_passage_for_bible_gateway(reference)
     return f"https://www.biblegateway.com/passage/?search={quote(ref_clean)}&version={version}"
 
 
