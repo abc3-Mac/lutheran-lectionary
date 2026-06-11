@@ -142,6 +142,7 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 - **iCal / webcal export** ✅ — live subscription feed for Apple Calendar, Google Calendar, Outlook
 - **Trinity Sunday ordinal fix** ✅ — corrected off-by-one in Trinity season numbering; "First Sunday after Trinity" now correctly assigned to the Sunday immediately following Trinity Sunday
 - **Mobile-responsive calendar** ✅ — portrait view shows Date + Festival/Sunday only (no truncation); rotate to landscape to see all readings (First Reading, Psalm, Epistle, Gospel); works on Safari, Chrome, and Brave on iOS
+- **Bible Gateway link sanitization** ✅ — scripture links now strip liturgical annotations (antiphons, procession notes) and convert optional parenthesized verse ranges to comma-separated ranges so every reading loads correctly on Bible Gateway (~30% of links were previously broken) — thanks to [@TomaceGordon](https://github.com/TomaceGordon) for the contribution!
 
 ## Analytics (Umami)
 
