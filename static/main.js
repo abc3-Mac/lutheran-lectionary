@@ -25,9 +25,9 @@ function showScripture(event, ref, bgUrl) {
   linkEl.href        = bgUrl;
   modal.style.display = 'flex';
 
-  if (trans === 'KJV') {
-    // KJV is public domain — bible-api.com serves it without a key
-    fetch('https://bible-api.com/' + encodeURIComponent(ref) + '?translation=kjv')
+  if (trans === 'KJV' || trans === 'ASV') {
+    // Public-domain translations — bible-api.com serves them without a key
+    fetch('https://bible-api.com/' + encodeURIComponent(ref) + '?translation=' + trans.toLowerCase())
       .then(r => { if (!r.ok) throw new Error('unavailable'); return r.json(); })
       .then(data => {
         if (data.text) bodyEl.textContent = data.text.trim();

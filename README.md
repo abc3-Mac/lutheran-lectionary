@@ -17,7 +17,7 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Scripture popups** — click any reading to see ESV text via the ESV API
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
 - **Daily lectionary** — the LSB Daily Lectionary's two readings per day (Old + New Testament) appear on the home page Today card, in every date lookup, and in the JSON API; fixed civil dates for the Christmas/Church cycles, movable Ash Wednesday→Trinity readings for the Easter cycle, exactly as appointed. A full-year chart at `/daily` can be browsed, printed, or downloaded as PDF
-- **Settings page** — one place (⚙ in the nav) for all preferences: lectionary series, Advent color (contemporary blue vs. historic violet for the One-Year series), light/dark/system theme, minor feasts default, and scripture translation (ESV or KJV) for popups and links. Everything is stored in the browser — no account, no server state
+- **Settings page** — one place (⚙ in the nav) for all preferences: lectionary series, Advent color (contemporary blue vs. historic violet for the One-Year series), light/dark/system theme, minor feasts default, and scripture translation for popups and links. Everything is stored in the browser — no account, no server state
 - **Search** — find Sundays and feasts by name, Latin introit title, or Scripture reference ("Cantate", "Trinity", "Luke 15")
 - **Permalinks** — every date has a shareable URL (`/day/2026-06-07`) with Open Graph tags for clean unfurls on social media; a "Copy permalink" button appears on lookup results
 - **Dark mode** — 🌙 toggle in the header, remembered across visits
@@ -120,6 +120,20 @@ cd lutheran-lectionary
 docker build -t lutheran-lectionary .
 docker run -d --restart unless-stopped -p 5765:5765 lutheran-lectionary
 ```
+
+## Bible Translations
+
+The scripture popups and BibleGateway links can use:
+
+| Translation | Status |
+|---|---|
+| **ESV** — English Standard Version (default) | Free API tier for non-commercial use ([api.esv.org](https://api.esv.org)) |
+| **KJV** — King James Version | Public domain |
+| **ASV** — American Standard Version (1901) | Public domain |
+
+The guiding requirement is **zero license fees**: only translations that are public domain or freely usable for non-commercial purposes are offered. Translations requiring paid licensing (NIV, NKJV, NASB, etc.) are deliberately not included. Public-domain texts are served by [bible-api.com](https://bible-api.com); other free options there (WEB, Darby, Young's Literal) could be added on request.
+
+The same principle governs the propers: collects are reproduced only from public-domain sources (TLH 1941 / Common Service Book 1917), never from copyrighted CPH texts — those are referenced to the *LSB Altar Book* instead.
 
 ## JSON API
 
