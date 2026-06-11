@@ -128,6 +128,9 @@
             {% endfor %}
           </select>
         </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="daily" value="1" id="ical-daily"> Include daily readings
+        </label>
       </div>
       <button type="submit" class="btn btn-outline">Download .ics</button>
     </form>
@@ -212,7 +215,9 @@ document.querySelectorAll('form').forEach(form => {
 
 // Keep the webcal / Google Calendar links in sync with the iCal form's lectionary select
 function updateSubscribeLinks(lect) {
-  const base     = 'lectionary.collver.biz/export/ical/subscribe?lectionary=' + lect;
+  const dailyCb  = document.getElementById('ical-daily');
+  const daily    = dailyCb && dailyCb.checked ? '&daily=1' : '';
+  const base     = 'lectionary.collver.biz/export/ical/subscribe?lectionary=' + lect + daily;
   const webcal   = 'webcal://' + base;
   const httpsEnc = encodeURIComponent('https://' + base);
   const gcal     = 'https://calendar.google.com/calendar/r?cid=' + httpsEnc;
@@ -226,9 +231,11 @@ function updateSubscribeLinks(lect) {
 const icalForm = document.getElementById('ical-form');
 if (icalForm) {
   const icalSel = icalForm.querySelector('select[name="lectionary"]');
+  const icalDaily = document.getElementById('ical-daily');
   if (icalSel) {
     updateSubscribeLinks(icalSel.value);
     icalSel.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
+    if (icalDaily) icalDaily.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
   }
 }
 

@@ -50,6 +50,9 @@ _COLOR_CSS = {
 _BASE_URL = "https://lectionary.collver.biz"
 
 
+_READING_LABELS = {"ot": "First Reading", "ps": "Psalm", "ep": "Epistle", "go": "Gospel"}
+
+
 def _readings_str(readings) -> str:
     """Format readings list/dict as a human-readable string."""
     if not readings:
@@ -59,6 +62,7 @@ def _readings_str(readings) -> str:
     if isinstance(readings, dict):
         parts = []
         for label, refs in readings.items():
+            label = _READING_LABELS.get(label, label)
             if isinstance(refs, list):
                 parts.append(f"{label}: {', '.join(str(r) for r in refs)}")
             else:
@@ -82,9 +86,32 @@ def _make_calendar(name: str, description: str, lectionary: str) -> Calendar:
     return cal
 
 
+def _add_daily_events(cal: Calendar, advent_year: int, base_url: str = _BASE_URL):
+    """One transparent all-day event per day with the LSB daily readings."""
+    from liturgical_calendar.calculator import LiturgicalCalendar, daily_readings
+
+    lc = LiturgicalCalendar(advent_year)
+    d = lc.advent_1
+    while d < lc.next_advent_1:
+        entry = daily_readings(d)
+        if entry:
+            vevent = Event()
+            vevent.add("SUMMARY", f"📖 {entry['ot']}; {entry['nt']}")
+            vevent.add("DTSTART", vDate(d))
+            vevent.add("DTEND", vDate(d + timedelta(1)))
+            vevent.add("UID", f"{d.isoformat()}-daily@lectionary.collver.biz")
+            vevent.add("DESCRIPTION",
+                       f"LSB Daily Lectionary\nOld Testament: {entry['ot']}\nNew Testament: {entry['nt']}")
+            vevent.add("CATEGORIES", vText("Daily Lectionary"))
+            vevent.add("TRANSP", "TRANSPARENT")   # don't block busy/free time
+            vevent.add("URL", f"{base_url}/day/{d.isoformat()}")
+            cal.add_component(vevent)
+        d += timedelta(1)
+
+
 def _add_events(cal: Calendar, advent_year: int, lectionary: str,
                 base_url: str = _BASE_URL):
-    from liturgical_calendar.calculator import LiturgicalCalendar
+    from liturgical_calendar.calculator import LiturgicalCalendar, daily_readings
 
     lc = LiturgicalCalendar(advent_year)
     events = lc.all_events(include_minor=True, lectionary=lectionary)
@@ -98,7 +125,6 @@ def _add_events(cal: Calendar, advent_year: int, lectionary: str,
         season: str = ev.get("season", "")
         readings = ev.get("readings")
 
-        readings_str = _readings_str(readings)
         if ev.get("alt_name"):
             name = f"{name} / {ev['alt_name']}"
 
@@ -111,15 +137,27 @@ def _add_events(cal: Calendar, advent_year: int, lectionary: str,
         lect_tag = "1yr" if lectionary == "one_year" else "3yr"
         vevent.add("UID", f"{d.isoformat()}-{slot}-{lect_tag}@lectionary.collver.biz")
 
+        # Description: appointed readings, then propers (one-year), then daily lectionary
+        desc_parts = []
+        readings_str = _readings_str(readings)
         if readings_str:
-            vevent.add("DESCRIPTION", readings_str)
+            desc_parts.append(readings_str)
+        intro = ev.get("introit")
+        if intro:
+            desc_parts.append(f"Introit: {intro['name']} — {intro['ref']}")
+        if ev.get("collect"):
+            desc_parts.append(f"Collect: {ev['collect']}")
+        daily = daily_readings(d)
+        if daily:
+            desc_parts.append(f"Daily Lectionary: {daily['ot']}; {daily['nt']}")
+        if desc_parts:
+            vevent.add("DESCRIPTION", "\n\n".join(desc_parts))
 
         vevent.add("CATEGORIES", vText(season))
         vevent.add("COLOR", vText(_COLOR_CSS.get(color, "green")))
         vevent.add("X-APPLE-CALENDAR-COLOR", vText(_COLOR_HEX.get(color, "#2e7d32")))
 
-        lookup_url = f"{base_url}/lookup?date={d.isoformat()}&lectionary={lectionary}"
-        vevent.add("URL", lookup_url)
+        vevent.add("URL", f"{base_url}/day/{d.isoformat()}?lectionary={lectionary}")
 
         # Mark feasts as higher class
         if ev.get("is_feast"):
@@ -129,10 +167,11 @@ def _add_events(cal: Calendar, advent_year: int, lectionary: str,
 
 
 def build_ical_year(advent_year: int, lectionary: str = "three_year",
-                    base_url: str = _BASE_URL) -> bytes:
+                    base_url: str = _BASE_URL, include_daily: bool = False) -> bytes:
     """
     Return a .ics byte string for one complete church year.
     Used for the download (/export/ical?year=2025&lectionary=three_year).
+    include_daily adds one transparent event per day with the LSB daily readings.
     """
     lect_label = "Three-Year Series" if lectionary == "three_year" else "One-Year Historic Series"
     name = f"LCMS Liturgical Calendar {advent_year}–{advent_year+1} ({lect_label})"
@@ -142,11 +181,14 @@ def build_ical_year(advent_year: int, lectionary: str = "three_year",
     )
     cal = _make_calendar(name, desc, lectionary)
     _add_events(cal, advent_year, lectionary, base_url)
+    if include_daily:
+        _add_daily_events(cal, advent_year, base_url)
     return cal.to_ical()
 
 
 def build_ical_subscription(lectionary: str = "three_year",
-                             base_url: str = _BASE_URL) -> bytes:
+                             base_url: str = _BASE_URL,
+                             include_daily: bool = False) -> bytes:
     """
     Return a .ics byte string covering the current church year + the next one.
     Used for the webcal:// subscription endpoint — always returns fresh data
@@ -166,4 +208,7 @@ def build_ical_subscription(lectionary: str = "three_year",
     cal = _make_calendar(name, desc, lectionary)
     _add_events(cal, current_ay,     lectionary, base_url)
     _add_events(cal, current_ay + 1, lectionary, base_url)
+    if include_daily:
+        _add_daily_events(cal, current_ay,     base_url)
+        _add_daily_events(cal, current_ay + 1, base_url)
     return cal.to_ical()

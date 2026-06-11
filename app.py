@@ -402,6 +402,20 @@ def api_today():
     })
 
 
+def _propers_sections(advent_year: int):
+    """One-year Sundays with propers, grouped by season."""
+    cal    = get_calendar(advent_year)
+    events = cal.all_events(include_minor=False, lectionary='one_year')
+    sundays = [
+        ev for ev in events
+        if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
+    ]
+    for ev in sundays:
+        ev["color_class"] = season_color_class(ev.get("color", "Green"))
+        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
+    return _group_by_season(sundays)
+
+
 @app.route("/propers")
 def propers():
     """One-year propers reference page — all Sundays with introit + collect."""
@@ -410,33 +424,7 @@ def propers():
     except ValueError:
         advent_year = date.today().year
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
-
-    cal    = get_calendar(advent_year)
-    events = cal.all_events(include_minor=False, lectionary='one_year')
-    # Keep only Sundays (and feasts with propers)
-    sundays = [
-        ev for ev in events
-        if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
-    ]
-    for ev in sundays:
-        ev["color_class"] = season_color_class(ev.get("color", "Green"))
-        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
-
-    # Group by season for display
-    sections = []
-    current_season = None
-    current_group  = []
-    for ev in sundays:
-        s = ev.get("season", "")
-        if s != current_season:
-            if current_group:
-                sections.append({"season": current_season, "events": current_group})
-            current_season = s
-            current_group  = [ev]
-        else:
-            current_group.append(ev)
-    if current_group:
-        sections.append({"season": current_season, "events": current_group})
+    sections = _propers_sections(advent_year)
 
     return render_template(
         "propers.html",
@@ -447,6 +435,23 @@ def propers():
         series_choices=SERIES_CHOICES,
         lectionary="one_year",
     )
+
+
+@app.route("/propers/pdf")
+def propers_pdf():
+    """Printable PDF of the one-year propers (introit + collect per Sunday)."""
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+    sections = _propers_sections(advent_year)
+
+    from pdf_gen import build_propers_pdf
+    buf = build_propers_pdf(advent_year, sections)
+    filename = f"One_Year_Propers_{advent_year}-{advent_year+1}.pdf"
+    return send_file(buf, mimetype="application/pdf",
+                     as_attachment=True, download_name=filename)
 
 
 def _daily_year_days(advent_year: int):
@@ -528,9 +533,10 @@ def export_ical():
         advent_year = int(request.args.get("year", date.today().year))
     except ValueError:
         advent_year = date.today().year
-    lectionary = request.args.get("lectionary", "three_year")
+    lectionary    = request.args.get("lectionary", "three_year")
+    include_daily = request.args.get("daily", "0") == "1"
 
-    ics_bytes = build_ical_year(advent_year, lectionary)
+    ics_bytes = build_ical_year(advent_year, lectionary, include_daily=include_daily)
     lect_tag  = "3yr" if lectionary == "three_year" else "1yr"
     filename  = f"LCMS_Lectionary_{advent_year}-{advent_year+1}_{lect_tag}.ics"
     return send_file(
@@ -549,8 +555,9 @@ def export_ical_subscribe():
     auto-update without re-importing.
     """
     from liturgical_calendar.ical_export import build_ical_subscription
-    lectionary = request.args.get("lectionary", "three_year")
-    ics_bytes  = build_ical_subscription(lectionary)
+    lectionary    = request.args.get("lectionary", "three_year")
+    include_daily = request.args.get("daily", "0") == "1"
+    ics_bytes  = build_ical_subscription(lectionary, include_daily=include_daily)
     response   = app.response_class(
         ics_bytes,
         mimetype="text/calendar; charset=utf-8",

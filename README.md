@@ -12,8 +12,8 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Minor feast detection** — weekday lookups also surface any sanctoral observance for that date (e.g. "Also today: St. Barnabas, Apostle")
 - **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
 - **One-Year propers** — every Sunday in the One-Year series displays its introit (Latin name + Psalm reference) and Collect of the Day (TLH 1941, public domain) inline in the calendar via click-to-expand, and on a dedicated printable `/propers` page
-- **iCal export** — download a `.ics` file for any church year, or subscribe via `webcal://` for a live feed that auto-updates in Apple Calendar, Google Calendar, or Outlook
-- **PDF export** — landscape calendar matching LCMS Church Year Calendar format
+- **iCal export** — download a `.ics` file for any church year, or subscribe via `webcal://` for a live feed that auto-updates in Apple Calendar, Google Calendar, or Outlook. Event descriptions include the appointed readings, introit and collect (One-Year), and the day's daily lectionary; add `&daily=1` (or tick the checkbox) for a transparent all-day event with the two daily readings on every day of the year
+- **PDF export** — landscape calendar matching LCMS Church Year Calendar format, plus printable PDFs of the One-Year propers (`/propers/pdf`) and the daily lectionary (`/daily/pdf`)
 - **Scripture popups** — click any reading to see ESV text via the ESV API
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
 - **Daily lectionary** — the LSB Daily Lectionary's two readings per day (Old + New Testament) appear on the home page Today card, in every date lookup, and in the JSON API; fixed civil dates for the Christmas/Church cycles, movable Ash Wednesday→Trinity readings for the Easter cycle, exactly as appointed. A full-year chart at `/daily` can be browsed, printed, or downloaded as PDF
@@ -50,6 +50,9 @@ python app.py
 docker run -d --restart unless-stopped -p 5765:5765 \
   ghcr.io/abc3-mac/lutheran-lectionary:latest
 ```
+
+The image is multi-arch (`linux/amd64` + `linux/arm64`) — Intel/AMD servers and
+Apple Silicon or Raspberry Pi hosts each pull their native build automatically.
 
 Then open `http://localhost:5765` (or replace `localhost` with your server's IP).
 

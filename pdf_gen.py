@@ -309,3 +309,83 @@ def build_daily_pdf(advent_year: int, months: list) -> io.BytesIO:
     doc.build(story)
     buf.seek(0)
     return buf
+
+
+# ---------------------------------------------------------------------------
+# One-Year Propers PDF — introit + collect per Sunday, grouped by season
+# ---------------------------------------------------------------------------
+
+SEASON_HEX = {
+    "season-blue": "#0070C0", "season-white": "#D4AA40", "season-green": "#00B050",
+    "season-purple": "#7030A0", "season-scarlet": "#C00000", "season-red": "#FF0000",
+    "season-black": "#000000",
+}
+
+
+def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
+    """Portrait PDF of the one-year propers.
+
+    `sections` is the structure from app._propers_sections():
+    [{"season": "Advent", "events": [{date_str, name, color_class, introit, collect}, ...]}, ...]
+    """
+    from reportlab.platypus import KeepTogether
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=letter,
+        leftMargin=0.7 * inch, rightMargin=0.7 * inch,
+        topMargin=0.55 * inch, bottomMargin=0.55 * inch,
+        title=f"One-Year Propers {advent_year}–{advent_year + 1}",
+    )
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "PropTitle", parent=styles["Title"], fontSize=15, spaceAfter=2)
+    sub_style = ParagraphStyle(
+        "PropSub", parent=styles["Normal"], fontSize=9,
+        textColor=colors.HexColor("#555555"), alignment=TA_CENTER, spaceAfter=12)
+    date_style = ParagraphStyle(
+        "PropDate", parent=styles["Normal"], fontSize=8,
+        textColor=colors.HexColor("#777777"), spaceBefore=8)
+    name_style = ParagraphStyle(
+        "PropName", parent=styles["Normal"], fontSize=11,
+        fontName="Helvetica-Bold", spaceAfter=2)
+    introit_style = ParagraphStyle(
+        "PropIntroit", parent=styles["Normal"], fontSize=9, spaceAfter=2)
+    collect_style = ParagraphStyle(
+        "PropCollect", parent=styles["Normal"], fontSize=9, leading=12,
+        fontName="Helvetica-Oblique", leftIndent=10, spaceAfter=4)
+    source_style = ParagraphStyle(
+        "PropSource", parent=styles["Normal"], fontSize=7.5,
+        textColor=colors.HexColor("#888888"), spaceBefore=16)
+
+    story = [
+        Paragraph(f"One-Year (Historic) Propers — {advent_year}–{advent_year + 1} Church Year", title_style),
+        Paragraph("Introit and Collect of the Day for every Sunday", sub_style),
+    ]
+
+    for sec in sections:
+        hexcol = SEASON_HEX.get(sec["events"][0].get("color_class", ""), "#1A3A5C")
+        season_style = ParagraphStyle(
+            f"Season{sec['season']}", parent=styles["Heading2"], fontSize=12,
+            textColor=colors.HexColor(hexcol), spaceBefore=14, spaceAfter=2)
+        story.append(Paragraph(sec["season"].upper(), season_style))
+        for ev in sec["events"]:
+            block = [
+                Paragraph(ev["date_str"], date_style),
+                Paragraph(ev["name"], name_style),
+            ]
+            intro = ev.get("introit")
+            if intro:
+                block.append(Paragraph(
+                    f"<b>Introit:</b> <i>{intro['name']}</i> — {intro['ref']}", introit_style))
+            if ev.get("collect"):
+                block.append(Paragraph(f"<b>Collect:</b> {ev['collect']}", collect_style))
+            story.append(KeepTogether(block))
+
+    story.append(Paragraph(
+        "Collects from The Lutheran Hymnal (TLH, 1941) / Common Service Book (1917), public domain. "
+        "For LSB collect and introit texts, see the LSB Altar Book.", source_style))
+
+    doc.build(story)
+    buf.seek(0)
+    return buf

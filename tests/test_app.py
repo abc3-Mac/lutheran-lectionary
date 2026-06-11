@@ -126,3 +126,26 @@ def test_settings_page(client):
 def test_settings_in_nav(client):
     r = client.get("/")
     assert b'href="/settings"' in r.data
+
+
+def test_propers_pdf(client):
+    r = client.get("/propers/pdf?year=2025")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+
+
+def test_ical_includes_propers_and_daily(client):
+    r = client.get("/export/ical?year=2025&lectionary=one_year")
+    assert r.status_code == 200
+    assert b"Introit:" in r.data
+    assert b"Collect:" in r.data
+    assert b"Daily Lectionary:" in r.data
+    # daily events not present without the flag
+    assert b"-daily@lectionary" not in r.data
+
+
+def test_ical_daily_events_flag(client):
+    r = client.get("/export/ical?year=2025&lectionary=one_year&daily=1")
+    assert r.status_code == 200
+    assert b"-daily@lectionary" in r.data
+    assert b"TRANSP:TRANSPARENT" in r.data
