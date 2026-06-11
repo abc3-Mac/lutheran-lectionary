@@ -844,3 +844,58 @@ blockquote.collect-text {
 }
 .today-daily a { color: var(--accent-text); }
 .today-daily-sep { color: var(--muted); margin: 0 0.3rem; }
+
+/* ---- Historic colors (violet Advent) — One-Year series opt-in ---- */
+.historic-colors .season-blue { background-color: var(--purple); }
+.historic-colors .ev-row.season-blue .season-tag { background: var(--purple); }
+.historic-colors .ev-row.season-blue td:first-child { border-left-color: var(--purple); }
+.historic-colors .propers-season-head.season-blue { background: var(--purple); }
+.historic-colors .propers-entry.season-blue { border-left-color: var(--purple); }
+.historic-colors .search-result.season-blue { border-left-color: var(--purple); }
+
+/* ---- Daily Lectionary page ---- */
+.daily-page { max-width: 860px; margin: 0 auto; padding-bottom: 3rem; }
+.daily-month { margin-bottom: 1.75rem; }
+.daily-month-head {
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.daily-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+}
+.daily-table th {
+  background: #1A3A5C;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+}
+.daily-table td {
+  padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--row-border);
+}
+.daily-table tbody tr:nth-child(even) td { background: var(--row-alt); }
+.daily-table tr:hover td { background: var(--row-hover); }
+.daily-col-date { width: 9rem; white-space: nowrap; }
+.daily-col-date a { color: var(--text-soft); font-family: Arial, sans-serif; font-size: 0.8rem; }
+.daily-col-date a:hover { color: var(--accent-text); }
+
+@media print {
+  .daily-month { break-inside: avoid; }
+  .daily-table a { color: black; text-decoration: none; }
+}
+
+/* ---- Minor feast readings (lookup banner) ---- */
+.minor-feast-readings { font-size: 0.83rem; }
+.minor-feast-readings .reading-or { margin: 0 0.2rem; }

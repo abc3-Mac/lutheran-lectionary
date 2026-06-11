@@ -5,7 +5,7 @@ Flask web app with calendar view, date lookup, PDF export, and file naming.
 
 import os
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from functools import lru_cache
 from flask import Flask, render_template, request, send_file, jsonify, abort
 import io
@@ -445,7 +445,71 @@ def propers():
         min_year=MIN_YEAR,
         max_year=MAX_YEAR,
         series_choices=SERIES_CHOICES,
+        lectionary="one_year",
     )
+
+
+def _daily_year_days(advent_year: int):
+    """All daily-lectionary entries for one church year, grouped by month."""
+    cal = get_calendar(advent_year)
+    months = []
+    current_label = None
+    d = cal.advent_1
+    while d < cal.next_advent_1:
+        entry = daily_readings(d)
+        if entry:
+            label = d.strftime("%B %Y")
+            if label != current_label:
+                months.append({"month": label, "days": []})
+                current_label = label
+            months[-1]["days"].append({
+                "date":     d,
+                "date_str": d.strftime("%a, %b %-d"),
+                "day":      entry.get("day", ""),
+                "ot":       entry["ot"],
+                "nt":       entry["nt"],
+                "ot_url":   bg_url(entry["ot"]),
+                "nt_url":   bg_url(entry["nt"]),
+            })
+        d += timedelta(1)
+    return cal, months
+
+
+@app.route("/daily")
+def daily_page():
+    """Full-year LSB Daily Lectionary chart."""
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+    cal, months = _daily_year_days(advent_year)
+    return render_template(
+        "daily.html",
+        advent_year=advent_year,
+        cal=cal,
+        months=months,
+        min_year=MIN_YEAR,
+        max_year=MAX_YEAR,
+        series_choices=SERIES_CHOICES,
+    )
+
+
+@app.route("/daily/pdf")
+def daily_pdf():
+    """Printable PDF of the full-year daily lectionary."""
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+    cal, months = _daily_year_days(advent_year)
+
+    from pdf_gen import build_daily_pdf
+    buf = build_daily_pdf(advent_year, months)
+    filename = f"LSB_Daily_Lectionary_{advent_year}-{advent_year+1}.pdf"
+    return send_file(buf, mimetype="application/pdf",
+                     as_attachment=True, download_name=filename)
 
 
 @app.route("/export/ical")

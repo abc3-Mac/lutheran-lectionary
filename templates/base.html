@@ -16,7 +16,7 @@
   <meta property="og:url" content="{{ request.url }}">
   <meta name="twitter:card" content="summary">
   {% endif %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611b">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611c">
   <script>
     // Apply saved theme before first paint to avoid flash
     (function() {
@@ -25,7 +25,7 @@
     })();
   </script>
 </head>
-<body>
+<body{% if lectionary is defined and lectionary %} data-lectionary="{{ lectionary }}"{% endif %}>
   <header>
     <div class="header-inner">
       <div class="logo">✝ Liturgical Calendar</div>
@@ -59,6 +59,28 @@
   </div>
 
   <script>
+    // Historic colors (violet Advent) for the One-Year series — remembered preference
+    (function() {
+      const HIST_KEY = 'lcms_historic_colors';
+      const isOneYear = document.body.dataset.lectionary === 'one_year';
+      if (isOneYear && localStorage.getItem(HIST_KEY) === '1') {
+        document.body.classList.add('historic-colors');
+        // Swap the color name shown in chips/labels
+        document.querySelectorAll('.color-dot, .minor-feast-color').forEach(el => {
+          if (el.textContent.trim() === 'Blue') el.textContent = 'Violet';
+        });
+      }
+      // Wire the toggle checkbox if this page has one
+      const cb = document.getElementById('historic-colors-toggle');
+      if (cb) {
+        cb.checked = localStorage.getItem(HIST_KEY) === '1';
+        cb.addEventListener('change', function() {
+          localStorage.setItem(HIST_KEY, cb.checked ? '1' : '0');
+          location.reload();
+        });
+      }
+    })();
+
     // Dark mode toggle
     (function() {
       const btn = document.getElementById('theme-toggle');

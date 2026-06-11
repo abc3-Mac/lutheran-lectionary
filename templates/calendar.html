@@ -33,8 +33,12 @@
     <a href="/export/ical?year={{ advent_year }}&lectionary={{ lectionary }}"
        class="btn btn-sm btn-outline">⬇ .ics</a>
     <a href="/lookup?lectionary={{ lectionary }}" class="btn btn-sm btn-outline">Date Lookup</a>
+    <a href="/daily?year={{ advent_year }}" class="btn btn-sm btn-outline">Daily Readings</a>
     {% if lectionary == 'one_year' %}
     <a href="/propers?year={{ advent_year }}" class="btn btn-sm btn-outline">Propers List</a>
+    <label class="checkbox-label">
+      <input type="checkbox" id="historic-colors-toggle"> Historic colors (violet Advent)
+    </label>
     {% endif %}
   </form>
 </div>

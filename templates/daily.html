@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Daily Lectionary {{ advent_year }}–{{ advent_year+1 }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Daily Lectionary — {{ advent_year }}–{{ advent_year+1 }}</h1>
+  <p class="page-sub">LSB Daily Lectionary &middot; two readings for every day of the church year &middot; {{ cal.advent_1.strftime('%-d %b %Y') }} &ndash; {{ (cal.next_advent_1 - cal.next_advent_1.resolution).strftime('%-d %b %Y') }}</p>
+</div>
+
+<div class="toolbar">
+  <form action="/daily" method="get" class="toolbar-form">
+    <label>Church Year
+      <input type="number" name="year" value="{{ advent_year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;">
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/daily/pdf?year={{ advent_year }}" class="btn btn-sm btn-pdf">⬇ PDF</a>
+    <button class="btn btn-sm btn-outline" onclick="window.print();return false;" type="button">🖨 Print</button>
+    <a href="/calendar?year={{ advent_year }}" class="btn btn-sm btn-outline">← Calendar</a>
+  </form>
+</div>
+
+<div class="daily-page">
+  {% for m in months %}
+  <section class="daily-month">
+    <h2 class="daily-month-head">{{ m.month }}</h2>
+    <table class="daily-table">
+      <thead>
+        <tr><th class="daily-col-date">Date</th><th>Old Testament</th><th>New Testament</th></tr>
+      </thead>
+      <tbody>
+        {% for d in m.days %}
+        <tr>
+          <td class="daily-col-date">
+            <a href="/day/{{ d.date.isoformat() }}" title="Full liturgical info for this day">{{ d.date_str }}</a>
+          </td>
+          <td><a href="{{ d.ot_url }}" class="reading-ref scripture-link"
+                 onclick="showScripture(event, '{{ d.ot|e }}', '{{ d.ot_url|e }}'); return false;">{{ d.ot }}</a></td>
+          <td><a href="{{ d.nt_url }}" class="reading-ref scripture-link"
+                 onclick="showScripture(event, '{{ d.nt|e }}', '{{ d.nt_url|e }}'); return false;">{{ d.nt }}</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endfor %}
+
+  <p class="propers-page-source">
+    LSB Daily Lectionary — two readings per day for personal or family devotion.
+    Reading references as appointed; texts may be read in any translation.
+  </p>
+</div>
+{% endblock %}

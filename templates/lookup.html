@@ -55,6 +55,16 @@
     <span class="minor-feast-label">Also today:</span>
     <span class="minor-feast-name {{ result.minor_feast.color_class }}">{{ result.minor_feast.name }}</span>
     {% if result.minor_feast.color %}<span class="minor-feast-color">{{ result.minor_feast.color }}</span>{% endif %}
+    {% if result.minor_feast.readings_parsed %}
+    <span class="minor-feast-readings">
+      —
+      {% for r in result.minor_feast.readings_parsed %}
+      <a href="{{ r.url }}" class="reading-ref scripture-link"
+         onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+         title="Click to preview {{ r.ref }}">{{ r.ref }}</a>{% if not loop.last %} <span class="reading-or">·</span> {% endif %}
+      {% endfor %}
+    </span>
+    {% endif %}
   </div>
   {% endif %}
 

@@ -246,3 +246,66 @@ def build_pdf(cal: LiturgicalCalendar, events: list, lectionary: str) -> io.Byte
     doc.build(story)
     buf.seek(0)
     return buf
+
+
+# ---------------------------------------------------------------------------
+# Daily Lectionary PDF — portrait table, one section per month
+# ---------------------------------------------------------------------------
+
+def build_daily_pdf(advent_year: int, months: list) -> io.BytesIO:
+    """Build a portrait PDF of the full-year LSB Daily Lectionary.
+
+    `months` is the structure produced by app._daily_year_days():
+    [{"month": "December 2025", "days": [{"date_str", "ot", "nt"}, ...]}, ...]
+    """
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=letter,
+        leftMargin=0.6 * inch, rightMargin=0.6 * inch,
+        topMargin=0.5 * inch, bottomMargin=0.5 * inch,
+        title=f"LSB Daily Lectionary {advent_year}–{advent_year + 1}",
+    )
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "DailyTitle", parent=styles["Title"], fontSize=15, spaceAfter=2)
+    sub_style = ParagraphStyle(
+        "DailySub", parent=styles["Normal"], fontSize=9,
+        textColor=colors.HexColor("#555555"), alignment=TA_CENTER, spaceAfter=10)
+    month_style = ParagraphStyle(
+        "DailyMonth", parent=styles["Heading2"], fontSize=11,
+        textColor=colors.HexColor("#1A3A5C"), spaceBefore=10, spaceAfter=3)
+
+    story = [
+        Paragraph(f"LSB Daily Lectionary — {advent_year}–{advent_year + 1} Church Year", title_style),
+        Paragraph("Two readings for every day — for personal or family devotion", sub_style),
+    ]
+
+    col_widths = [1.5 * inch, 2.9 * inch, 2.9 * inch]
+    header_bg = colors.HexColor("#1A3A5C")
+
+    for m in months:
+        rows = [["Date", "Old Testament", "New Testament"]]
+        for d in m["days"]:
+            rows.append([d["date_str"], d["ot"], d["nt"]])
+        table = Table(rows, colWidths=col_widths, repeatRows=1)
+        table.setStyle(TableStyle([
+            ("BACKGROUND",   (0, 0), (-1, 0), header_bg),
+            ("TEXTCOLOR",    (0, 0), (-1, 0), colors.white),
+            ("FONTNAME",     (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE",     (0, 0), (-1, 0), 8),
+            ("FONTNAME",     (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE",     (0, 1), (-1, -1), 8),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1),
+             [colors.white, colors.HexColor("#F5F4F0")]),
+            ("GRID",         (0, 0), (-1, -1), 0.3, colors.HexColor("#CCCCCC")),
+            ("LEFTPADDING",  (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+            ("TOPPADDING",   (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING",(0, 0), (-1, -1), 2),
+        ]))
+        story.append(Paragraph(m["month"], month_style))
+        story.append(table)
+
+    doc.build(story)
+    buf.seek(0)
+    return buf

@@ -55,6 +55,20 @@
   </div>
 
   <div class="card">
+    <h2>📖 Daily Readings</h2>
+    <p>The LSB Daily Lectionary — two readings for every day of the church year, as a chart you can browse, print, or download.</p>
+    <form action="/daily" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Church Year
+          <input type="number" name="year" value="{{ current_advent_year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+      </div>
+      <button type="submit" class="btn">View Daily Readings</button>
+    </form>
+  </div>
+
+  <div class="card">
     <h2>🔍 Date Lookup</h2>
     <p>Enter any date to find its place in the church year and look up the appointed readings.</p>
     <form action="/lookup" method="get" class="quick-form">
@@ -256,6 +270,9 @@ function loadTodayCard(lect) {
         const nt = document.getElementById('today-daily-nt');
         ot.textContent = data.daily[0].ref; ot.href = data.daily[0].url;
         nt.textContent = data.daily[1].ref; nt.href = data.daily[1].url;
+        // Open in the ESV scripture popup (same as calendar/lookup pages)
+        ot.onclick = e => { showScripture(e, data.daily[0].ref, data.daily[0].url); return false; };
+        nt.onclick = e => { showScripture(e, data.daily[1].ref, data.daily[1].url); return false; };
         dailyBox.style.display = 'block';
       } else {
         dailyBox.style.display = 'none';

@@ -83,3 +83,33 @@ def test_ical_export(client):
     r = client.get("/export/ical?year=2025&lectionary=one_year")
     assert r.status_code == 200
     assert b"BEGIN:VCALENDAR" in r.data
+
+
+def test_daily_page(client):
+    r = client.get("/daily?year=2025")
+    assert r.status_code == 200
+    assert b"Proverbs 9:1-18" in r.data        # June 11, 2026
+    assert b"Isaiah 1:1-28" in r.data          # first day of church year
+
+
+def test_daily_pdf(client):
+    r = client.get("/daily/pdf?year=2025")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+
+
+def test_lookup_minor_feast_readings_clickable(client):
+    # June 11, 2026 = St. Barnabas; banner should include scripture links
+    r = client.get("/lookup?date=2026-06-11&lectionary=three_year")
+    assert r.status_code == 200
+    assert b"St. Barnabas" in r.data
+    assert b"minor-feast-readings" in r.data
+
+
+def test_calendar_has_historic_colors_toggle(client):
+    checkbox = b'<input type="checkbox" id="historic-colors-toggle">'
+    r = client.get("/calendar?year=2025&lectionary=one_year")
+    assert checkbox in r.data
+    # not offered for three-year
+    r = client.get("/calendar?year=2025&lectionary=three_year")
+    assert checkbox not in r.data
