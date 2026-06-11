@@ -18,6 +18,12 @@
       <div id="today-date" class="today-date"></div>
       <div id="today-name" class="today-name"></div>
       <div id="today-meta" class="today-meta"></div>
+      <div id="today-daily" class="today-daily" style="display:none;">
+        <span class="today-daily-label">Today's readings:</span>
+        <a id="today-daily-ot" href="#" target="_blank" rel="noopener"></a>
+        <span class="today-daily-sep">·</span>
+        <a id="today-daily-nt" href="#" target="_blank" rel="noopener"></a>
+      </div>
       <div id="today-file" class="today-file"></div>
     </div>
   </div>
@@ -244,6 +250,16 @@ function loadTodayCard(lect) {
       metaParts.push(data.church_year + ' Church Year');
       if (data.minor_feast) metaParts.push(data.minor_feast.name);
       document.getElementById('today-meta').textContent = metaParts.join(' • ');
+      const dailyBox = document.getElementById('today-daily');
+      if (data.daily && data.daily.length === 2) {
+        const ot = document.getElementById('today-daily-ot');
+        const nt = document.getElementById('today-daily-nt');
+        ot.textContent = data.daily[0].ref; ot.href = data.daily[0].url;
+        nt.textContent = data.daily[1].ref; nt.href = data.daily[1].url;
+        dailyBox.style.display = 'block';
+      } else {
+        dailyBox.style.display = 'none';
+      }
       document.getElementById('today-file').textContent = '📁 ' + data.file_label;
     })
     .catch(() => {

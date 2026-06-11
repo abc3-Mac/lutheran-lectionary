@@ -827,3 +827,20 @@ blockquote.collect-text {
 :root[data-theme="dark"] .alert-warn { background: #3A331A; border-color: #7A6A30; color: #E8D590; }
 :root[data-theme="dark"] .modal { background: rgba(0,0,0,0.7); }
 :root[data-theme="dark"] .btn:hover { background: #3A6A9C; }
+
+/* ---- Today card: daily lectionary line ---- */
+.today-daily {
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  color: var(--text-soft);
+}
+.today-daily-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-right: 0.3rem;
+}
+.today-daily a { color: var(--accent-text); }
+.today-daily-sep { color: var(--muted); margin: 0 0.3rem; }

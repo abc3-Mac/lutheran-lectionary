@@ -84,6 +84,25 @@
     {% endif %}
   </div>
 
+  {% if result.daily %}
+  <div class="result-readings result-daily">
+    <h3>Daily Lectionary</h3>
+    <div class="readings-grid">
+      {% for r in result.daily %}
+      <div class="reading-item">
+        <div class="reading-label">{{ r.label }}</div>
+        <div class="reading-refs">
+          <a href="{{ r.url }}" class="reading-ref scripture-link"
+             onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+             title="Click to preview">{{ r.ref }}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="muted" style="margin-top:0.5rem; font-size:0.78rem;">LSB Daily Lectionary — two readings for personal or family devotion.</p>
+  </div>
+  {% endif %}
+
   {% if lectionary == 'one_year' and (result.introit or result.collect) %}
   <div class="result-propers">
 

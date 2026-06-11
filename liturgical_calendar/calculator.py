@@ -41,6 +41,24 @@ def get_series(advent_year: int) -> str:
     return ["A", "B", "C"][advent_year % 3]
 
 
+def daily_readings(d: date) -> dict | None:
+    """
+    LSB Daily Lectionary readings (OT + NT) for any date.
+
+    Fixed civil dates cover Nov 27–Mar 9 and May 18–Nov 26; the window from
+    Ash Wednesday through Holy Trinity is keyed to the movable Easter cycle
+    and takes precedence over fixed dates (per LSB rubric).
+    """
+    from liturgical_calendar.data.daily_lectionary import DAILY_FIXED, DAILY_MOVABLE
+    easter = calc_easter(d.year)
+    ash_wed = easter - timedelta(46)
+    trinity = easter + timedelta(56)
+    if ash_wed <= d <= trinity:
+        return dict(DAILY_MOVABLE[(d - ash_wed).days])
+    entry = DAILY_FIXED.get(f"{d.month:02d}-{d.day:02d}")
+    return dict(entry) if entry else None
+
+
 def get_proper(sunday: date) -> int:
     """
     Return the Proper number (3–29) for a Sunday in Ordinary Time.

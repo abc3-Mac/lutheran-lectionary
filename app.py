@@ -18,7 +18,7 @@ os.chdir(_HERE)
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
-from liturgical_calendar.calculator import LiturgicalCalendar, advent1_for_year
+from liturgical_calendar.calculator import LiturgicalCalendar, advent1_for_year, daily_readings
 from liturgical_calendar.utils import parse_readings, file_label, season_color_class, bg_url
 
 app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
@@ -207,8 +207,20 @@ def _lookup_result(d: date, lectionary: str):
         "minor_feast":     minor_feast,
         "collect":         info.get("collect"),
         "introit":         info.get("introit"),
+        "daily":           _daily_for_display(d),
     }
     return result, None
+
+
+def _daily_for_display(d: date):
+    """LSB daily lectionary readings with BibleGateway links, or None."""
+    entry = daily_readings(d)
+    if not entry:
+        return None
+    return [
+        {"label": "Old Testament", "ref": entry["ot"], "url": bg_url(entry["ot"])},
+        {"label": "New Testament", "ref": entry["nt"], "url": bg_url(entry["nt"])},
+    ]
 
 
 @app.route("/lookup")
@@ -386,6 +398,7 @@ def api_today():
         "color":        info.get("color"),
         "file_label":   lbl,
         "minor_feast":  minor_feast,
+        "daily":        _daily_for_display(today),
     })
 
 
