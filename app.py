@@ -19,6 +19,7 @@ if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
 from liturgical_calendar.calculator import LiturgicalCalendar, advent1_for_year, daily_readings
+from liturgical_calendar.data.hymn_of_the_day import hymn_of_the_day
 from liturgical_calendar.utils import parse_readings, file_label, season_color_class, bg_url
 
 app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
@@ -84,6 +85,7 @@ def _events_for_display(cal: LiturgicalCalendar, lectionary: str, include_minor:
                 readings_raw = slot_data.get("readings")
 
         ev["readings_parsed"] = parse_readings(readings_raw)
+        ev["hymn"] = hymn_of_the_day(ev["slot"], lectionary, ev.get("series"))
     return events
 
 
@@ -208,6 +210,7 @@ def _lookup_result(d: date, lectionary: str):
         "collect":         info.get("collect"),
         "introit":         info.get("introit"),
         "daily":           _daily_for_display(d),
+        "hymn_of_the_day": hymn_of_the_day(slot, lectionary, info.get("series")),
     }
     return result, None
 
@@ -399,6 +402,7 @@ def api_today():
         "file_label":   lbl,
         "minor_feast":  minor_feast,
         "daily":        _daily_for_display(today),
+        "hymn_of_the_day": hymn_of_the_day(info["slot"], lectionary, info.get("series")),
     })
 
 

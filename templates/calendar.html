@@ -136,6 +136,12 @@
             <span class="collect-text-inline">{{ ev.collect }}</span>
           </div>
           {% endif %}
+          {% if ev.get('hymn') %}
+          <div class="propers-expand-introit">
+            <span class="proper-label-sm">Hymn of the Day:</span>
+            {{ ev.hymn | join(' or ') }}
+          </div>
+          {% endif %}
           <p class="propers-expand-source">TLH 1941, public domain</p>
         </div>
       </td>

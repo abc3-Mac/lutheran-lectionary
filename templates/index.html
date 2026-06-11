@@ -24,6 +24,10 @@
         <span class="today-daily-sep">·</span>
         <a id="today-daily-nt" href="#" target="_blank" rel="noopener"></a>
       </div>
+      <div id="today-hymn" class="today-daily" style="display:none;">
+        <span class="today-daily-label">Hymn of the day:</span>
+        <span id="today-hymn-text"></span>
+      </div>
       <div id="today-file" class="today-file"></div>
     </div>
   </div>
@@ -287,6 +291,13 @@ function loadTodayCard(lect) {
         dailyBox.style.display = 'block';
       } else {
         dailyBox.style.display = 'none';
+      }
+      const hymnBox = document.getElementById('today-hymn');
+      if (data.hymn_of_the_day && data.hymn_of_the_day.length) {
+        document.getElementById('today-hymn-text').textContent = data.hymn_of_the_day.join(' or ');
+        hymnBox.style.display = 'block';
+      } else {
+        hymnBox.style.display = 'none';
       }
       document.getElementById('today-file').textContent = '📁 ' + data.file_label;
     })

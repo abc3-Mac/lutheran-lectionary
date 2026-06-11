@@ -94,6 +94,17 @@
     {% endif %}
   </div>
 
+  {% if result.hymn_of_the_day %}
+  <div class="result-readings result-hymn">
+    <h3>Hymn of the Day</h3>
+    <p class="hymn-of-day">
+      {% for h in result.hymn_of_the_day %}
+      <span class="hymn-entry">🎵 {{ h }}</span>{% if not loop.last %}<span class="reading-or"> or </span>{% endif %}
+      {% endfor %}
+    </p>
+  </div>
+  {% endif %}
+
   {% if result.daily %}
   <div class="result-readings result-daily">
     <h3>Daily Lectionary</h3>

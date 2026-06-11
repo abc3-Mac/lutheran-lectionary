@@ -149,3 +149,16 @@ def test_ical_daily_events_flag(client):
     assert r.status_code == 200
     assert b"-daily@lectionary" in r.data
     assert b"TRANSP:TRANSPARENT" in r.data
+
+
+def test_hymn_of_the_day_in_pages_and_api(client):
+    r = client.get("/lookup?date=2026-06-07&lectionary=one_year")
+    assert b"Hymn of the Day" in r.data
+    assert b"LSB 768" in r.data          # Trinity 1, one-year
+
+    r = client.get("/api/day/2026-06-07?lectionary=one_year")
+    assert r.get_json()["hymn_of_the_day"][0].startswith("LSB 768")
+
+    # calendar expand row includes the hymn (one-year)
+    r = client.get("/calendar?year=2025&lectionary=one_year")
+    assert b"Hymn of the Day:" in r.data
