@@ -475,6 +475,14 @@ def _daily_year_days(advent_year: int):
     return cal, months
 
 
+@app.route("/settings")
+def settings():
+    """Browser-stored preferences page (no server state)."""
+    return render_template("settings.html",
+                           min_year=MIN_YEAR, max_year=MAX_YEAR,
+                           series_choices=SERIES_CHOICES)
+
+
 @app.route("/daily")
 def daily_page():
     """Full-year LSB Daily Lectionary chart."""

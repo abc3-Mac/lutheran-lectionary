@@ -196,6 +196,10 @@ function setLectionary(lect) {
   document.querySelectorAll('select[name="lectionary"]').forEach(sel => { sel.value = saved; });
   document.getElementById('toggle-3yr').classList.toggle('lect-toggle-active', saved === 'three_year');
   document.getElementById('toggle-1yr').classList.toggle('lect-toggle-active', saved === 'one_year');
+  // Minor-feasts default from settings
+  if (localStorage.getItem('lcms_minor_feasts') === '0') {
+    document.querySelectorAll('input[name="minor"]').forEach(cb => { cb.checked = false; });
+  }
 })();
 
 // Save when a form is submitted (so calendar/lookup pages also update the store)

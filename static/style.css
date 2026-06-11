@@ -899,3 +899,43 @@ blockquote.collect-text {
 /* ---- Minor feast readings (lookup banner) ---- */
 .minor-feast-readings { font-size: 0.83rem; }
 .minor-feast-readings .reading-or { margin: 0 0.2rem; }
+
+/* ---- Settings page ---- */
+.settings-page { max-width: 640px; margin: 0 auto; padding-bottom: 2rem; }
+.settings-card { margin-bottom: 1.25rem; }
+.settings-card p { margin-bottom: 0.75rem; }
+.settings-radio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+.settings-radio input { width: auto; cursor: pointer; }
+.settings-tag {
+  font-size: 0.68rem;
+  font-weight: normal;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--code-bg);
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  vertical-align: middle;
+}
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.settings-saved {
+  color: var(--green);
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: bold;
+}

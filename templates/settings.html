@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Settings</h1>
+  <p class="page-sub">Preferences are saved in your browser — no account needed. They apply on every page.</p>
+</div>
+
+<div class="settings-page">
+
+  <div class="card settings-card">
+    <h2>📖 Lectionary</h2>
+    <p>Which lectionary series to use across the site.</p>
+    <label class="settings-radio"><input type="radio" name="set-lectionary" value="three_year"> Three-Year Series (A/B/C)</label>
+    <label class="settings-radio"><input type="radio" name="set-lectionary" value="one_year"> One-Year (Historic) Series</label>
+  </div>
+
+  <div class="card settings-card">
+    <h2>🟣 Advent Color <span class="settings-tag">One-Year series</span></h2>
+    <p>The LSB permits either color. Violet is the historic (TLH-era) practice; blue is the contemporary LCMS standard. Applies when viewing the One-Year series.</p>
+    <label class="settings-radio"><input type="radio" name="set-advent" value="blue"> Blue (contemporary)</label>
+    <label class="settings-radio"><input type="radio" name="set-advent" value="violet"> Violet (historic)</label>
+  </div>
+
+  <div class="card settings-card">
+    <h2>🌙 Theme</h2>
+    <p>Light or dark appearance, or follow your device's setting.</p>
+    <label class="settings-radio"><input type="radio" name="set-theme" value="light"> Light</label>
+    <label class="settings-radio"><input type="radio" name="set-theme" value="dark"> Dark</label>
+    <label class="settings-radio"><input type="radio" name="set-theme" value="system"> Follow system</label>
+  </div>
+
+  <div class="card settings-card">
+    <h2>✠ Minor Feasts</h2>
+    <p>Whether the full calendar includes the sanctoral calendar (apostles, evangelists, commemorations) by default.</p>
+    <label class="settings-radio"><input type="radio" name="set-minor" value="1"> Show minor feasts</label>
+    <label class="settings-radio"><input type="radio" name="set-minor" value="0"> Principal feasts only</label>
+  </div>
+
+  <div class="card settings-card">
+    <h2>📜 Scripture Translation</h2>
+    <p>Translation used for the click-to-preview scripture popups and BibleGateway links.</p>
+    <label class="settings-radio"><input type="radio" name="set-translation" value="ESV"> ESV — English Standard Version</label>
+    <label class="settings-radio"><input type="radio" name="set-translation" value="KJV"> KJV — King James Version</label>
+  </div>
+
+  <div class="settings-footer">
+    <span id="settings-saved" class="settings-saved" style="visibility:hidden;">✓ Saved</span>
+    <button class="btn btn-outline" type="button" id="settings-reset">Reset to defaults</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const KEYS = {
+    lectionary:  { store: 'lcms_lectionary',      def: 'three_year' },
+    advent:      { store: 'lcms_historic_colors', def: 'blue',
+                   toForm: v => v === '1' ? 'violet' : 'blue',
+                   toStore: v => v === 'violet' ? '1' : '0' },
+    theme:       { store: 'lcms_theme',           def: 'system' },
+    minor:       { store: 'lcms_minor_feasts',    def: '1' },
+    translation: { store: 'lcms_translation',     def: 'ESV' },
+  };
+
+  function flash() {
+    const el = document.getElementById('settings-saved');
+    el.style.visibility = 'visible';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.style.visibility = 'hidden', 1500);
+  }
+
+  for (const [name, cfg] of Object.entries(KEYS)) {
+    const radios = document.querySelectorAll(`input[name="set-${name}"]`);
+    let val = localStorage.getItem(cfg.store);
+    if (val === null) val = cfg.toStore ? cfg.toStore(cfg.def) : cfg.def;
+    const formVal = cfg.toForm ? cfg.toForm(val) : val;
+    radios.forEach(r => {
+      r.checked = (r.value === formVal);
+      r.addEventListener('change', () => {
+        const store = cfg.toStore ? cfg.toStore(r.value) : r.value;
+        localStorage.setItem(cfg.store, store);
+        if (name === 'theme' && typeof applyThemePref === 'function') applyThemePref();
+        flash();
+      });
+    });
+  }
+
+  document.getElementById('settings-reset').addEventListener('click', () => {
+    for (const cfg of Object.values(KEYS)) localStorage.removeItem(cfg.store);
+    if (typeof applyThemePref === 'function') applyThemePref();
+    location.reload();
+  });
+})();
+</script>
+{% endblock %}

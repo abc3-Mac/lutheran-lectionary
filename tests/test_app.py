@@ -113,3 +113,16 @@ def test_calendar_has_historic_colors_toggle(client):
     # not offered for three-year
     r = client.get("/calendar?year=2025&lectionary=three_year")
     assert checkbox not in r.data
+
+
+def test_settings_page(client):
+    r = client.get("/settings")
+    assert r.status_code == 200
+    assert b"set-lectionary" in r.data
+    assert b"set-advent" in r.data
+    assert b"set-translation" in r.data
+
+
+def test_settings_in_nav(client):
+    r = client.get("/")
+    assert b'href="/settings"' in r.data

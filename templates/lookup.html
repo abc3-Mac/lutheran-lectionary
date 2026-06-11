@@ -180,11 +180,20 @@ function copyFileLabel() {
     setTimeout(() => btn.textContent = 'Copy', 1500);
   });
 }
-// Save lectionary preference when submitting; update store from server-rendered value.
+// Lectionary preference: explicit URL params update the store; a bare
+// /lookup visit pre-fills the select from the saved preference instead
+// of overwriting it with the server default.
 const PREF_KEY = 'lcms_lectionary';
 (function() {
   const sel = document.querySelector('select[name="lectionary"]');
-  if (sel) localStorage.setItem(PREF_KEY, sel.value);
+  if (!sel) return;
+  const params = new URLSearchParams(location.search);
+  if (params.has('lectionary')) {
+    localStorage.setItem(PREF_KEY, params.get('lectionary'));
+  } else {
+    const saved = localStorage.getItem(PREF_KEY);
+    if (saved) sel.value = saved;
+  }
 })();
 document.querySelectorAll('form').forEach(form => {
   form.addEventListener('submit', () => {

@@ -17,7 +17,7 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Scripture popups** — click any reading to see ESV text via the ESV API
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
 - **Daily lectionary** — the LSB Daily Lectionary's two readings per day (Old + New Testament) appear on the home page Today card, in every date lookup, and in the JSON API; fixed civil dates for the Christmas/Church cycles, movable Ash Wednesday→Trinity readings for the Easter cycle, exactly as appointed. A full-year chart at `/daily` can be browsed, printed, or downloaded as PDF
-- **Historic colors toggle** — One-Year series users can opt into violet Advent (TLH-era practice) instead of contemporary blue; remembered in the browser like the lectionary preference
+- **Settings page** — one place (⚙ in the nav) for all preferences: lectionary series, Advent color (contemporary blue vs. historic violet for the One-Year series), light/dark/system theme, minor feasts default, and scripture translation (ESV or KJV) for popups and links. Everything is stored in the browser — no account, no server state
 - **Search** — find Sundays and feasts by name, Latin introit title, or Scripture reference ("Cantate", "Trinity", "Luke 15")
 - **Permalinks** — every date has a shareable URL (`/day/2026-06-07`) with Open Graph tags for clean unfurls on social media; a "Copy permalink" button appears on lookup results
 - **Dark mode** — 🌙 toggle in the header, remembered across visits

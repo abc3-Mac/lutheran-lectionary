@@ -6,6 +6,10 @@
 // to showing the reference and a direct link.
 // ---------------------------------------------------------------------------
 
+function getTranslationPref() {
+  return localStorage.getItem('lcms_translation') || 'ESV';
+}
+
 function showScripture(event, ref, bgUrl) {
   if (event) event.preventDefault();
   const modal   = document.getElementById('scripture-modal');
@@ -13,10 +17,25 @@ function showScripture(event, ref, bgUrl) {
   const bodyEl  = document.getElementById('modal-body');
   const linkEl  = document.getElementById('modal-link');
 
-  refEl.textContent  = ref;
+  const trans = getTranslationPref();
+  bgUrl = bgUrl.replace(/version=[A-Za-z]+/, 'version=' + trans);
+
+  refEl.textContent  = ref + (trans !== 'ESV' ? ' (' + trans + ')' : '');
   bodyEl.textContent = '';
   linkEl.href        = bgUrl;
   modal.style.display = 'flex';
+
+  if (trans === 'KJV') {
+    // KJV is public domain — bible-api.com serves it without a key
+    fetch('https://bible-api.com/' + encodeURIComponent(ref) + '?translation=kjv')
+      .then(r => { if (!r.ok) throw new Error('unavailable'); return r.json(); })
+      .then(data => {
+        if (data.text) bodyEl.textContent = data.text.trim();
+        else showFallback(bodyEl, ref, bgUrl);
+      })
+      .catch(() => showFallback(bodyEl, ref, bgUrl));
+    return;
+  }
 
   // Try ESV API (free key — replace with your own from api.esv.org)
   const ESV_API_KEY = '146f3dcaf64091437ccf1e1268b999e901c6c4c8';
@@ -62,6 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modal) {
     modal.addEventListener('click', e => {
       if (e.target === modal) closeScripture();
+    });
+  }
+  // Point BibleGateway hrefs at the preferred translation
+  const trans = getTranslationPref();
+  if (trans !== 'ESV') {
+    document.querySelectorAll('a.scripture-link[href*="biblegateway"]').forEach(a => {
+      a.href = a.href.replace(/version=[A-Za-z]+/, 'version=' + trans);
     });
   }
 });

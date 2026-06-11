@@ -16,13 +16,19 @@
   <meta property="og:url" content="{{ request.url }}">
   <meta name="twitter:card" content="summary">
   {% endif %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611c">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611d">
   <script>
-    // Apply saved theme before first paint to avoid flash
-    (function() {
-      const t = localStorage.getItem('lcms_theme');
-      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-    })();
+    // Apply saved theme before first paint to avoid flash.
+    // 'system' (default) follows the OS preference.
+    function applyThemePref() {
+      const t = localStorage.getItem('lcms_theme') || 'system';
+      const dark = t === 'dark' ||
+        (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.removeAttribute('data-theme');
+    }
+    applyThemePref();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyThemePref);
   </script>
 </head>
 <body{% if lectionary is defined and lectionary %} data-lectionary="{{ lectionary }}"{% endif %}>
@@ -34,6 +40,7 @@
         <a href="/calendar">Full Calendar</a>
         <a href="/lookup">Date Lookup</a>
         <a href="/search">Search</a>
+        <a href="/settings" title="Preferences">⚙ Settings</a>
         <button id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       </nav>
     </div>

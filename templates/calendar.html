@@ -167,14 +167,26 @@ function togglePropers(row) {
   if (arrow) arrow.textContent = open ? '▸' : '▾';
 }
 
-// Save lectionary preference when submitting; pre-fill from stored preference.
+// Lectionary preference: explicit URL params win and update the store;
+// a bare /calendar visit honors the saved preference via one redirect.
+// (Previously a bare visit overwrote the preference with the default.)
 const PREF_KEY = 'lcms_lectionary';
-(function prefillSelects() {
+(function honorPrefs() {
+  const params = new URLSearchParams(location.search);
   const saved = localStorage.getItem(PREF_KEY);
-  // Server already set the correct value via Jinja; just update the store
-  // so other pages read the value the user last explicitly chose here.
-  const sel = document.querySelector('select[name="lectionary"]');
-  if (sel) localStorage.setItem(PREF_KEY, sel.value);
+  const savedMinor = localStorage.getItem('lcms_minor_feasts');
+  let changed = false;
+  if (params.has('lectionary')) {
+    localStorage.setItem(PREF_KEY, params.get('lectionary'));
+  } else if (saved && saved !== document.body.dataset.lectionary) {
+    params.set('lectionary', saved);
+    changed = true;
+  }
+  if (!params.has('minor') && savedMinor === '0') {
+    params.set('minor', '0');
+    changed = true;
+  }
+  if (changed) location.replace('/calendar?' + params.toString());
 })();
 document.querySelectorAll('form').forEach(form => {
   form.addEventListener('submit', () => {
