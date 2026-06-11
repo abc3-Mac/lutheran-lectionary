@@ -20,7 +20,7 @@ function showScripture(event, ref, bgUrl) {
   const trans = getTranslationPref();
   bgUrl = bgUrl.replace(/version=[A-Za-z]+/, 'version=' + trans);
 
-  refEl.textContent  = ref + (trans !== 'ESV' ? ' (' + trans + ')' : '');
+  refEl.textContent  = ref + ' — ' + trans;
   bodyEl.textContent = '';
   linkEl.href        = bgUrl;
   modal.style.display = 'flex';
