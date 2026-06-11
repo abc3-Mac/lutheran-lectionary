@@ -124,19 +124,28 @@ docker build -t lutheran-lectionary .
 docker run -d --restart unless-stopped -p 5765:5765 lutheran-lectionary
 ```
 
-## Bible Translations
+## Copyright & Licensing Policy
 
-The scripture popups and BibleGateway links can use:
+This project publishes **only two kinds of content**: facts, and public-domain texts. Nothing under active copyright is reproduced, and no license fees are owed by anyone running or using it.
 
-| Translation | Status |
-|---|---|
-| **ESV** — English Standard Version (default) | Free API tier for non-commercial use ([api.esv.org](https://api.esv.org)) |
-| **KJV** — King James Version | Public domain |
-| **ASV** — American Standard Version (1901) | Public domain |
+**Facts (not copyrightable).** Scripture citations, lectionary tables, feast dates, liturgical colors, Latin introit names, and hymn numbers/titles are factual reference data. Copyright protects creative *expression*, not facts — listing "Gospel: Luke 16:19–31" or "LSB 656" infringes nothing, even though the books they point to are copyrighted publications.
 
-The guiding requirement is **zero license fees**: only translations that are public domain or freely usable for non-commercial purposes are offered. Translations requiring paid licensing (NIV, NKJV, NASB, etc.) are deliberately not included. Public-domain texts are served by [bible-api.com](https://bible-api.com); other free options there (WEB, Darby, Young's Literal) could be added on request.
+**Public-domain texts.** The only liturgical *texts* reproduced are from sources whose copyrights have expired:
 
-The same principle governs the propers: collects are reproduced only from public-domain sources (TLH 1941 / Common Service Book 1917), never from copyrighted CPH texts — those are referenced to the *LSB Altar Book* instead.
+- Collects from *The Lutheran Hymnal* (1941) and the *Common Service Book* (1917)
+- The KJV and ASV Bible translations (see below)
+
+**What is never reproduced:** LSB/CPH collect and introit texts (referenced to the *LSB Altar Book* instead), LSB hymn texts and translations, and ESV text in any stored form.
+
+### Bible Translations
+
+| Translation | Status | Why it's offered |
+|---|---|---|
+| **ESV** — English Standard Version (default) | © Crossway; used via the official [ESV API](https://api.esv.org) | Crossway grants free API access for non-commercial use. Passages are fetched live, displayed transiently in the popup, and never stored or republished by this app — exactly the use the API license is designed for. |
+| **KJV** — King James Version (1611/1769) | Public domain (US) | Predates copyright law's term limits entirely. |
+| **ASV** — American Standard Version (1901) | Public domain | Published 1901; its copyright has long since expired. |
+
+The guiding requirement is **zero license fees**. Translations requiring paid licensing (NIV, NKJV, NASB, etc.) are deliberately excluded. Public-domain texts are served by [bible-api.com](https://bible-api.com); other public-domain options there (WEB, Darby, Young's Literal) could be added on request.
 
 ## JSON API
 
