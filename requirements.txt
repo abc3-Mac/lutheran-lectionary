@@ -2,3 +2,4 @@ flask>=3.0
 reportlab>=4.0
 gunicorn>=21.0
 icalendar>=6.0
+waitress>=3.0

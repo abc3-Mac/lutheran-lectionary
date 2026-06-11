@@ -6,6 +6,7 @@ Flask web app with calendar view, date lookup, PDF export, and file naming.
 import os
 import sys
 from datetime import date, datetime
+from functools import lru_cache
 from flask import Flask, render_template, request, send_file, jsonify, abort
 import io
 
@@ -48,6 +49,14 @@ MAX_YEAR = 2299
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+@lru_cache(maxsize=64)
+def get_calendar(advent_year: int) -> LiturgicalCalendar:
+    """Cached calendar factory — building a church year is pure computation,
+    so instances are shared across requests. all_events() returns fresh dicts
+    each call, so callers may safely mutate the events they receive."""
+    return LiturgicalCalendar(advent_year)
+
 
 def _build_year_choices():
     current = date.today().year
@@ -128,7 +137,7 @@ def calendar_view():
     lectionary    = request.args.get("lectionary", "three_year")
     include_minor = request.args.get("minor", "1") == "1"
 
-    cal    = LiturgicalCalendar(advent_year)
+    cal    = get_calendar(advent_year)
     events = _events_for_display(cal, lectionary, include_minor)
     sections = _group_by_season(events)
 
@@ -145,6 +154,63 @@ def calendar_view():
     )
 
 
+def _lookup_result(d: date, lectionary: str):
+    """Build the lookup display dict for a date. Returns (result, error)."""
+    if d < date(MIN_YEAR, 11, 27) or d > date(MAX_YEAR + 1, 11, 26):
+        return None, f"Date must be between {MIN_YEAR} and {MAX_YEAR + 1}."
+
+    ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
+    cal = get_calendar(ay)
+    info = cal.lookup(d, lectionary=lectionary)
+    if info is None:
+        return None, f"No liturgical data found for {d.strftime('%B %-d, %Y')}."
+
+    slot = info["slot"]
+    is_weekday = info.get("is_weekday", False)
+    gov_date = info.get("governing_date")
+
+    readings_raw = info.get("readings")
+    if lectionary == "one_year":
+        from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+        od = ONE_YEAR_SLOTS.get(slot)
+        if od:
+            readings_raw = od.get("readings")
+
+    sun_name = info.get("name", slot)
+    display_name = f"Week of {sun_name}" if is_weekday else sun_name
+
+    mf = info.get("minor_feast")
+    minor_feast = None
+    if mf:
+        minor_feast = {
+            "name":          mf.get("name", ""),
+            "color":         mf.get("color", ""),
+            "color_class":   season_color_class(mf.get("color", "")),
+            "readings_parsed": parse_readings(mf.get("readings")),
+        }
+
+    result = {
+        "date":            d,
+        "date_str":        d.strftime("%A, %B %-d, %Y"),
+        "slot":            slot,
+        "church_year":     info["church_year"],
+        "series":          info["series"],
+        "name":            display_name,
+        "sun_name":        sun_name,
+        "governing_date":  gov_date,
+        "is_weekday":      is_weekday,
+        "season":          info.get("season", ""),
+        "color":           info.get("color", ""),
+        "color_class":     season_color_class(info.get("color", "")),
+        "readings_parsed": parse_readings(readings_raw),
+        "file_label":      cal.file_label(gov_date or d, lectionary=lectionary),
+        "minor_feast":     minor_feast,
+        "collect":         info.get("collect"),
+        "introit":         info.get("introit"),
+    }
+    return result, None
+
+
 @app.route("/lookup")
 def lookup():
     date_str   = request.args.get("date", "")
@@ -155,58 +221,7 @@ def lookup():
     if date_str:
         try:
             d = datetime.strptime(date_str, "%Y-%m-%d").date()
-            if d < date(MIN_YEAR, 11, 27) or d > date(MAX_YEAR + 1, 11, 26):
-                error = f"Date must be between {MIN_YEAR} and {MAX_YEAR + 1}."
-            else:
-                ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
-                cal = LiturgicalCalendar(ay)
-                info = cal.lookup(d, lectionary=lectionary)
-                if info is None:
-                    error = f"No liturgical data found for {d.strftime('%B %-d, %Y')}."
-                else:
-                    slot = info["slot"]
-                    is_weekday = info.get("is_weekday", False)
-                    gov_date = info.get("governing_date")
-
-                    readings_raw = info.get("readings")
-                    if lectionary == "one_year":
-                        from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
-                        od = ONE_YEAR_SLOTS.get(slot)
-                        if od:
-                            readings_raw = od.get("readings")
-
-                    sun_name = info.get("name", slot)
-                    display_name = f"Week of {sun_name}" if is_weekday else sun_name
-
-                    mf = info.get("minor_feast")
-                    minor_feast = None
-                    if mf:
-                        minor_feast = {
-                            "name":          mf.get("name", ""),
-                            "color":         mf.get("color", ""),
-                            "color_class":   season_color_class(mf.get("color", "")),
-                            "readings_parsed": parse_readings(mf.get("readings")),
-                        }
-
-                    result = {
-                        "date":            d,
-                        "date_str":        d.strftime("%A, %B %-d, %Y"),
-                        "slot":            slot,
-                        "church_year":     info["church_year"],
-                        "series":          info["series"],
-                        "name":            display_name,
-                        "sun_name":        sun_name,
-                        "governing_date":  gov_date,
-                        "is_weekday":      is_weekday,
-                        "season":          info.get("season", ""),
-                        "color":           info.get("color", ""),
-                        "color_class":     season_color_class(info.get("color", "")),
-                        "readings_parsed": parse_readings(readings_raw),
-                        "file_label":      cal.file_label(gov_date or d, lectionary=lectionary),
-                        "minor_feast":     minor_feast,
-                        "collect":         info.get("collect"),
-                        "introit":         info.get("introit"),
-                    }
+            result, error = _lookup_result(d, lectionary)
         except ValueError:
             error = "Invalid date format. Please use YYYY-MM-DD."
 
@@ -223,6 +238,86 @@ def lookup():
     )
 
 
+@app.route("/day/<date_str>")
+def day_permalink(date_str):
+    """Shareable permalink for a specific date, e.g. /day/2026-06-07."""
+    lectionary = request.args.get("lectionary", "three_year")
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        abort(404)
+    result, error = _lookup_result(d, lectionary)
+    if result is None:
+        abort(404)
+    return render_template(
+        "lookup.html",
+        date_str=date_str,
+        lectionary=lectionary,
+        result=result,
+        error=error,
+        min_year=MIN_YEAR,
+        max_year=MAX_YEAR,
+        series_choices=SERIES_CHOICES,
+        today=date.today().strftime("%Y-%m-%d"),
+        permalink=True,
+        og_title=f"{result['name']} — {result['date_str']}",
+        og_description=f"Appointed readings and liturgical information for {result['date_str']} ({result['season']}).",
+    )
+
+
+@app.route("/search")
+def search():
+    """Search Sundays and feasts by name, Latin introit title, or reading reference."""
+    q = request.args.get("q", "").strip()
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+
+    results = []
+    if len(q) >= 2:
+        needle = q.lower()
+        cal = get_calendar(advent_year)
+        seen = set()
+        for lectionary, lect_label in SERIES_CHOICES:
+            for ev in cal.all_events(include_minor=True, lectionary=lectionary):
+                hay = [ev.get("name", ""), ev.get("slot", ""), ev.get("alt_name") or ""]
+                intro = ev.get("introit")
+                if intro:
+                    hay.append(intro.get("name", ""))
+                    hay.append(intro.get("ref", ""))
+                readings = ev.get("readings")
+                if isinstance(readings, dict):
+                    hay.extend(str(v) for v in readings.values() if v)
+                if any(needle in h.lower() for h in hay):
+                    key = (ev["date"], ev["name"], lectionary)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    results.append({
+                        "date":        ev["date"],
+                        "date_str":    ev["date"].strftime("%a, %b %-d, %Y"),
+                        "name":        ev["name"],
+                        "season":      ev.get("season", ""),
+                        "color_class": season_color_class(ev.get("color", "Green")),
+                        "lectionary":  lectionary,
+                        "lect_label":  lect_label,
+                        "introit":     intro,
+                    })
+        results.sort(key=lambda r: (r["date"], r["lectionary"]))
+
+    return render_template(
+        "search.html",
+        q=q,
+        advent_year=advent_year,
+        results=results,
+        min_year=MIN_YEAR,
+        max_year=MAX_YEAR,
+        series_choices=SERIES_CHOICES,
+    )
+
+
 @app.route("/pdf")
 def generate_pdf():
     try:
@@ -234,7 +329,7 @@ def generate_pdf():
     include_minor = request.args.get("minor", "1") == "1"
 
     from pdf_gen import build_pdf
-    cal    = LiturgicalCalendar(advent_year)
+    cal    = get_calendar(advent_year)
     events = _events_for_display(cal, lectionary, include_minor)
 
     buf = build_pdf(cal, events, lectionary)
@@ -261,7 +356,7 @@ def api_today():
         today = date.today()
     lectionary = request.args.get("lectionary", "three_year")
     ay = today.year if today >= advent1_for_year(today.year) else today.year - 1
-    cal = LiturgicalCalendar(ay)
+    cal = get_calendar(ay)
     info = cal.lookup(today, lectionary=lectionary)
     if info is None:
         return jsonify({"error": "No liturgical data for today."})
@@ -303,7 +398,7 @@ def propers():
         advent_year = date.today().year
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
 
-    cal    = LiturgicalCalendar(advent_year)
+    cal    = get_calendar(advent_year)
     events = cal.all_events(include_minor=False, lectionary='one_year')
     # Keep only Sundays (and feasts with propers)
     sundays = [
@@ -381,5 +476,59 @@ def export_ical_subscribe():
     return response
 
 
+# ---------------------------------------------------------------------------
+# JSON API
+# ---------------------------------------------------------------------------
+
+def _event_to_json(ev: dict) -> dict:
+    """Serialize an event dict for the JSON API."""
+    out = dict(ev)
+    out["date"] = ev["date"].isoformat()
+    return out
+
+
+@app.route("/api/calendar/<int:year>")
+def api_calendar(year):
+    """Full church year as JSON. ?lectionary=three_year|one_year &minor=0|1"""
+    if not (MIN_YEAR <= year <= MAX_YEAR):
+        return jsonify({"error": f"Year must be between {MIN_YEAR} and {MAX_YEAR}."}), 400
+    lectionary    = request.args.get("lectionary", "three_year")
+    include_minor = request.args.get("minor", "1") == "1"
+    cal = get_calendar(year)
+    events = cal.all_events(include_minor=include_minor, lectionary=lectionary)
+    return jsonify({
+        "church_year": f"{year}-{year+1}",
+        "series":      cal.series,
+        "lectionary":  lectionary,
+        "events":      [_event_to_json(ev) for ev in events],
+    })
+
+
+@app.route("/api/day/<date_str>")
+def api_day(date_str):
+    """Liturgical info for a single date as JSON. ?lectionary=three_year|one_year"""
+    lectionary = request.args.get("lectionary", "three_year")
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+    result, error = _lookup_result(d, lectionary)
+    if result is None:
+        return jsonify({"error": error}), 404
+    out = dict(result)
+    out["date"] = d.isoformat()
+    if out.get("governing_date"):
+        out["governing_date"] = out["governing_date"].isoformat()
+    return jsonify(out)
+
+
 if __name__ == "__main__":
-    app.run(debug=False, port=5765)
+    # Local / Mac-app launch. The Docker container uses Gunicorn (see Dockerfile);
+    # locally we prefer waitress (production-grade, pure Python, launchd-friendly)
+    # and fall back to the Flask dev server if it isn't installed.
+    try:
+        from waitress import serve
+        print("Serving on http://127.0.0.1:5765 (waitress)")
+        serve(app, host="127.0.0.1", port=5765, threads=8)
+    except ImportError:
+        app.run(debug=False, port=5765)

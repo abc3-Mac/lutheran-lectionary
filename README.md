@@ -16,6 +16,10 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **PDF export** — landscape calendar matching LCMS Church Year Calendar format
 - **Scripture popups** — click any reading to see ESV text via the ESV API
 - **Minor feasts toggle** — show principal feasts only, or include sanctoral calendar
+- **Search** — find Sundays and feasts by name, Latin introit title, or Scripture reference ("Cantate", "Trinity", "Luke 15")
+- **Permalinks** — every date has a shareable URL (`/day/2026-06-07`) with Open Graph tags for clean unfurls on social media; a "Copy permalink" button appears on lookup results
+- **Dark mode** — 🌙 toggle in the header, remembered across visits
+- **JSON API** — `/api/calendar/<year>` and `/api/day/<date>` for parish websites and bulletin tools (see below)
 - Readings sourced from the official **LSB Propers of the Day** (CPH, 2007)
 
 ## Live Demo
@@ -33,7 +37,7 @@ git clone https://github.com/abc3-Mac/lutheran-lectionary
 cd lutheran-lectionary
 pip install -r requirements.txt
 python app.py
-# Open http://localhost:5000
+# Open http://localhost:5765
 ```
 
 ## Docker / Home Server
@@ -114,6 +118,37 @@ cd lutheran-lectionary
 docker build -t lutheran-lectionary .
 docker run -d --restart unless-stopped -p 5765:5765 lutheran-lectionary
 ```
+
+## JSON API
+
+Two read-only endpoints for integrating the calendar into parish websites, bulletin generators, or other tools:
+
+```
+GET /api/calendar/<year>?lectionary=three_year|one_year&minor=0|1
+GET /api/day/<YYYY-MM-DD>?lectionary=three_year|one_year
+```
+
+Examples:
+
+```bash
+# Full 2025–2026 church year, one-year series
+curl https://lectionary.collver.biz/api/calendar/2025?lectionary=one_year
+
+# A single date
+curl https://lectionary.collver.biz/api/day/2026-06-07?lectionary=one_year
+```
+
+`<year>` is the church year's starting (Advent) year. Responses include the day's name, season, liturgical color, readings, and — for the One-Year series — introit and collect.
+
+## Development
+
+```bash
+pip install -r requirements.txt pytest
+python -m pytest tests/    # regression suite: computus, Advent, Trinity numbering, link cleaning, routes
+python app.py              # serves on http://127.0.0.1:5765 via waitress
+```
+
+Tests run automatically in CI on every push; the Docker image is only built and published if they pass.
 
 ## Lectionary Data
 

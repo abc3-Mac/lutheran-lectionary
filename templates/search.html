@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Search</h1>
+  <p class="page-sub">Find Sundays and feasts by name, Latin introit title, or Scripture reference — e.g. "Cantate", "Trinity", "Luke 15"</p>
+</div>
+
+<div class="search-form-wrap">
+  <form action="/search" method="get" class="toolbar-form">
+    <label>Search
+      <input type="text" name="q" value="{{ q }}" placeholder="Name, introit, or reading…" autofocus>
+    </label>
+    <label>Church Year
+      <input type="number" name="year" value="{{ advent_year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;">
+    </label>
+    <button type="submit" class="btn">Search</button>
+  </form>
+</div>
+
+{% if q and q|length < 2 %}
+<div class="alert alert-warn">Please enter at least two characters.</div>
+{% elif q %}
+<div class="search-results">
+  <p class="muted">{{ results|length }} result{{ '' if results|length == 1 else 's' }} for “{{ q }}” in the {{ advent_year }}–{{ advent_year+1 }} church year (both lectionaries):</p>
+  {% for r in results %}
+  <div class="search-result {{ r.color_class }}">
+    <span class="search-result-date">{{ r.date_str }}</span>
+    <span class="search-result-name">
+      <a href="/day/{{ r.date.isoformat() }}?lectionary={{ r.lectionary }}">{{ r.name }}</a>
+    </span>
+    <span class="search-result-lect">{{ '1-Year' if r.lectionary == 'one_year' else '3-Year' }}</span>
+    {% if r.introit %}
+    <span class="search-result-introit">{{ r.introit.name }}</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% if not results %}
+  <p class="muted">Nothing found. Try a shorter term, a Latin introit name, or a book of the Bible.</p>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

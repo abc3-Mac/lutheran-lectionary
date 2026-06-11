@@ -9,7 +9,21 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16.png') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}">
   <meta name="theme-color" content="#0070C0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260609e">
+  {% if og_title %}
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ og_description or '' }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.url }}">
+  <meta name="twitter:card" content="summary">
+  {% endif %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611a">
+  <script>
+    // Apply saved theme before first paint to avoid flash
+    (function() {
+      const t = localStorage.getItem('lcms_theme');
+      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
 </head>
 <body>
   <header>
@@ -19,6 +33,8 @@
         <a href="/">Home</a>
         <a href="/calendar">Full Calendar</a>
         <a href="/lookup">Date Lookup</a>
+        <a href="/search">Search</a>
+        <button id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       </nav>
     </div>
   </header>
@@ -42,6 +58,22 @@
     </div>
   </div>
 
+  <script>
+    // Dark mode toggle
+    (function() {
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      const root = document.documentElement;
+      function render() { btn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙'; }
+      btn.addEventListener('click', function() {
+        const dark = root.getAttribute('data-theme') === 'dark';
+        if (dark) { root.removeAttribute('data-theme'); localStorage.setItem('lcms_theme', 'light'); }
+        else      { root.setAttribute('data-theme', 'dark'); localStorage.setItem('lcms_theme', 'dark'); }
+        render();
+      });
+      render();
+    })();
+  </script>
   <script src="{{ url_for('static', filename='main.js') }}"></script>
   {% if umami_script_url and umami_website_id %}
   <script defer src="{{ umami_script_url }}" data-website-id="{{ umami_website_id }}"></script>

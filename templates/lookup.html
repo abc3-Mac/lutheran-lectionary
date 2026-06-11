@@ -124,10 +124,25 @@
     <a href="/calendar?year={{ result.church_year[:4] }}&lectionary={{ lectionary }}" class="btn btn-outline">
       View full {{ result.church_year }} calendar
     </a>
+    <button class="btn btn-outline" type="button" id="share-permalink"
+            data-permalink="/day/{{ result.date.isoformat() }}?lectionary={{ lectionary }}">
+      🔗 Copy permalink
+    </button>
   </div>
 </div>
 
 <script>
+(function() {
+  const btn = document.getElementById('share-permalink');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    const url = window.location.origin + btn.dataset.permalink;
+    navigator.clipboard.writeText(url).then(() => {
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '🔗 Copy permalink', 1500);
+    });
+  });
+})();
 function copyFileLabel() {
   const text = document.getElementById('file-label-text').textContent;
   navigator.clipboard.writeText(text).then(() => {
