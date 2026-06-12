@@ -249,6 +249,7 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 ## Roadmap
 
 - **Docker container** — home server deployment with a single `docker run` command
+- **Semantic version numbers** — cut `v1.x` git tags + GitHub Releases so the footer/`/api/version` shows a real version instead of a commit SHA, and the in-app "Update available" banner has releases to compare against (build-time version injection and the banner are already wired up)
 - **Roman Catholic** — Roman Rite lectionary (Ordinary Form, 3-year cycle)
 - **Anglican / Episcopal** — Revised Common Lectionary as used in the Episcopal Church and Anglican Communion
 - **Eastern Orthodox** — Byzantine lectionary (Epistle and Gospel pericopes)
