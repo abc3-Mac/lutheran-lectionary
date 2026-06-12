@@ -37,6 +37,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need full history + tags for `git describe`
+
+      - name: Determine version
+        id: version
+        run: |
+          # Nearest git tag (e.g. v1.4.0, with -N-gSHA suffix past it);
+          # fall back to the build date when the repo has no tags yet.
+          VERSION="$(git describe --tags --always 2>/dev/null || true)"
+          if [ -z "$VERSION" ]; then
+            VERSION="build-$(date -u +%Y%m%d)"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $VERSION"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -65,5 +79,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            VERSION=${{ steps.version.outputs.version }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -254,17 +254,35 @@ function copyWebcalUrl() {
 }
 
 // ── Today card ──────────────────────────────────────────────────────────────
-const _localDate = new Date();
 const _pad = n => String(n).padStart(2, '0');
-const _todayParam = _localDate.getFullYear() + '-' + _pad(_localDate.getMonth()+1) + '-' + _pad(_localDate.getDate());
+
+// Current LOCAL date as YYYY-MM-DD, recomputed every call so a tab left open
+// past midnight picks up the new day instead of being frozen at page-load time.
+function localDateStr(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' + _pad(d.getMonth()+1) + '-' + _pad(d.getDate());
+}
+
+// The lectionary and date the card currently shows — used by the midnight timer
+// and the visibility/focus handlers to decide whether a refresh is needed.
+let _currentLect = getSavedLectionary();
+let _lastRenderedDate = null;
+let _midnightTimer = null;
 
 function loadTodayCard(lect) {
+  if (lect) _currentLect = lect;
+  const todayParam = localDateStr();
+  _lastRenderedDate = todayParam;
+
+  // Keep any date inputs (Lookup, File Naming) defaulted to the live "today".
+  syncDateInputs(todayParam);
+
   // Show spinner while reloading
   document.getElementById('today-loading').style.display = 'block';
   document.getElementById('today-content').style.display = 'none';
   document.getElementById('today-card').classList.add('loading');
 
-  fetch('/api/today?lectionary=' + lect + '&date=' + _todayParam)
+  fetch('/api/today?lectionary=' + _currentLect + '&date=' + todayParam)
     .then(r => r.json())
     .then(data => {
       document.getElementById('today-loading').style.display = 'none';
@@ -306,7 +324,61 @@ function loadTodayCard(lect) {
     });
 }
 
-// Initial load
+// Update any date inputs (Lookup, File Naming) that still hold their
+// auto-filled default, so a tab left open overnight offers the new "today"
+// rather than yesterday. Inputs the user has manually edited are left alone:
+// each input's last auto value is stashed in dataset.autoDefault, and we only
+// overwrite when the current value still matches it.
+function syncDateInputs(dateStr) {
+  document.querySelectorAll('input[type="date"]').forEach(inp => {
+    if (inp.dataset.autoDefault === undefined) inp.dataset.autoDefault = inp.value;
+    if (inp.value === inp.dataset.autoDefault) {
+      inp.value = dateStr;
+      inp.dataset.autoDefault = dateStr;
+    }
+  });
+}
+
+// ── Midnight auto-advance ─────────────────────────────────────────────────────
+// Arm a timer that fires just after the next LOCAL midnight to reload the card
+// with the new day's date, then re-arms itself. Also covers the case of a
+// machine waking from sleep via the visibility/focus handlers below.
+//
+// To test the timer without waiting until midnight, you can fake the clock in
+// the devtools console, e.g.:
+//   const real = Date;
+//   const fixed = new real(real.now() + 60*1000);   // pretend it's ~1 min before midnight
+//   Date = class extends real { constructor(...a){ return a.length ? new real(...a) : fixed; } static now(){ return fixed.getTime(); } };
+// then reload; armMidnightTimer() will schedule ~60 s out and advance the card.
+// (Restore with `Date = real;`.) The visibilitychange path is simpler to verify
+// manually: switch the OS date forward a day, hide and re-show the tab, and the
+// card refreshes to the new day.
+function armMidnightTimer() {
+  if (_midnightTimer) clearTimeout(_midnightTimer);
+  const now = new Date();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5, 0);
+  const ms = nextMidnight - now;
+  _midnightTimer = setTimeout(() => {
+    loadTodayCard();        // re-renders for the new local date
+    armMidnightTimer();     // re-arm for the following midnight
+  }, ms);
+}
+
+// If the local date has rolled over since we last rendered (timer missed while
+// the machine slept, or the tab was hidden across midnight), refresh + re-arm.
+function refreshIfDayChanged() {
+  if (localDateStr() !== _lastRenderedDate) {
+    loadTodayCard();
+    armMidnightTimer();
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) refreshIfDayChanged();
+});
+window.addEventListener('focus', refreshIfDayChanged);
+
+// Initial load + arm the timer
 loadTodayCard(getSavedLectionary());
+armMidnightTimer();
 </script>
 {% endblock %}

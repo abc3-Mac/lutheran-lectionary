@@ -64,6 +64,56 @@ In Portainer go to **Stacks → Add stack**, paste the contents of
 
 The included `docker-compose.yml` exposes port `5765` and is ready to use as-is.
 
+### Updating
+
+Pull the newest image and recreate the container:
+
+```bash
+docker pull ghcr.io/abc3-mac/lutheran-lectionary:latest
+docker rm -f lutheran-lectionary
+docker run -d --restart unless-stopped -p 5765:5765 \
+  --name lutheran-lectionary \
+  ghcr.io/abc3-mac/lutheran-lectionary:latest
+```
+
+With a Portainer/Compose stack, instead just **Pull and redeploy** the stack (or
+`docker compose pull && docker compose up -d`).
+
+The running version is shown in the site footer (and at `/api/version`). When a
+newer GitHub release exists, the site shows an unobtrusive "Update available"
+banner linking back here — it never updates anything on its own.
+
+#### Automatic updates with Watchtower (opt-in)
+
+If you'd rather not pull by hand, [Watchtower](https://containrrr.dev/watchtower/)
+can watch the image and recreate the container when a new `:latest` is published.
+**This is entirely optional — leave it out and updates stay fully manual.**
+
+Add it alongside the app (e.g. in your Compose stack):
+
+```yaml
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --interval 86400   # check once a day; remove old images
+```
+
+Watchtower updates **every** container on the host by default. To limit it to
+just this app, label the lectionary container and run Watchtower with
+`--label-enable`:
+
+```yaml
+  lutheran-lectionary:
+    image: ghcr.io/abc3-mac/lutheran-lectionary:latest
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+```
+
+> Auto-updating means new releases roll out without review. Pin a specific tag
+> (instead of `:latest`) if you prefer to vet each release before it deploys.
+
 ### Putting it behind Nginx (with HTTPS)
 
 The container serves plain HTTP on port 5765. Nginx handles TLS termination.

@@ -26,6 +26,35 @@ app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
             static_folder=os.path.join(_HERE, "static"))
 app.jinja_env.globals.update(enumerate=enumerate, bg_url=bg_url)
 
+
+def _read_version() -> str:
+    """Running version string for the update banner / footer.
+
+    Resolution order:
+      1. APP_VERSION env var (set at Docker build time from the git tag).
+      2. A VERSION file next to app.py (build-time fallback).
+      3. "dev" when running from a source checkout with neither set.
+    """
+    env = os.environ.get("APP_VERSION", "").strip()
+    if env:
+        return env
+    try:
+        with open(os.path.join(_HERE, "VERSION"), "r", encoding="utf-8") as fh:
+            v = fh.read().strip()
+            if v:
+                return v
+    except OSError:
+        pass
+    return "dev"
+
+
+APP_VERSION = _read_version()
+
+
+@app.context_processor
+def inject_version():
+    return {"app_version": APP_VERSION}
+
 # Umami analytics — injected via env vars so the tracking code never lives in the repo.
 # Set UMAMI_SCRIPT_URL and UMAMI_WEBSITE_ID in your Docker/Portainer environment to enable.
 _UMAMI_SCRIPT_URL = os.environ.get("UMAMI_SCRIPT_URL", "")
@@ -355,6 +384,12 @@ def generate_pdf():
         as_attachment=True,
         download_name=filename,
     )
+
+
+@app.route("/api/version")
+def api_version():
+    """Running version, used by the client to check for newer releases."""
+    return jsonify({"version": APP_VERSION})
 
 
 @app.route("/api/today")

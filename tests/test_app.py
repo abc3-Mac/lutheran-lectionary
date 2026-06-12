@@ -69,6 +69,19 @@ def test_api_day(client):
     assert client.get("/api/day/bogus").status_code == 400
 
 
+def test_api_version(client):
+    r = client.get("/api/version")
+    assert r.status_code == 200
+    data = r.get_json()
+    assert "version" in data
+    assert isinstance(data["version"], str) and data["version"]
+
+
+def test_footer_shows_version(client):
+    # The running version is rendered into the footer on every page.
+    assert b'id="app-version"' in client.get("/").data
+
+
 def test_api_calendar(client):
     r = client.get("/api/calendar/2025?lectionary=one_year")
     assert r.status_code == 200

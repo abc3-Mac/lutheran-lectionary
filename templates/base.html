@@ -16,7 +16,7 @@
   <meta property="og:url" content="{{ request.url }}">
   <meta name="twitter:card" content="summary">
   {% endif %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260611d">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260612a">
   <script>
     // Apply saved theme before first paint to avoid flash.
     // 'system' (default) follows the OS preference.
@@ -53,7 +53,15 @@
   <footer>
     <p>LCMS Lutheran Service Book Lectionary &mdash; Three-Year (A/B/C) &amp; One-Year (Historic) Series</p>
     <p style="font-size:0.75rem;color:#999;">Readings sourced from the LSB. Always verify against official LCMS materials before liturgical use.</p>
+    <p style="font-size:0.75rem;color:#999;">Version <span id="app-version">{{ app_version }}</span></p>
   </footer>
+
+  <!-- Update-available banner (populated client-side; hidden unless a newer release exists) -->
+  <div id="update-banner" class="update-banner" style="display:none;" role="status">
+    <span id="update-banner-text"></span>
+    <a id="update-banner-link" href="#" target="_blank" rel="noopener">see update instructions</a>
+    <button type="button" id="update-banner-dismiss" aria-label="Dismiss">✕</button>
+  </div>
 
   <!-- Scripture popup modal -->
   <div id="scripture-modal" class="modal" style="display:none;">
@@ -101,6 +109,74 @@
         render();
       });
       render();
+    })();
+  </script>
+  <script>
+    // ── Update-available check ────────────────────────────────────────────────
+    // Once per day (cached in localStorage), ask GitHub for the latest release
+    // and compare its tag to the running version. Shows an unobtrusive banner
+    // when a newer release exists. No-ops silently on any failure, on the
+    // "dev" build, or when the user has dismissed this version's notice.
+    (function() {
+      const RUNNING = (document.getElementById('app-version') || {}).textContent || 'dev';
+      if (RUNNING === 'dev') return;  // source checkout — nothing to update to
+
+      const RELEASES_API = 'https://api.github.com/repos/abc3-Mac/lutheran-lectionary/releases/latest';
+      const README_DEPLOY = 'https://github.com/abc3-Mac/lutheran-lectionary#updating';
+      const CHECK_KEY = 'lcms_update_check';   // {ts, latest}
+      const DISMISS_KEY = 'lcms_update_dismissed';  // tag the user dismissed
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+
+      // Compare semver-ish tags ("v1.2.3" / "1.2"). Returns true if b > a.
+      function isNewer(a, b) {
+        const norm = s => String(s).replace(/^v/i, '').split(/[.\-]/).map(n => parseInt(n, 10) || 0);
+        const av = norm(a), bv = norm(b);
+        for (let i = 0; i < Math.max(av.length, bv.length); i++) {
+          const x = av[i] || 0, y = bv[i] || 0;
+          if (y > x) return true;
+          if (y < x) return false;
+        }
+        return false;
+      }
+
+      function showBanner(latest) {
+        if (localStorage.getItem(DISMISS_KEY) === latest) return;
+        const banner = document.getElementById('update-banner');
+        const text = document.getElementById('update-banner-text');
+        const link = document.getElementById('update-banner-link');
+        const dismiss = document.getElementById('update-banner-dismiss');
+        if (!banner) return;
+        text.textContent = 'Update available: ' + latest + ' — ';
+        link.href = README_DEPLOY;
+        dismiss.onclick = () => {
+          localStorage.setItem(DISMISS_KEY, latest);
+          banner.style.display = 'none';
+        };
+        banner.style.display = 'flex';
+      }
+
+      function maybeShow(latest) {
+        if (latest && isNewer(RUNNING, latest)) showBanner(latest);
+      }
+
+      // Use cached result if we checked within the last day.
+      try {
+        const cached = JSON.parse(localStorage.getItem(CHECK_KEY) || 'null');
+        if (cached && cached.ts && (Date.now() - cached.ts) < ONE_DAY) {
+          maybeShow(cached.latest);
+          return;
+        }
+      } catch (e) { /* ignore corrupt cache */ }
+
+      fetch(RELEASES_API, { headers: { 'Accept': 'application/vnd.github+json' } })
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          const latest = data && data.tag_name;
+          if (!latest) return;
+          try { localStorage.setItem(CHECK_KEY, JSON.stringify({ ts: Date.now(), latest })); } catch (e) {}
+          maybeShow(latest);
+        })
+        .catch(() => { /* offline / rate-limited / private repo — silently no-op */ });
     })();
   </script>
   <script src="{{ url_for('static', filename='main.js') }}"></script>
