@@ -448,18 +448,19 @@ def api_today():
 
 
 def _propers_sections(advent_year: int):
-    """One-year Sundays with propers, grouped by season."""
+    """One-year Sundays and feast days with propers, grouped by season."""
     cal    = get_calendar(advent_year)
     events = cal.all_events(include_minor=False, lectionary='one_year')
-    sundays = [
+    entries = [
         ev for ev in events
-        if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
+        if (ev.get("is_sunday") or ev.get("is_feast"))
+        and (ev.get("collect") or ev.get("introit"))
     ]
-    for ev in sundays:
+    for ev in entries:
         ev["color_class"]     = season_color_class(ev.get("color", "Green"))
         ev["date_str"]        = ev["date"].strftime("%A, %B %-d, %Y")
         ev["readings_parsed"] = parse_readings(ev.get("readings"))
-    return _group_by_season(sundays)
+    return _group_by_season(entries)
 
 
 @app.route("/propers")

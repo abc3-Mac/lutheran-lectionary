@@ -360,7 +360,7 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
 
     story = [
         Paragraph(f"One-Year (Historic) Propers — {advent_year}–{advent_year + 1} Church Year", title_style),
-        Paragraph("Introit, Collect, Gradual, and Readings for every Sunday", sub_style),
+        Paragraph("Introit, Collect, Gradual, and Readings for every Sunday and feast day", sub_style),
     ]
 
     for sec in sections:
