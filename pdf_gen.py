@@ -322,15 +322,15 @@ SEASON_HEX = {
 }
 
 
-def _season_hex(color_class: str, one_year: bool = False) -> str:
-    """Season color hex. The One-Year (Historic) series uses violet Advent (the
-    TLH/CSB practice), matching the site's one-year default."""
-    if one_year and color_class == "season-blue":
+def _season_hex(color_class: str, violet_advent: bool = False) -> str:
+    """Season color hex. When violet_advent is set (the One-Year/historic Advent
+    preference), the blue Advent color renders as violet instead."""
+    if violet_advent and color_class == "season-blue":
         return SEASON_HEX["season-purple"]
     return SEASON_HEX.get(color_class, "#1A3A5C")
 
 
-def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
+def build_propers_pdf(advent_year: int, sections: list, violet_advent: bool = True) -> io.BytesIO:
     """Portrait PDF of the one-year propers.
 
     `sections` is the structure from app._propers_sections():
@@ -372,7 +372,7 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
     ]
 
     for sec in sections:
-        hexcol = _season_hex(sec["events"][0].get("color_class", ""), one_year=True)
+        hexcol = _season_hex(sec["events"][0].get("color_class", ""), violet_advent=violet_advent)
         season_style = ParagraphStyle(
             f"Season{sec['season']}", parent=styles["Heading2"], fontSize=12,
             textColor=colors.HexColor(hexcol), spaceBefore=14, spaceAfter=2)
@@ -416,7 +416,7 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
 # Single-day "Propers for the Day" sheet — bulletin-friendly one-pager
 # ---------------------------------------------------------------------------
 
-def build_day_pdf(result: dict, lectionary: str) -> io.BytesIO:
+def build_day_pdf(result: dict, lectionary: str, violet_advent: bool = True) -> io.BytesIO:
     """One-page PDF of the propers for a single date.
 
     `result` is the dict from app._lookup_result(): name, date_str, season,
@@ -433,7 +433,8 @@ def build_day_pdf(result: dict, lectionary: str) -> io.BytesIO:
         title=f"Propers — {result.get('name', '')}",
     )
     styles = getSampleStyleSheet()
-    hexcol = _season_hex(result.get("color_class", ""), one_year=(lectionary == "one_year"))
+    hexcol = _season_hex(result.get("color_class", ""),
+                         violet_advent=(violet_advent and lectionary == "one_year"))
 
     title_style = ParagraphStyle("DayTitle", parent=styles["Title"], fontSize=18,
                                  textColor=colors.HexColor(hexcol), spaceAfter=2)

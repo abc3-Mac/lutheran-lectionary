@@ -327,7 +327,8 @@ def day_pdf(date_str):
     if result is None:
         abort(404)
     from pdf_gen import build_day_pdf
-    buf = build_day_pdf(result, lectionary)
+    violet = request.args.get("historic", "1") != "0"   # one-year Advent color pref
+    buf = build_day_pdf(result, lectionary, violet_advent=violet)
     lect_tag = "1yr" if lectionary == "one_year" else "3yr"
     filename = f"Propers_{date_str}_{lect_tag}.pdf"
     return send_file(buf, mimetype="application/pdf",
@@ -514,7 +515,8 @@ def propers_pdf():
     sections = _propers_sections(advent_year)
 
     from pdf_gen import build_propers_pdf
-    buf = build_propers_pdf(advent_year, sections)
+    violet = request.args.get("historic", "1") != "0"   # Advent color pref
+    buf = build_propers_pdf(advent_year, sections, violet_advent=violet)
     filename = f"One_Year_Propers_{advent_year}-{advent_year+1}.pdf"
     return send_file(buf, mimetype="application/pdf",
                      as_attachment=True, download_name=filename)

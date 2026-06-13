@@ -100,6 +100,14 @@
           location.reload();
         });
       }
+      // Carry the Advent-color preference into one-year PDF downloads, which are
+      // rendered server-side and can't see localStorage.
+      document.querySelectorAll('a[href*="/pdf"]').forEach(a => {
+        const h = a.getAttribute('href') || '';
+        if (h.includes('lectionary=one_year') || h.includes('/propers/pdf')) {
+          a.setAttribute('href', h + (h.includes('?') ? '&' : '?') + 'historic=' + (historic ? '1' : '0'));
+        }
+      });
     })();
 
     // Dark mode toggle
