@@ -315,6 +315,25 @@ def day_permalink(date_str):
     )
 
 
+@app.route("/day/<date_str>/pdf")
+def day_pdf(date_str):
+    """One-page printable propers sheet for a single date."""
+    lectionary = request.args.get("lectionary", "three_year")
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        abort(404)
+    result, error = _lookup_result(d, lectionary)
+    if result is None:
+        abort(404)
+    from pdf_gen import build_day_pdf
+    buf = build_day_pdf(result, lectionary)
+    lect_tag = "1yr" if lectionary == "one_year" else "3yr"
+    filename = f"Propers_{date_str}_{lect_tag}.pdf"
+    return send_file(buf, mimetype="application/pdf",
+                     as_attachment=True, download_name=filename)
+
+
 @app.route("/search")
 def search():
     """Search Sundays and feasts by name, Latin introit title, or reading reference."""

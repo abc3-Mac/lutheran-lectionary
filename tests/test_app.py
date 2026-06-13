@@ -163,6 +163,22 @@ def test_propers_pdf(client):
     assert r.data[:5] == b"%PDF-"
 
 
+def test_day_pdf(client):
+    # One-year single-day propers sheet
+    r = client.get("/day/2025-12-07/pdf?lectionary=one_year")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+    # Three-year variant
+    r = client.get("/day/2026-06-07/pdf?lectionary=three_year")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+    # Bad date 404s
+    assert client.get("/day/not-a-date/pdf").status_code == 404
+    # The lookup card exposes the PDF button
+    r = client.get("/lookup?date=2025-12-07&lectionary=one_year")
+    assert b"/day/2025-12-07/pdf" in r.data
+
+
 def test_ical_includes_propers_and_daily(client):
     r = client.get("/export/ical?year=2025&lectionary=one_year")
     assert r.status_code == 200
