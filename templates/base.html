@@ -78,7 +78,11 @@
     (function() {
       const HIST_KEY = 'lcms_historic_colors';
       const isOneYear = document.body.dataset.lectionary === 'one_year';
-      if (isOneYear && localStorage.getItem(HIST_KEY) === '1') {
+      // The One-Year (Historic) series defaults to violet Advent (the TLH/CSB
+      // practice); blue is opt-out. Stored '0' = blue, '1' = violet, unset = violet.
+      const stored = localStorage.getItem(HIST_KEY);
+      const historic = stored === null ? true : stored === '1';
+      if (isOneYear && historic) {
         document.body.classList.add('historic-colors');
         // Swap the color name shown in chips/labels
         document.querySelectorAll('.color-dot, .minor-feast-color').forEach(el => {
@@ -88,7 +92,7 @@
       // Wire the toggle checkbox if this page has one
       const cb = document.getElementById('historic-colors-toggle');
       if (cb) {
-        cb.checked = localStorage.getItem(HIST_KEY) === '1';
+        cb.checked = historic;
         cb.addEventListener('change', function() {
           localStorage.setItem(HIST_KEY, cb.checked ? '1' : '0');
           location.reload();
