@@ -57,6 +57,17 @@ def test_propers_page(client):
     r = client.get("/propers?year=2025")
     assert r.status_code == 200
     assert b"Introit" in r.data
+
+
+def test_propers_page_uses_one_year_readings(client):
+    # Regression: the propers page must show the One-Year historic pericope,
+    # not the Three-Year reading for the same slot. Advent 1 one-year Gospel is
+    # Matthew 21:1-9 (not the three-year Mark/Luke), OT Jeremiah 23 (not Isaiah).
+    r = client.get("/propers?year=2026")
+    assert r.status_code == 200
+    assert b"Jeremiah 23:5-8" in r.data
+    assert b"Matthew 21:1-9" in r.data
+    assert b"Isaiah 64:1-9" not in r.data      # three-year Series B Advent 1 OT
     # CSB 1917 introit antiphon text + gradual now render inline
     assert b"introit-text-block" in r.data
     assert b"gradual-text-block" in r.data
