@@ -59,6 +59,18 @@ def test_propers_page(client):
     assert b"Introit" in r.data
 
 
+def test_propers_page_includes_principal_festivals(client):
+    # Reformation, All Saints, St. Michael, Thanksgiving carry One-Year propers
+    # but aren't standalone events — they appear in a Festivals section.
+    r = client.get("/propers?year=2026")
+    assert r.status_code == 200
+    assert b"Festivals" in r.data
+    assert b"Reformation Day" in r.data
+    assert b"St. Michael" in r.data
+    assert b"All Saints" in r.data
+    assert b"pour out, we beseech Thee, Thy Holy Spirit" in r.data  # Reformation collect
+
+
 def test_propers_page_uses_one_year_readings(client):
     # Regression: the propers page must show the One-Year historic pericope,
     # not the Three-Year reading for the same slot. Advent 1 one-year Gospel is

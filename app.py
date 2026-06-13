@@ -485,7 +485,40 @@ def _propers_sections(advent_year: int):
         slot_data = ONE_YEAR_SLOTS.get(ev["slot"])
         readings_raw = slot_data.get("readings") if slot_data else ev.get("readings")
         ev["readings_parsed"] = parse_readings(readings_raw)
-    return _group_by_season(entries)
+    sections = _group_by_season(entries)
+
+    # Principal fixed-date festivals carry their own One-Year propers but aren't
+    # emitted as standalone events by all_events() — append them as a Festivals
+    # section rather than fragmenting the Trinity sequence.
+    from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
+    festival_dates = [
+        ("st_michael",   date(cal.civil_year, 9, 29)),
+        ("reformation",  cal.reformation_day),
+        ("all_saints",   cal.all_saints_day),
+        ("thanksgiving", cal.thanksgiving),
+    ]
+    festivals = []
+    for slot, d in festival_dates:
+        sd = ONE_YEAR_SLOTS.get(slot)
+        p  = ONE_YEAR_PROPERS.get(slot, {})
+        if not sd or not (p.get("collect") or p.get("introit")):
+            continue
+        festivals.append({
+            "date":            d,
+            "slot":            slot,
+            "name":            sd["name"],
+            "color_class":     season_color_class(sd.get("color", "White")),
+            "date_str":        d.strftime("%B %-d"),
+            "collect":         p.get("collect"),
+            "introit":         p.get("introit"),
+            "gradual":         p.get("gradual"),
+            "source":          p.get("source"),
+            "readings_parsed": parse_readings(sd.get("readings")),
+        })
+    if festivals:
+        festivals.sort(key=lambda e: (e["date"].month, e["date"].day))
+        sections.append({"season": "Festivals", "events": festivals})
+    return sections
 
 
 @app.route("/propers")
