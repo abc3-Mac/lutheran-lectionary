@@ -44,6 +44,9 @@
              title="Click to preview {{ ev.introit.ref }}"
              onclick="showScripture(event, '{{ ev.introit.ref|e }}', '{{ _iurl|e }}'); return false;">{{ ev.introit.ref }}</a>
         </span>
+        {% if ev.introit.text %}
+        <p class="introit-text-block">{{ ev.introit.text }}</p>
+        {% endif %}
       </div>
       {% endif %}
       {% if ev.get('collect') %}
@@ -52,13 +55,20 @@
         <p class="collect-text-block">{{ ev.collect }}</p>
       </div>
       {% endif %}
+      {% if ev.get('gradual') %}
+      <div class="propers-entry-gradual">
+        <span class="proper-label-block">Gradual</span>
+        <p class="gradual-text-block">{{ ev.gradual }}</p>
+      </div>
+      {% endif %}
     </div>
     {% endfor %}
   </section>
   {% endfor %}
 
   <p class="propers-page-source">
-    Collects from <em>The Lutheran Hymnal</em> (TLH, 1941) / <em>Common Service Book of the Lutheran Church</em> (1917), public domain.
+    Introits, Collects, and Graduals from the <em>Common Service Book of the Lutheran Church</em> (1917),
+    public domain — the same historic wording later carried into <em>The Lutheran Hymnal</em> (TLH, 1941).
     For LSB collect and introit texts, see the <em>LSB Altar Book</em>.
   </p>
 </div>

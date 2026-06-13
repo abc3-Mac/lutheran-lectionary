@@ -134,6 +134,9 @@
         <span class="introit-name">{{ result.introit.name }}</span>
         <span class="introit-ref">— {{ result.introit.ref }}</span>
       </div>
+      {% if result.introit.text %}
+      <p class="introit-text">{{ result.introit.text }}</p>
+      {% endif %}
     </div>
     {% endif %}
 
@@ -144,8 +147,17 @@
     </div>
     {% endif %}
 
+    {% if result.gradual %}
+    <div class="proper-row">
+      <h3 class="proper-label">Gradual</h3>
+      <p class="gradual-text">{{ result.gradual }}</p>
+    </div>
+    {% endif %}
+
     <p class="propers-source">
-      Collect from <em>The Lutheran Hymnal</em> (TLH, 1941), public domain.
+      Introit, Collect{% if result.gradual %}, and Gradual{% endif %} from the
+      <em>Common Service Book of the Lutheran Church</em> (1917), public domain —
+      the same historic wording later carried into <em>The Lutheran Hymnal</em> (TLH, 1941).
       For LSB collect and introit texts, see the <em>LSB Altar Book</em>.
     </p>
   </div>

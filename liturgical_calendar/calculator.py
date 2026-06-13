@@ -302,14 +302,18 @@ class LiturgicalCalendar:
                 return
             if not include_minor and info.get("minor"):
                 return
-            # Merge one-year propers (collect + introit) for shared slots
+            # Merge one-year propers (collect + introit + gradual) for shared slots
             collect = info.get("collect")
             introit = info.get("introit")
+            gradual = info.get("gradual")
+            source  = info.get("source")
             if lectionary == 'one_year' and not collect:
                 from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
                 propers = ONE_YEAR_PROPERS.get(slot, {})
                 collect = propers.get("collect")
                 introit = propers.get("introit")
+                gradual = propers.get("gradual")
+                source  = propers.get("source")
             events.append({
                 "date":      d,
                 "slot":      slot,
@@ -325,6 +329,8 @@ class LiturgicalCalendar:
                 "minor":     info.get("minor", False),
                 "collect":   collect,
                 "introit":   introit,
+                "gradual":   gradual,
+                "source":    source,
             })
 
         # Walk the calendar in order
@@ -405,6 +411,8 @@ class LiturgicalCalendar:
                     "minor":     False,
                     "collect":   _propers.get("collect"),
                     "introit":   _propers.get("introit"),
+                    "gradual":   _propers.get("gradual"),
+                    "source":    _propers.get("source"),
                 })
             else:
                 p = get_proper(s)
@@ -491,6 +499,8 @@ class LiturgicalCalendar:
                     info = dict(info)
                     info["collect"] = propers.get("collect")
                     info["introit"] = propers.get("introit")
+                    info["gradual"] = propers.get("gradual")
+                    info["source"]  = propers.get("source")
             # If the slot IS a sanctoral feast, don't double-report it as minor_feast
             if minor_feast_info and minor_feast_info.get("name") == info.get("name"):
                 minor_feast_info = None
@@ -688,6 +698,8 @@ def slot_info(slot: str, series: str, d: date) -> dict | None:
         propers = ONE_YEAR_PROPERS.get(slot, {})
         result["collect"] = propers.get("collect")
         result["introit"] = propers.get("introit")
+        result["gradual"] = propers.get("gradual")
+        result["source"]  = propers.get("source")
         return result
 
     # Trinity Sundays beyond what is pre-keyed — generate dynamically

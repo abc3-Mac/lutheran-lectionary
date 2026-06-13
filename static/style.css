@@ -449,6 +449,14 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 .proper-introit { font-size: 1rem; }
 .introit-name { font-style: italic; font-weight: 600; color: var(--accent-text); }
 .introit-ref  { font-size: 0.9rem; color: var(--text-soft); }
+.introit-text, .gradual-text {
+  margin: 0.4rem 0 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+}
 blockquote.collect-text {
   margin: 0;
   padding: 0.75rem 1rem;
@@ -693,6 +701,13 @@ blockquote.collect-text {
   font-style: italic;
   color: var(--text);
 }
+.introit-text-block, .gradual-text-block {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.propers-entry-gradual { margin-top: 0.5rem; }
 .propers-page-source {
   margin-top: 2rem;
   font-size: 0.8rem;

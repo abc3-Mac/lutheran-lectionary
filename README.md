@@ -11,7 +11,7 @@ A Flask web app providing a complete liturgical calendar for **LCMS Lutherans** 
 - **Date lookup** — find the liturgical day for any date (1583–2299); weekdays show their governing Sunday's name ("Week of Second Sunday after Trinity") with the appointed readings
 - **Minor feast detection** — weekday lookups also surface any sanctoral observance for that date (e.g. "Also today: St. Barnabas, Apostle")
 - **File naming utility** — generates `yyyy-mm-dd Sunday Name` labels for sermon/recording files
-- **One-Year propers** — every Sunday in the One-Year series displays its introit (Latin name + Psalm reference) and Collect of the Day (TLH 1941, public domain) inline in the calendar via click-to-expand, and on a dedicated printable `/propers` page
+- **One-Year propers** — every Sunday in the One-Year series displays its full introit (Latin name, Psalm reference, and antiphon text), Collect of the Day, and Gradual — all from the *Common Service Book of the Lutheran Church* (1917), public domain — inline in the calendar via click-to-expand, and on a dedicated printable `/propers` page
 - **iCal export** — download a `.ics` file for any church year, or subscribe via `webcal://` for a live feed that auto-updates in Apple Calendar, Google Calendar, or Outlook. Event descriptions include the appointed readings, introit and collect (One-Year), and the day's daily lectionary; add `&daily=1` (or tick the checkbox) for a transparent all-day event with the two daily readings on every day of the year
 - **PDF export** — landscape calendar matching LCMS Church Year Calendar format, plus printable PDFs of the One-Year propers (`/propers/pdf`) and the daily lectionary (`/daily/pdf`)
 - **Scripture popups** — click any reading to see ESV text via the ESV API
@@ -183,7 +183,7 @@ This project publishes **only two kinds of content**: facts, and public-domain t
 
 **Public-domain texts.** The only liturgical *texts* reproduced are from sources whose copyrights have expired:
 
-- Collects from *The Lutheran Hymnal* (1941) and the *Common Service Book* (1917)
+- Collects, introits, and graduals from the *Common Service Book of the Lutheran Church* (1917) — the same historic wording later carried into *The Lutheran Hymnal* (TLH, 1941)
 - The KJV and ASV Bible translations (see below)
 
 **What is never reproduced:** LSB/CPH collect and introit texts (referenced to the *LSB Altar Book* instead), LSB hymn texts and translations, and ESV text in any stored form.
@@ -253,7 +253,7 @@ Psalm references include antiphon notations. "Or" alternatives are preserved exa
 - **Roman Catholic** — Roman Rite lectionary (Ordinary Form, 3-year cycle)
 - **Anglican / Episcopal** — Revised Common Lectionary as used in the Episcopal Church and Anglican Communion
 - **Eastern Orthodox** — Byzantine lectionary (Epistle and Gospel pericopes)
-- **Lutheran One-Year expanded** ✅ — collects (TLH 1941) and introits for all 76 One-Year Sundays, inline in calendar and on a printable `/propers` page
+- **Lutheran One-Year expanded** ✅ — collects, introit antiphons, and graduals (Common Service Book, 1917) for all 76 One-Year Sundays, inline in calendar and on a printable `/propers` page
 - **iCal / webcal export** ✅ — live subscription feed for Apple Calendar, Google Calendar, Outlook
 - **Trinity Sunday ordinal fix** ✅ — corrected off-by-one in Trinity season numbering; "First Sunday after Trinity" now correctly assigned to the Sunday immediately following Trinity Sunday
 - **Mobile-responsive calendar** ✅ — portrait view shows Date + Festival/Sunday only (no truncation); rotate to landscape to see all readings (First Reading, Psalm, Epistle, Gospel); works on Safari, Chrome, and Brave on iOS

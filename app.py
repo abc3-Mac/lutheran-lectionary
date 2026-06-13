@@ -238,6 +238,8 @@ def _lookup_result(d: date, lectionary: str):
         "minor_feast":     minor_feast,
         "collect":         info.get("collect"),
         "introit":         info.get("introit"),
+        "gradual":         info.get("gradual"),
+        "source":          info.get("source"),
         "daily":           _daily_for_display(d),
         "hymn_of_the_day": hymn_of_the_day(slot, lectionary, info.get("series")),
     }

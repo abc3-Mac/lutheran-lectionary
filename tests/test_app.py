@@ -57,6 +57,22 @@ def test_propers_page(client):
     r = client.get("/propers?year=2025")
     assert r.status_code == 200
     assert b"Introit" in r.data
+    # CSB 1917 introit antiphon text + gradual now render inline
+    assert b"introit-text-block" in r.data
+    assert b"gradual-text-block" in r.data
+    assert b"Common Service Book" in r.data
+
+
+def test_lookup_shows_csb_introit_text(client):
+    # Advent 2 (Dec 7, 2025), one-year — Populus Sion introit antiphon + gradual
+    r = client.get("/lookup?date=2025-12-07&lectionary=one_year")
+    assert r.status_code == 200
+    assert b"introit-text" in r.data
+    assert b"gradual-text" in r.data
+    assert b"DAUGHTER of Zion" in r.data          # PD antiphon text from CSB 1917
+    assert b"Common Service Book" in r.data
+    # the invariant Gloria Patri is not reproduced in the stored antiphon
+    assert b"as it was in the beginning, is now" not in r.data
 
 
 def test_api_day(client):

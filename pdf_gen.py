@@ -360,7 +360,7 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
 
     story = [
         Paragraph(f"One-Year (Historic) Propers — {advent_year}–{advent_year + 1} Church Year", title_style),
-        Paragraph("Introit and Collect of the Day for every Sunday", sub_style),
+        Paragraph("Introit, Collect, and Gradual for every Sunday", sub_style),
     ]
 
     for sec in sections:
@@ -378,12 +378,17 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
             if intro:
                 block.append(Paragraph(
                     f"<b>Introit:</b> <i>{intro['name']}</i> — {intro['ref']}", introit_style))
+                if intro.get("text"):
+                    block.append(Paragraph(intro["text"], collect_style))
             if ev.get("collect"):
                 block.append(Paragraph(f"<b>Collect:</b> {ev['collect']}", collect_style))
+            if ev.get("gradual"):
+                block.append(Paragraph(f"<b>Gradual:</b> {ev['gradual']}", collect_style))
             story.append(KeepTogether(block))
 
     story.append(Paragraph(
-        "Collects from The Lutheran Hymnal (TLH, 1941) / Common Service Book (1917), public domain. "
+        "Introits, Collects, and Graduals from the Common Service Book of the Lutheran Church (1917), "
+        "public domain — the same historic wording later carried into The Lutheran Hymnal (TLH, 1941). "
         "For LSB collect and introit texts, see the LSB Altar Book.", source_style))
 
     doc.build(story)
