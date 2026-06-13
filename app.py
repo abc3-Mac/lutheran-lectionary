@@ -469,6 +469,7 @@ def api_today():
 
 def _propers_sections(advent_year: int):
     """One-year Sundays and feast days with propers, grouped by season."""
+    from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
     cal    = get_calendar(advent_year)
     events = cal.all_events(include_minor=False, lectionary='one_year')
     entries = [
@@ -477,9 +478,13 @@ def _propers_sections(advent_year: int):
         and (ev.get("collect") or ev.get("introit"))
     ]
     for ev in entries:
-        ev["color_class"]     = season_color_class(ev.get("color", "Green"))
-        ev["date_str"]        = ev["date"].strftime("%A, %B %-d, %Y")
-        ev["readings_parsed"] = parse_readings(ev.get("readings"))
+        ev["color_class"] = season_color_class(ev.get("color", "Green"))
+        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
+        # all_events()/slot_info() return THREE-year readings for slots shared by
+        # both series; use the One-Year pericopes here (as the calendar/lookup do).
+        slot_data = ONE_YEAR_SLOTS.get(ev["slot"])
+        readings_raw = slot_data.get("readings") if slot_data else ev.get("readings")
+        ev["readings_parsed"] = parse_readings(readings_raw)
     return _group_by_season(entries)
 
 
