@@ -360,7 +360,7 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
 
     story = [
         Paragraph(f"One-Year (Historic) Propers — {advent_year}–{advent_year + 1} Church Year", title_style),
-        Paragraph("Introit, Collect, and Gradual for every Sunday", sub_style),
+        Paragraph("Introit, Collect, Gradual, and Readings for every Sunday", sub_style),
     ]
 
     for sec in sections:
@@ -384,6 +384,14 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
                 block.append(Paragraph(f"<b>Collect:</b> {ev['collect']}", collect_style))
             if ev.get("gradual"):
                 block.append(Paragraph(f"<b>Gradual:</b> {ev['gradual']}", collect_style))
+            rp = ev.get("readings_parsed")
+            if rp:
+                parts = []
+                for r in rp:
+                    refs = " or ".join([r["ref"]] + list(r.get("alts") or []))
+                    parts.append(f"{r['label']}: {refs}")
+                block.append(Paragraph("<b>Readings:</b> " + " &nbsp;·&nbsp; ".join(parts),
+                                       introit_style))
             story.append(KeepTogether(block))
 
     story.append(Paragraph(

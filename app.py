@@ -456,8 +456,9 @@ def _propers_sections(advent_year: int):
         if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
     ]
     for ev in sundays:
-        ev["color_class"] = season_color_class(ev.get("color", "Green"))
-        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
+        ev["color_class"]     = season_color_class(ev.get("color", "Green"))
+        ev["date_str"]        = ev["date"].strftime("%A, %B %-d, %Y")
+        ev["readings_parsed"] = parse_readings(ev.get("readings"))
     return _group_by_season(sundays)
 
 
