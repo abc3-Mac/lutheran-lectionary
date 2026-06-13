@@ -65,6 +65,22 @@
       {% endfor %}
     </span>
     {% endif %}
+    {% if result.minor_feast.collect or result.minor_feast.introit_text %}
+    <div class="minor-feast-propers">
+      {% if result.minor_feast.introit_text %}
+      <p class="introit-text"><span class="proper-inline-label">Introit.</span> {{ result.minor_feast.introit_text }}</p>
+      {% endif %}
+      {% if result.minor_feast.collect %}
+      <blockquote class="collect-text">{{ result.minor_feast.collect }}</blockquote>
+      {% endif %}
+      {% if result.minor_feast.gradual %}
+      <p class="gradual-text"><span class="proper-inline-label">Gradual.</span> {{ result.minor_feast.gradual }}</p>
+      {% endif %}
+      <p class="propers-source">
+        Collect, introit, and gradual from the <em>Common Service Book of the Lutheran Church</em> (1917), public domain.
+      </p>
+    </div>
+    {% endif %}
   </div>
   {% endif %}
 

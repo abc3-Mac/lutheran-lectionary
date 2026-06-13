@@ -42,7 +42,10 @@ def norm(s: str) -> str:
 
 def is_marker(line: str) -> str | None:
     """Return the marker keyword if this line opens a propers section.
-    Tolerant of OCR punctuation variants, e.g. 'EPISTLE,' / 'EPISTLE.' / 'GOSPEL '."""
+    Tolerant of OCR punctuation variants, e.g. 'EPISTLE,' / 'EPISTLE.' / 'GOSPEL '.
+    'COLLECTS' (a set of optional collects, e.g. the Apostles' common) maps to COLLECT."""
+    if line == "COLLECTS":
+        return "COLLECT"
     for m in MARKERS:
         if line == m or re.match(rf"^{m}[\s.,:;]", line):
             return m
@@ -331,6 +334,124 @@ def build_enrichment(blocks, lines):
     return enrich, report
 
 
+# CSB sanctoral blocks in document order (exact title lines) — used as slice
+# boundaries. The first two are the shared commons.
+SANCTORAL_ORDER = [
+    "Apostles’ Days", "Evangelists’ Days",
+    "St. Thomas, Apostle", "St. Stephen, Martyr", "St. John, Apostle, Evangelist",
+    "The Conversion of St. Paul", "The Presentation of our Lord",
+    "St. Matthias, Apostle", "The Annunciation", "St. Mark, Evangelist",
+    "St. Philip and St. James, Apostles", "The Nativity of St. John, the Baptist",
+    "St. Peter and St. Paul, Apostles", "The Visitation",
+    "St. James the Elder, Apostle", "St. Bartholomew, Apostle",
+    "St. Matthew, Apostle, Evangelist", "St. Michael and All Angels",
+    "St. Luke, Evangelist", "St. Simon and St. Jude, Apostles",
+    "The Festival of the Reformation", "All Saints’ Day", "St. Andrew, Apostle",
+    "The Festival of Harvest", "A Day of General or Special Thanksgiving",
+]
+
+# sanctoral.py slot -> CSB title. Omitted slots (Holy Innocents, Confession of
+# St. Peter, St. Barnabas, St. Mary Magdalene) are not in CSB 1917 -> no collect.
+SANCTORAL_MAP = {
+    "st_andrew": "St. Andrew, Apostle",
+    "st_thomas": "St. Thomas, Apostle",
+    "conversion_of_st_paul": "The Conversion of St. Paul",
+    "presentation_of_lord": "The Presentation of our Lord",
+    "st_matthias": "St. Matthias, Apostle",
+    "annunciation": "The Annunciation",
+    "st_mark": "St. Mark, Evangelist",
+    "philip_and_james": "St. Philip and St. James, Apostles",
+    "nativity_of_john_baptist": "The Nativity of St. John, the Baptist",
+    "st_peter_st_paul": "St. Peter and St. Paul, Apostles",
+    "st_james": "St. James the Elder, Apostle",
+    "st_bartholomew": "St. Bartholomew, Apostle",
+    "st_matthew": "St. Matthew, Apostle, Evangelist",
+    "st_michael": "St. Michael and All Angels",
+    "st_luke": "St. Luke, Evangelist",
+    "simon_and_jude": "St. Simon and St. Jude, Apostles",
+    "all_saints": "All Saints’ Day",
+}
+
+
+def sanctoral_block(lines, title):
+    """Slice the raw text for one sanctoral block (title -> next sanctoral title)
+    and pull its introit / first collect / gradual / 'see' cross-reference."""
+    order = SANCTORAL_ORDER
+    try:
+        nxt_titles = set(order[order.index(title) + 1:]) | {"The Festival of Harvest"}
+    except ValueError:
+        nxt_titles = set()
+    s = None
+    for i, ln in enumerate(lines):
+        if ln.strip() == title:
+            s = i
+            break
+    if s is None:
+        return None
+    body = []
+    for ln in lines[s + 1:]:
+        if ln.strip() in nxt_titles and ln.strip() != title:
+            break
+        body.append(ln)
+    sec = {"introit": None, "collect": None, "gradual": None,
+           "see_fields": set(), "see_common": None}
+    cur, buckets = None, {"INTROIT": [], "COLLECT": [], "GRADUAL": []}
+    for ln in body:
+        t = ln.strip()
+        msee = re.match(r"For (.+?) see (Apostles|Evangelists)", t, re.I)
+        if msee:
+            for fld in ("INTROIT", "COLLECT", "GRADUAL"):
+                if fld in msee.group(1).upper():
+                    sec["see_fields"].add(fld)
+            sec["see_common"] = msee.group(2).lower()
+            cur = None
+            continue
+        m = is_marker(t)
+        if m:
+            cur = m if m in buckets else None
+            continue
+        # stop the first collect at its closing Amen (commons list several)
+        if cur == "COLLECT" and buckets["COLLECT"] and \
+                buckets["COLLECT"][-1].rstrip().endswith("Amen."):
+            cur = None
+        if cur:
+            buckets[cur].append(t)
+    if buckets["INTROIT"]:
+        sec["introit"] = clean_introit("\n".join(buckets["INTROIT"]))
+    if buckets["COLLECT"]:
+        sec["collect"] = re.sub(r"\s+", " ", " ".join(buckets["COLLECT"])).strip()
+    if buckets["GRADUAL"]:
+        sec["gradual"] = clean_gradual("\n".join(buckets["GRADUAL"]))
+    return sec
+
+
+def build_sanctoral(lines):
+    from liturgical_calendar.data.sanctoral import SANCTORAL_SLOTS
+    commons = {"apostles": sanctoral_block(lines, "Apostles’ Days"),
+               "evangelists": sanctoral_block(lines, "Evangelists’ Days")}
+    out, report = {}, []
+    for slot, title in SANCTORAL_MAP.items():
+        b = sanctoral_block(lines, title)
+        if not b:
+            report.append((slot, "NO BLOCK"))
+            continue
+        common = commons.get(b["see_common"]) or commons["apostles"]
+        collect = common["collect"] if "COLLECT" in b["see_fields"] else b["collect"]
+        introit = common["introit"] if "INTROIT" in b["see_fields"] else b["introit"]
+        gradual = common["gradual"] if "GRADUAL" in b["see_fields"] else b["gradual"]
+        name = SANCTORAL_SLOTS.get(slot, {}).get("name", slot)
+        out[slot] = {
+            "collect": collect,
+            "introit_text": introit,
+            "gradual": gradual,
+            "source": f"Common Service Book of the Lutheran Church (Philadelphia, 1917), "
+                      f"Introits, Collects, Epistles, Graduals and Gospels — {title}",
+        }
+        report.append((slot, f"collect={bool(collect)} introit={bool(introit)} "
+                             f"gradual={bool(gradual)} see={sorted(b['see_fields'])or '-'}"))
+    return out, report, commons
+
+
 def main():
     with open(SRC, encoding="utf-8") as fh:
         lines = fh.read().split("\n")
@@ -382,6 +503,15 @@ def main():
             print(f"  found={r['found']!s:5} collect_ok={r['collect_ok']!s:5} "
                   f"introit={r['has_introit']!s:5} gradual={r['has_gradual']!s:5} "
                   f"{r['slot']:18} -> {r['csb']}")
+
+    sanct, sreport, commons = build_sanctoral(lines)
+    with open(os.path.join(ROOT, "sources", "csb_sanctoral.json"), "w", encoding="utf-8") as fh:
+        json.dump(sanct, fh, indent=2, ensure_ascii=False)
+    print(f"\nSanctoral: {len(sanct)} slots enriched from CSB.")
+    print(f"  Apostles' common collect: {(commons['apostles']['collect'] or '')[:55]!r}")
+    print(f"  Evangelists' common collect: {(commons['evangelists']['collect'] or '')[:55]!r}")
+    for slot, status in sreport:
+        print(f"    {slot:26} {status}")
 
 
 if __name__ == "__main__":

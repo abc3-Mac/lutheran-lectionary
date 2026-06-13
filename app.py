@@ -218,6 +218,10 @@ def _lookup_result(d: date, lectionary: str):
             "color":         mf.get("color", ""),
             "color_class":   season_color_class(mf.get("color", "")),
             "readings_parsed": parse_readings(mf.get("readings")),
+            "collect":       mf.get("collect"),
+            "introit_text":  mf.get("introit_text"),
+            "gradual":       mf.get("gradual"),
+            "source":        mf.get("source"),
         }
 
     result = {
