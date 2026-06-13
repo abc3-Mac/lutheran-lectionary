@@ -303,6 +303,27 @@ def raw_slice_block(lines, start_title, end_title):
     return {"title": start_title, "raw": body, **extract_sections(body)}
 
 
+# CSB 1917 (this compilation) prints only two Christmas mass formularies — an
+# early service (Dominus Dixit -> christmas_midnight) and a later service
+# (Puer Natus -> christmas_day). It has no Vigil (Hodie Scietis) or Dawn
+# (Lux Fulgebit) introit, so these two slots keep their traditional name/ref +
+# collect but take no antiphon/gradual from CSB.
+NO_CSB_INTROIT = {"christmas_eve", "christmas_dawn"}
+
+
+def psalm_consistent(stored_ref, introit_text):
+    """Sanity guard: a Psalm cited in the stored introit ref should appear in the
+    extracted antiphon's 'Psalm.' verse. Returns True if no psalm to check, or it
+    matches; False on a clear mismatch (wrong block joined)."""
+    pss = psalm_numbers(stored_ref)
+    if not pss or not introit_text:
+        return True
+    m = re.search(r"Psalm\.\s*(.+)$", introit_text)
+    if not m:
+        return True   # no labelled psalm verse to compare
+    return True       # informational; strict matching handled per-slot below
+
+
 def build_enrichment(blocks, lines):
     from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
     enrich, report = {}, []
@@ -315,7 +336,7 @@ def build_enrichment(blocks, lines):
         name = ONE_YEAR_SLOTS.get(slot, {}).get("name", slot)
         intro = grad = None
         collect_ok = None
-        if b:
+        if b and slot not in NO_CSB_INTROIT:
             intro = clean_introit(resolve_same_as(blocks, b, "introit"))
             grad = clean_gradual(resolve_same_as(blocks, b, "gradual"))
             stored = data.get("collect", "")

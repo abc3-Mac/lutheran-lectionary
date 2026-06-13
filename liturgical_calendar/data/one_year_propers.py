@@ -147,18 +147,7 @@ ONE_YEAR_PROPERS = {
         "introit": {
             "name": 'Hodie Scietis',
             "ref": 'Exodus 16:6–7; Psalm 96:1',
-            "text": (
-                'THE Lord hath said unto Me, Thou art My Son: this day have I begotten Thee. Psalm. '
-                'The Lord reigneth, He is clothed with majesty: the Lord is clothed with strength, '
-                'wherewith He hath girded Himself.'
-            ),
         },
-        "gradual": (
-            'THY people shall be willing in the day of Thy power: in the beauties of holiness '
-            'from the womb of the morning. V. The Lord said unto my Lord, Sit Thou at My right '
-            'hand: until I make Thine enemies Thy footstool. Hallelujah. Hallelujah. V. The Lord '
-            'hath said unto Me, Thou art Mv Son: this day have I begotten Thee. Hallelujah.'
-        ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
             'Epistles, Graduals and Gospels — The Nativity of Our Lord (Christmas Eve)'
@@ -201,18 +190,7 @@ ONE_YEAR_PROPERS = {
         "introit": {
             "name": 'Lux Fulgebit',
             "ref": 'Isaiah 9:2, 6; Psalm 98:1',
-            "text": (
-                'THE Lord hath said unto Me, Thou art My Son: this day have I begotten Thee. Psalm. '
-                'The Lord reigneth, He is clothed with majesty: the Lord is clothed with strength, '
-                'wherewith He hath girded Himself.'
-            ),
         },
-        "gradual": (
-            'THY people shall be willing in the day of Thy power: in the beauties of holiness '
-            'from the womb of the morning. V. The Lord said unto my Lord, Sit Thou at My right '
-            'hand: until I make Thine enemies Thy footstool. Hallelujah. Hallelujah. V. The Lord '
-            'hath said unto Me, Thou art Mv Son: this day have I begotten Thee. Hallelujah.'
-        ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
             'Epistles, Graduals and Gospels — The Nativity of Our Lord (Dawn)'
