@@ -18,9 +18,9 @@
 
   <div class="card settings-card">
     <h2>🟣 Advent Color <span class="settings-tag">One-Year series</span></h2>
-    <p>The LSB permits either color. Violet is the historic (TLH-era) practice; blue is the contemporary LCMS standard. Applies when viewing the One-Year series.</p>
+    <p>The LSB permits either color. Violet is the historic (TLH-era) practice and the default for the One-Year series; blue is the contemporary LCMS standard. Applies when viewing the One-Year series.</p>
+    <label class="settings-radio"><input type="radio" name="set-advent" value="violet"> Violet (historic — default)</label>
     <label class="settings-radio"><input type="radio" name="set-advent" value="blue"> Blue (contemporary)</label>
-    <label class="settings-radio"><input type="radio" name="set-advent" value="violet"> Violet (historic)</label>
   </div>
 
   <div class="card settings-card">
@@ -56,7 +56,7 @@
 (function() {
   const KEYS = {
     lectionary:  { store: 'lcms_lectionary',      def: 'three_year' },
-    advent:      { store: 'lcms_historic_colors', def: 'blue',
+    advent:      { store: 'lcms_historic_colors', def: 'violet',
                    toForm: v => v === '1' ? 'violet' : 'blue',
                    toStore: v => v === 'violet' ? '1' : '0' },
     theme:       { store: 'lcms_theme',           def: 'system' },

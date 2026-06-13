@@ -449,6 +449,17 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 .proper-introit { font-size: 1rem; }
 .introit-name { font-style: italic; font-weight: 600; color: var(--accent-text); }
 .introit-ref  { font-size: 0.9rem; color: var(--text-soft); }
+.introit-text, .gradual-text {
+  margin: 0.4rem 0 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+.minor-feast-propers { margin-top: 0.6rem; }
+.minor-feast-propers .collect-text { margin-top: 0.4rem; }
+.proper-inline-label { font-weight: 600; color: var(--text-soft); }
 blockquote.collect-text {
   margin: 0;
   padding: 0.75rem 1rem;
@@ -693,6 +704,22 @@ blockquote.collect-text {
   font-style: italic;
   color: var(--text);
 }
+.introit-text-block, .gradual-text-block {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.propers-entry-gradual { margin-top: 0.5rem; }
+.propers-entry-readings { margin-top: 0.5rem; }
+.propers-readings-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+.propers-reading-label { color: var(--muted); margin-right: 0.2rem; }
 .propers-page-source {
   margin-top: 2rem;
   font-size: 0.8rem;
@@ -850,8 +877,10 @@ blockquote.collect-text {
 .historic-colors .ev-row.season-blue .season-tag { background: var(--purple); }
 .historic-colors .ev-row.season-blue td:first-child { border-left-color: var(--purple); }
 .historic-colors .propers-season-head.season-blue { background: var(--purple); }
-.historic-colors .propers-entry.season-blue { border-left-color: var(--purple); }
-.historic-colors .search-result.season-blue { border-left-color: var(--purple); }
+/* Entry/result cards keep their normal (white) surface — only the accent border
+   turns violet. The broad .season-blue rule above would otherwise fill them. */
+.historic-colors .propers-entry.season-blue { border-left-color: var(--purple); background: var(--card-bg); }
+.historic-colors .search-result.season-blue { border-left-color: var(--purple); background: var(--card-bg); }
 
 /* ---- Daily Lectionary page ---- */
 .daily-page { max-width: 860px; margin: 0 auto; padding-bottom: 3rem; }

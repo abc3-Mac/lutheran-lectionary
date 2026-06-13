@@ -38,6 +38,8 @@
       <nav>
         <a href="/">Home</a>
         <a href="/calendar">Full Calendar</a>
+        <a href="/propers" title="One-Year Introits, Collects &amp; Graduals">Propers</a>
+        <a href="/daily" title="Daily Lectionary">Daily</a>
         <a href="/lookup">Date Lookup</a>
         <a href="/search">Search</a>
         <a href="/settings" title="Preferences">⚙ Settings</a>
@@ -78,7 +80,11 @@
     (function() {
       const HIST_KEY = 'lcms_historic_colors';
       const isOneYear = document.body.dataset.lectionary === 'one_year';
-      if (isOneYear && localStorage.getItem(HIST_KEY) === '1') {
+      // The One-Year (Historic) series defaults to violet Advent (the TLH/CSB
+      // practice); blue is opt-out. Stored '0' = blue, '1' = violet, unset = violet.
+      const stored = localStorage.getItem(HIST_KEY);
+      const historic = stored === null ? true : stored === '1';
+      if (isOneYear && historic) {
         document.body.classList.add('historic-colors');
         // Swap the color name shown in chips/labels
         document.querySelectorAll('.color-dot, .minor-feast-color').forEach(el => {
@@ -88,12 +94,20 @@
       // Wire the toggle checkbox if this page has one
       const cb = document.getElementById('historic-colors-toggle');
       if (cb) {
-        cb.checked = localStorage.getItem(HIST_KEY) === '1';
+        cb.checked = historic;
         cb.addEventListener('change', function() {
           localStorage.setItem(HIST_KEY, cb.checked ? '1' : '0');
           location.reload();
         });
       }
+      // Carry the Advent-color preference into one-year PDF downloads, which are
+      // rendered server-side and can't see localStorage.
+      document.querySelectorAll('a[href*="/pdf"]').forEach(a => {
+        const h = a.getAttribute('href') || '';
+        if (h.includes('lectionary=one_year') || h.includes('/propers/pdf')) {
+          a.setAttribute('href', h + (h.includes('?') ? '&' : '?') + 'historic=' + (historic ? '1' : '0'));
+        }
+      });
     })();
 
     // Dark mode toggle

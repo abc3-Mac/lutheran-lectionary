@@ -1,0 +1,5 @@
+# Regenerable build artifacts from tools/extract_csb.py
+csb_blocks.json
+csb_audit.json
+csb_enrichment.json
+csb_sanctoral.json

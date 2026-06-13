@@ -218,6 +218,10 @@ def _lookup_result(d: date, lectionary: str):
             "color":         mf.get("color", ""),
             "color_class":   season_color_class(mf.get("color", "")),
             "readings_parsed": parse_readings(mf.get("readings")),
+            "collect":       mf.get("collect"),
+            "introit_text":  mf.get("introit_text"),
+            "gradual":       mf.get("gradual"),
+            "source":        mf.get("source"),
         }
 
     result = {
@@ -238,6 +242,8 @@ def _lookup_result(d: date, lectionary: str):
         "minor_feast":     minor_feast,
         "collect":         info.get("collect"),
         "introit":         info.get("introit"),
+        "gradual":         info.get("gradual"),
+        "source":          info.get("source"),
         "daily":           _daily_for_display(d),
         "hymn_of_the_day": hymn_of_the_day(slot, lectionary, info.get("series")),
     }
@@ -307,6 +313,26 @@ def day_permalink(date_str):
         og_title=f"{result['name']} — {result['date_str']}",
         og_description=f"Appointed readings and liturgical information for {result['date_str']} ({result['season']}).",
     )
+
+
+@app.route("/day/<date_str>/pdf")
+def day_pdf(date_str):
+    """One-page printable propers sheet for a single date."""
+    lectionary = request.args.get("lectionary", "three_year")
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        abort(404)
+    result, error = _lookup_result(d, lectionary)
+    if result is None:
+        abort(404)
+    from pdf_gen import build_day_pdf
+    violet = request.args.get("historic", "1") != "0"   # one-year Advent color pref
+    buf = build_day_pdf(result, lectionary, violet_advent=violet)
+    lect_tag = "1yr" if lectionary == "one_year" else "3yr"
+    filename = f"Propers_{date_str}_{lect_tag}.pdf"
+    return send_file(buf, mimetype="application/pdf",
+                     as_attachment=True, download_name=filename)
 
 
 @app.route("/search")
@@ -442,17 +468,19 @@ def api_today():
 
 
 def _propers_sections(advent_year: int):
-    """One-year Sundays with propers, grouped by season."""
+    """One-year Sundays and feast days with propers, grouped by season."""
     cal    = get_calendar(advent_year)
     events = cal.all_events(include_minor=False, lectionary='one_year')
-    sundays = [
+    entries = [
         ev for ev in events
-        if ev.get("is_sunday") and (ev.get("collect") or ev.get("introit"))
+        if (ev.get("is_sunday") or ev.get("is_feast"))
+        and (ev.get("collect") or ev.get("introit"))
     ]
-    for ev in sundays:
-        ev["color_class"] = season_color_class(ev.get("color", "Green"))
-        ev["date_str"]    = ev["date"].strftime("%A, %B %-d, %Y")
-    return _group_by_season(sundays)
+    for ev in entries:
+        ev["color_class"]     = season_color_class(ev.get("color", "Green"))
+        ev["date_str"]        = ev["date"].strftime("%A, %B %-d, %Y")
+        ev["readings_parsed"] = parse_readings(ev.get("readings"))
+    return _group_by_season(entries)
 
 
 @app.route("/propers")
@@ -487,7 +515,8 @@ def propers_pdf():
     sections = _propers_sections(advent_year)
 
     from pdf_gen import build_propers_pdf
-    buf = build_propers_pdf(advent_year, sections)
+    violet = request.args.get("historic", "1") != "0"   # Advent color pref
+    buf = build_propers_pdf(advent_year, sections, violet_advent=violet)
     filename = f"One_Year_Propers_{advent_year}-{advent_year+1}.pdf"
     return send_file(buf, mimetype="application/pdf",
                      as_attachment=True, download_name=filename)

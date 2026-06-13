@@ -4,7 +4,7 @@
 {% block content %}
 <div class="page-header">
   <h1>One-Year Propers — {{ advent_year }}–{{ advent_year+1 }}</h1>
-  <p class="page-sub">Introit &amp; Collect of the Day for all Sundays &middot; One-Year (Historic) Series</p>
+  <p class="page-sub">Introit, Collect, Gradual &amp; Readings for all Sundays &amp; feast days &middot; One-Year (Historic) Series</p>
 </div>
 
 <div class="toolbar">
@@ -44,6 +44,9 @@
              title="Click to preview {{ ev.introit.ref }}"
              onclick="showScripture(event, '{{ ev.introit.ref|e }}', '{{ _iurl|e }}'); return false;">{{ ev.introit.ref }}</a>
         </span>
+        {% if ev.introit.text %}
+        <p class="introit-text-block">{{ ev.introit.text }}</p>
+        {% endif %}
       </div>
       {% endif %}
       {% if ev.get('collect') %}
@@ -52,13 +55,40 @@
         <p class="collect-text-block">{{ ev.collect }}</p>
       </div>
       {% endif %}
+      {% if ev.get('gradual') %}
+      <div class="propers-entry-gradual">
+        <span class="proper-label-block">Gradual</span>
+        <p class="gradual-text-block">{{ ev.gradual }}</p>
+      </div>
+      {% endif %}
+      {% if ev.readings_parsed %}
+      <div class="propers-entry-readings">
+        <span class="proper-label-block">Readings</span>
+        <div class="propers-readings-list">
+          {% for r in ev.readings_parsed %}
+          <span class="propers-reading">
+            <span class="propers-reading-label">{{ r.label }}:</span>
+            {% set _url = bg_url(r.ref) %}
+            <a href="{{ _url }}" class="reading-ref scripture-link"
+               onclick="showScripture(event, '{{ r.ref|e }}', '{{ _url|e }}'); return false;"
+               title="Click to preview {{ r.ref }}">{{ r.ref }}</a>
+            {% for i, alt in enumerate(r.alts) %}<span class="reading-or">or</span>
+            <a href="{{ r.alt_urls[i] }}" class="reading-ref scripture-link"
+               onclick="showScripture(event, '{{ alt|e }}', '{{ r.alt_urls[i]|e }}'); return false;"
+               title="Click to preview {{ alt }}">{{ alt }}</a>{% endfor %}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
     </div>
     {% endfor %}
   </section>
   {% endfor %}
 
   <p class="propers-page-source">
-    Collects from <em>The Lutheran Hymnal</em> (TLH, 1941) / <em>Common Service Book of the Lutheran Church</em> (1917), public domain.
+    Introits, Collects, and Graduals from the <em>Common Service Book of the Lutheran Church</em> (1917),
+    public domain — the same historic wording later carried into <em>The Lutheran Hymnal</em> (TLH, 1941).
     For LSB collect and introit texts, see the <em>LSB Altar Book</em>.
   </p>
 </div>

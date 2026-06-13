@@ -322,7 +322,15 @@ SEASON_HEX = {
 }
 
 
-def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
+def _season_hex(color_class: str, violet_advent: bool = False) -> str:
+    """Season color hex. When violet_advent is set (the One-Year/historic Advent
+    preference), the blue Advent color renders as violet instead."""
+    if violet_advent and color_class == "season-blue":
+        return SEASON_HEX["season-purple"]
+    return SEASON_HEX.get(color_class, "#1A3A5C")
+
+
+def build_propers_pdf(advent_year: int, sections: list, violet_advent: bool = True) -> io.BytesIO:
     """Portrait PDF of the one-year propers.
 
     `sections` is the structure from app._propers_sections():
@@ -360,11 +368,11 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
 
     story = [
         Paragraph(f"One-Year (Historic) Propers — {advent_year}–{advent_year + 1} Church Year", title_style),
-        Paragraph("Introit and Collect of the Day for every Sunday", sub_style),
+        Paragraph("Introit, Collect, Gradual, and Readings for every Sunday and feast day", sub_style),
     ]
 
     for sec in sections:
-        hexcol = SEASON_HEX.get(sec["events"][0].get("color_class", ""), "#1A3A5C")
+        hexcol = _season_hex(sec["events"][0].get("color_class", ""), violet_advent=violet_advent)
         season_style = ParagraphStyle(
             f"Season{sec['season']}", parent=styles["Heading2"], fontSize=12,
             textColor=colors.HexColor(hexcol), spaceBefore=14, spaceAfter=2)
@@ -378,13 +386,123 @@ def build_propers_pdf(advent_year: int, sections: list) -> io.BytesIO:
             if intro:
                 block.append(Paragraph(
                     f"<b>Introit:</b> <i>{intro['name']}</i> — {intro['ref']}", introit_style))
+                if intro.get("text"):
+                    block.append(Paragraph(intro["text"], collect_style))
             if ev.get("collect"):
                 block.append(Paragraph(f"<b>Collect:</b> {ev['collect']}", collect_style))
+            if ev.get("gradual"):
+                block.append(Paragraph(f"<b>Gradual:</b> {ev['gradual']}", collect_style))
+            rp = ev.get("readings_parsed")
+            if rp:
+                parts = []
+                for r in rp:
+                    refs = " or ".join([r["ref"]] + list(r.get("alts") or []))
+                    parts.append(f"{r['label']}: {refs}")
+                block.append(Paragraph("<b>Readings:</b> " + " &nbsp;·&nbsp; ".join(parts),
+                                       introit_style))
             story.append(KeepTogether(block))
 
     story.append(Paragraph(
-        "Collects from The Lutheran Hymnal (TLH, 1941) / Common Service Book (1917), public domain. "
+        "Introits, Collects, and Graduals from the Common Service Book of the Lutheran Church (1917), "
+        "public domain — the same historic wording later carried into The Lutheran Hymnal (TLH, 1941). "
         "For LSB collect and introit texts, see the LSB Altar Book.", source_style))
+
+    doc.build(story)
+    buf.seek(0)
+    return buf
+
+
+# ---------------------------------------------------------------------------
+# Single-day "Propers for the Day" sheet — bulletin-friendly one-pager
+# ---------------------------------------------------------------------------
+
+def build_day_pdf(result: dict, lectionary: str, violet_advent: bool = True) -> io.BytesIO:
+    """One-page PDF of the propers for a single date.
+
+    `result` is the dict from app._lookup_result(): name, date_str, season,
+    color_class, readings_parsed, collect, introit, gradual, hymn_of_the_day,
+    daily, minor_feast, church_year, series.
+    """
+    from reportlab.platypus import KeepTogether, HRFlowable
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=letter,
+        leftMargin=0.8 * inch, rightMargin=0.8 * inch,
+        topMargin=0.6 * inch, bottomMargin=0.6 * inch,
+        title=f"Propers — {result.get('name', '')}",
+    )
+    styles = getSampleStyleSheet()
+    hexcol = _season_hex(result.get("color_class", ""),
+                         violet_advent=(violet_advent and lectionary == "one_year"))
+
+    title_style = ParagraphStyle("DayTitle", parent=styles["Title"], fontSize=18,
+                                 textColor=colors.HexColor(hexcol), spaceAfter=2)
+    sub_style = ParagraphStyle("DaySub", parent=styles["Normal"], fontSize=10,
+                               textColor=colors.HexColor("#555555"), spaceAfter=10)
+    h_style = ParagraphStyle("DayH", parent=styles["Heading2"], fontSize=11,
+                             textColor=colors.HexColor(hexcol), spaceBefore=12, spaceAfter=3)
+    body = ParagraphStyle("DayBody", parent=styles["Normal"], fontSize=9.5, leading=13)
+    italic = ParagraphStyle("DayItalic", parent=body, fontName="Helvetica-Oblique",
+                            leftIndent=8)
+    source_style = ParagraphStyle("DaySource", parent=styles["Normal"], fontSize=7.5,
+                                  textColor=colors.HexColor("#888888"), spaceBefore=18)
+
+    if lectionary == "one_year":
+        series_label = "One-Year (Historic) Series"
+    else:
+        series_label = f"Three-Year Series {result.get('series', '')}".strip()
+
+    story = [
+        Paragraph(result.get("name", ""), title_style),
+        Paragraph(f"{result.get('date_str', '')} &nbsp;·&nbsp; {result.get('season', '')} "
+                  f"&nbsp;·&nbsp; {result.get('church_year', '')} Church Year "
+                  f"&nbsp;·&nbsp; {series_label}", sub_style),
+        HRFlowable(width="100%", thickness=2, color=colors.HexColor(hexcol),
+                   spaceBefore=0, spaceAfter=2),
+    ]
+
+    rp = result.get("readings_parsed")
+    if rp:
+        story.append(Paragraph("Appointed Readings", h_style))
+        for r in rp:
+            refs = " <i>or</i> ".join([r["ref"]] + list(r.get("alts") or []))
+            story.append(Paragraph(f"<b>{r['label']}:</b> {refs}", body))
+
+    intro = result.get("introit")
+    if intro and (intro.get("name") or intro.get("text")):
+        story.append(Paragraph("Introit", h_style))
+        story.append(Paragraph(f"<i>{intro.get('name','')}</i> — {intro.get('ref','')}", body))
+        if intro.get("text"):
+            story.append(Paragraph(intro["text"], italic))
+    if result.get("collect"):
+        story.append(Paragraph("Collect of the Day", h_style))
+        story.append(Paragraph(result["collect"], italic))
+    if result.get("gradual"):
+        story.append(Paragraph("Gradual", h_style))
+        story.append(Paragraph(result["gradual"], italic))
+
+    hod = result.get("hymn_of_the_day")
+    if hod:
+        story.append(Paragraph("Hymn of the Day", h_style))
+        story.append(Paragraph(" <i>or</i> ".join(hod), body))
+
+    daily = result.get("daily")
+    if daily:
+        story.append(Paragraph("Daily Lectionary", h_style))
+        story.append(Paragraph(" &nbsp;·&nbsp; ".join(
+            f"<b>{d['label']}:</b> {d['ref']}" for d in daily), body))
+
+    mf = result.get("minor_feast")
+    if mf:
+        story.append(Paragraph(f"Also Commemorated: {mf.get('name','')}", h_style))
+        if mf.get("collect"):
+            story.append(Paragraph(mf["collect"], italic))
+
+    citation = ("Introit, collect, and gradual from the Common Service Book of the Lutheran "
+                "Church (1917), public domain. Readings per the LSB Propers of the Day "
+                "(CPH, 2007). For LSB collect and introit texts, see the LSB Altar Book.")
+    story.append(Paragraph(citation, source_style))
 
     doc.build(story)
     buf.seek(0)

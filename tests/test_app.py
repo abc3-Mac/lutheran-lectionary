@@ -57,6 +57,22 @@ def test_propers_page(client):
     r = client.get("/propers?year=2025")
     assert r.status_code == 200
     assert b"Introit" in r.data
+    # CSB 1917 introit antiphon text + gradual now render inline
+    assert b"introit-text-block" in r.data
+    assert b"gradual-text-block" in r.data
+    assert b"Common Service Book" in r.data
+
+
+def test_lookup_shows_csb_introit_text(client):
+    # Advent 2 (Dec 7, 2025), one-year — Populus Sion introit antiphon + gradual
+    r = client.get("/lookup?date=2025-12-07&lectionary=one_year")
+    assert r.status_code == 200
+    assert b"introit-text" in r.data
+    assert b"gradual-text" in r.data
+    assert b"DAUGHTER of Zion" in r.data          # PD antiphon text from CSB 1917
+    assert b"Common Service Book" in r.data
+    # the invariant Gloria Patri is not reproduced in the stored antiphon
+    assert b"as it was in the beginning, is now" not in r.data
 
 
 def test_api_day(client):
@@ -145,6 +161,22 @@ def test_propers_pdf(client):
     r = client.get("/propers/pdf?year=2025")
     assert r.status_code == 200
     assert r.data[:5] == b"%PDF-"
+
+
+def test_day_pdf(client):
+    # One-year single-day propers sheet
+    r = client.get("/day/2025-12-07/pdf?lectionary=one_year")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+    # Three-year variant
+    r = client.get("/day/2026-06-07/pdf?lectionary=three_year")
+    assert r.status_code == 200
+    assert r.data[:5] == b"%PDF-"
+    # Bad date 404s
+    assert client.get("/day/not-a-date/pdf").status_code == 404
+    # The lookup card exposes the PDF button
+    r = client.get("/lookup?date=2025-12-07&lectionary=one_year")
+    assert b"/day/2025-12-07/pdf" in r.data
 
 
 def test_ical_includes_propers_and_daily(client):
