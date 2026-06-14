@@ -39,7 +39,9 @@ function showScripture(event, ref, bgUrl) {
 
   // Try ESV API (free key — replace with your own from api.esv.org)
   const ESV_API_KEY = '146f3dcaf64091437ccf1e1268b999e901c6c4c8';
-  const apiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(ref)}&include-headings=false&include-footnotes=false&include-verse-numbers=true&include-short-copyright=false`;
+  // include-short-copyright=true appends the "(ESV)" attribution the Crossway
+  // API license requires whenever ESV text is displayed.
+  const apiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(ref)}&include-headings=false&include-footnotes=false&include-verse-numbers=true&include-short-copyright=true`;
 
   fetch(apiUrl, {
     headers: { 'Authorization': `Token ${ESV_API_KEY}` }

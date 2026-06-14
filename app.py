@@ -326,11 +326,17 @@ def day_pdf(date_str):
     result, error = _lookup_result(d, lectionary)
     if result is None:
         abort(404)
-    from pdf_gen import build_day_pdf
     violet = request.args.get("historic", "1") != "0"   # one-year Advent color pref
-    buf = build_day_pdf(result, lectionary, violet_advent=violet)
+    if request.args.get("style") == "document":
+        from pdf_gen import build_day_pdf
+        buf = build_day_pdf(result, lectionary, violet_advent=violet)
+        style_tag = "_print"
+    else:
+        from pdf_gen import build_day_card_pdf   # card is the default style
+        buf = build_day_card_pdf(result, lectionary, violet_advent=violet)
+        style_tag = ""
     lect_tag = "1yr" if lectionary == "one_year" else "3yr"
-    filename = f"Propers_{date_str}_{lect_tag}.pdf"
+    filename = f"Propers_{date_str}_{lect_tag}{style_tag}.pdf"
     return send_file(buf, mimetype="application/pdf",
                      as_attachment=True, download_name=filename)
 
@@ -584,6 +590,12 @@ def _daily_year_days(advent_year: int):
             })
         d += timedelta(1)
     return cal, months
+
+
+@app.route("/about")
+def about():
+    """History, sources, and copyright/permissions statement."""
+    return render_template("about.html")
 
 
 @app.route("/settings")

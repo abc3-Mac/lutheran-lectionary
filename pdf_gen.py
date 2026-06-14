@@ -416,6 +416,25 @@ def build_propers_pdf(advent_year: int, sections: list, violet_advent: bool = Tr
 # Single-day "Propers for the Day" sheet — bulletin-friendly one-pager
 # ---------------------------------------------------------------------------
 
+def _day_citation(result: dict, lectionary: str) -> str:
+    """Source/copyright line for a single-day sheet, accurate to what's on the page.
+
+    The one-year (historic) series draws its introit, collect, and gradual from the
+    public-domain CSB 1917; the three-year series carries none of those — only
+    LSB readings, hymn-of-the-day numbers, and the LSB Daily Lectionary, all facts.
+    Citing the 1917 texts on a three-year sheet would describe content that isn't there.
+    """
+    has_csb = lectionary == "one_year" and (
+        result.get("introit") or result.get("collect") or result.get("gradual"))
+    if has_csb:
+        return ("Introit, collect, and gradual from the Common Service Book of the Lutheran "
+                "Church (1917), public domain. Readings per the LSB Propers of the Day "
+                "(CPH, 2007). For LSB collect and introit texts, see the LSB Altar Book.")
+    return ("Readings, Hymn of the Day, and Daily Lectionary per the Lutheran Service Book "
+            "(CPH, 2006) and the LSB Propers of the Day (CPH, 2007). Reading references and "
+            "hymn numbers only; the texts themselves are not reproduced.")
+
+
 def build_day_pdf(result: dict, lectionary: str, violet_advent: bool = True) -> io.BytesIO:
     """One-page PDF of the propers for a single date.
 
@@ -499,11 +518,190 @@ def build_day_pdf(result: dict, lectionary: str, violet_advent: bool = True) -> 
         if mf.get("collect"):
             story.append(Paragraph(mf["collect"], italic))
 
-    citation = ("Introit, collect, and gradual from the Common Service Book of the Lutheran "
-                "Church (1917), public domain. Readings per the LSB Propers of the Day "
-                "(CPH, 2007). For LSB collect and introit texts, see the LSB Altar Book.")
-    story.append(Paragraph(citation, source_style))
+    story.append(Paragraph(_day_citation(result, lectionary), source_style))
 
     doc.build(story)
+    buf.seek(0)
+    return buf
+
+
+# ---------------------------------------------------------------------------
+# Card-style "Propers for the Day" sheet — mirrors the web lookup card
+# ---------------------------------------------------------------------------
+
+def build_day_card_pdf(result: dict, lectionary: str, violet_advent: bool = True) -> io.BytesIO:
+    """Single-day propers as a styled card matching the web /lookup view:
+    a season-colored header band over a white card with sectioned content.
+
+    Same `result` dict as build_day_pdf; this is the alternate visual style
+    offered via ?style=card. Content is identical — only the presentation differs.
+    """
+    from reportlab.platypus import HRFlowable
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buf, pagesize=letter,
+        leftMargin=0.6 * inch, rightMargin=0.6 * inch,
+        topMargin=0.6 * inch, bottomMargin=0.6 * inch,
+        title=f"Propers — {result.get('name', '')}",
+    )
+
+    hexcol = _season_hex(result.get("color_class", ""),
+                         violet_advent=(violet_advent and lectionary == "one_year"))
+    header_bg = colors.HexColor(hexcol)
+
+    CARD_PAD = 20
+    inner_w  = doc.width - 2 * CARD_PAD
+
+    white   = colors.white
+    soft_w  = colors.Color(1, 1, 1, alpha=0.92)
+    c_label = colors.HexColor("#6B7280")
+    c_value = colors.HexColor("#1F3A5F")
+    c_text  = colors.HexColor("#222222")
+    c_muted = colors.HexColor("#8A8A8A")
+
+    s_date  = ParagraphStyle("cDate",  fontSize=10,  textColor=soft_w, fontName="Helvetica",
+                             spaceAfter=4)
+    s_title = ParagraphStyle("cTitle", fontSize=23,  leading=26, textColor=white,
+                             fontName="Helvetica-Bold", spaceAfter=7)
+    s_meta  = ParagraphStyle("cMeta",  fontSize=9.5, textColor=soft_w, fontName="Helvetica",
+                             leading=12)
+    s_sec   = ParagraphStyle("cSec",   fontSize=9,   textColor=c_label,
+                             fontName="Helvetica-Bold", spaceAfter=6, leading=11)
+    s_collbl= ParagraphStyle("cColL",  fontSize=7.5, textColor=c_label,
+                             fontName="Helvetica-Bold", spaceAfter=3, leading=10)
+    s_val   = ParagraphStyle("cVal",   fontSize=11,  textColor=c_value, fontName="Helvetica",
+                             leading=14)
+    s_body  = ParagraphStyle("cBody",  fontSize=11,  textColor=c_text, leading=15,
+                             fontName="Helvetica")
+    s_it    = ParagraphStyle("cIt",    parent=s_body, fontName="Helvetica-Oblique", leftIndent=6)
+    s_cap   = ParagraphStyle("cCap",   fontSize=8.5, textColor=c_muted, fontName="Helvetica",
+                             spaceBefore=5)
+    s_src   = ParagraphStyle("cSrc",   fontSize=7.5, textColor=c_muted, fontName="Helvetica",
+                             leading=10, spaceBefore=4)
+    s_fl    = ParagraphStyle("cFL",    fontSize=11,  textColor=colors.HexColor("#333333"),
+                             fontName="Courier")
+
+    # ---- Header band content ----
+    if lectionary == "one_year":
+        series_bit = "One-Year (Historic)"
+    else:
+        series_bit = f"Series {result.get('series', '')}".strip()
+    # Honor the violet-Advent preference in the displayed color name, matching the
+    # header band and the web UI (which both render historic Advent as violet, not blue).
+    color_name = result.get("color", "")
+    if violet_advent and lectionary == "one_year" and color_name == "Blue":
+        color_name = "Violet"
+    meta_bits = [b for b in (
+        result.get("season", ""), series_bit,
+        f"{result.get('church_year', '')} Church Year",
+        color_name,
+    ) if b]
+    header = [
+        Paragraph(result.get("date_str", ""), s_date),
+        Paragraph(result.get("name", ""), s_title),
+        Paragraph("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;".join(meta_bits), s_meta),
+    ]
+
+    # ---- Body sections (one table row each, so the card paginates cleanly) ----
+    sections = []  # list of (title, [flowables])
+
+    def section(title, flows):
+        sections.append((title, flows))
+
+    def grid(pairs, ncols):
+        """Table of (label, value) cells laid out in rows of `ncols`."""
+        cells = [[Paragraph(lbl.upper(), s_collbl), Paragraph(val, s_val)] for lbl, val in pairs]
+        rows = []
+        for i in range(0, len(cells), ncols):
+            chunk = cells[i:i + ncols]
+            chunk += [""] * (ncols - len(chunk))
+            rows.append(chunk)
+        t = Table(rows, colWidths=[inner_w / ncols] * ncols)
+        t.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+        ]))
+        return [t]
+
+    rp = result.get("readings_parsed")
+    if rp:
+        pairs = [(r["label"], " <i>or</i> ".join([r["ref"]] + list(r.get("alts") or [])))
+                 for r in rp]
+        section("Appointed Readings", grid(pairs, 4))
+
+    intro = result.get("introit")
+    if intro and (intro.get("name") or intro.get("text")):
+        flows = [Paragraph(f"<i>{intro.get('name','')}</i> &mdash; {intro.get('ref','')}", s_body)]
+        if intro.get("text"):
+            flows.append(Paragraph(intro["text"], s_it))
+        section("Introit", flows)
+    if result.get("collect"):
+        section("Collect of the Day", [Paragraph(result["collect"], s_it)])
+    if result.get("gradual"):
+        section("Gradual", [Paragraph(result["gradual"], s_it)])
+
+    hod = result.get("hymn_of_the_day")
+    if hod:
+        section("Hymn of the Day", [Paragraph("  <i>or</i>  ".join(hod), s_body)])
+
+    daily = result.get("daily")
+    if daily:
+        pairs = [(d["label"], d["ref"]) for d in daily]
+        section("Daily Lectionary", grid(pairs, 2) + [
+            Paragraph("LSB Daily Lectionary — two readings for personal or family devotion.", s_cap)])
+
+    mf = result.get("minor_feast")
+    if mf:
+        flows = [Paragraph(mf["collect"], s_it)] if mf.get("collect") else \
+                [Paragraph("Commemorated this day.", s_body)]
+        section(f"Also Commemorated: {mf.get('name','')}", flows)
+
+    if result.get("file_label"):
+        fl_box = Table([[Paragraph(result["file_label"], s_fl)]], colWidths=[inner_w])
+        fl_box.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#EFEEE9")),
+            ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#E0DED7")),
+            ("ROUNDEDCORNERS", [6, 6, 6, 6]),
+            ("LEFTPADDING", (0, 0), (-1, -1), 12), ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+            ("TOPPADDING", (0, 0), (-1, -1), 9), ("BOTTOMPADDING", (0, 0), (-1, -1), 9),
+        ]))
+        section("File Label", [
+            fl_box,
+            Paragraph("Use this as a filename prefix for recordings, videos, or documents "
+                      "from this day.", s_cap),
+        ])
+
+    # Citation rides along as the final (untitled) row.
+    sections.append((None, [Paragraph(_day_citation(result, lectionary), s_src)]))
+
+    # ---- Assemble: colored header row over one white row per section ----
+    rows = [[header]]
+    for title, flows in sections:
+        cell = ([Paragraph(title.upper(), s_sec)] + flows) if title else flows
+        rows.append([cell])
+
+    style = [
+        ("BACKGROUND", (0, 0), (0, 0), header_bg),
+        ("BACKGROUND", (0, 1), (0, -1), white),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (0, 0), 22), ("RIGHTPADDING", (0, 0), (0, 0), 22),
+        ("TOPPADDING", (0, 0), (0, 0), 20), ("BOTTOMPADDING", (0, 0), (0, 0), 20),
+        ("LEFTPADDING", (0, 1), (0, -1), CARD_PAD), ("RIGHTPADDING", (0, 1), (0, -1), CARD_PAD),
+        ("TOPPADDING", (0, 1), (0, -1), 13), ("BOTTOMPADDING", (0, 1), (0, -1), 13),
+        ("BOX", (0, 0), (-1, -1), 0.8, colors.HexColor("#E0E0E0")),
+        ("ROUNDEDCORNERS", [13, 13, 13, 13]),
+    ]
+    # Thin divider above each section row after the first (skip the header row at 0).
+    for r in range(2, len(rows)):
+        style.append(("LINEABOVE", (0, r), (0, r), 0.6, colors.HexColor("#E6E6E6")))
+
+    card = Table(rows, colWidths=[doc.width], splitByRow=1)
+    card.setStyle(TableStyle(style))
+
+    doc.build([card])
     buf.seek(0)
     return buf

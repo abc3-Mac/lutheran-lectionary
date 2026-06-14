@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>About</h1>
+  <p class="page-sub">Where this came from, and how we handle texts and copyright.</p>
+</div>
+
+<div class="settings-page">
+
+  <div class="card settings-card">
+    <h2>✝ From Calendar Explorer to today</h2>
+    <p>The Liturgical Calendar is the present-day incarnation of <em>Calendar Explorer</em>, a
+      Windows shareware program Albert Collver first released on March 24, 1997 (32-bit Visual
+      Basic 5, $17 via CompuServe). That first version already offered the three-year and
+      historic one-year series, liturgical colors, Western and Eastern Easter dating, and a full
+      church-year calendar.</p>
+    <p>Nearly thirty years later it has been rebuilt as a free, open-source web app — Visual Basic
+      became Python/Flask, Windows-only became any browser, and paid shareware became
+      MIT-licensed software on GitHub.</p>
+    <p><a href="https://news.collver.biz/i-first-wrote-this-program-in-1997/"
+          target="_blank" rel="noopener">Read the full story &rarr;</a></p>
+  </div>
+
+  <div class="card settings-card">
+    <h2>📜 Sources &amp; permissions</h2>
+    <p>This site publishes only facts and public-domain texts:</p>
+    <ul>
+      <li><strong>Dates, reading references, and hymn numbers and titles</strong> are facts,
+        freely citable.</li>
+      <li>The <strong>One-Year (Historic) propers</strong> — introits, collects, and graduals —
+        come from the <em>Common Service Book of the Lutheran Church</em> (1917), which is in the
+        public domain.</li>
+      <li>We do <strong>not</strong> reproduce copyrighted CPH / <em>Lutheran Service Book</em>
+        texts (collects, introits, hymn texts). The three-year series lists reading references
+        and hymn numbers only.</li>
+      <li><strong>Scripture</strong> is shown through licensed Bible APIs — the ESV via Crossway's
+        authorized API; KJV and ASV are public domain — fetched live for display and never stored
+        on this server.</li>
+    </ul>
+    <p class="page-sub">Built to respect copyright; to our knowledge it contains no copyright
+      violations. As always, verify against official LCMS materials before liturgical use.</p>
+  </div>
+
+</div>
+{% endblock %}
