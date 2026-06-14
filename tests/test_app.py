@@ -197,9 +197,39 @@ def test_day_pdf(client):
     assert r.data[:5] == b"%PDF-"
     # Bad date 404s
     assert client.get("/day/not-a-date/pdf").status_code == 404
-    # The lookup card exposes the PDF button
+    # The lookup card exposes both PDF buttons (default card + plain document)
     r = client.get("/lookup?date=2025-12-07&lectionary=one_year")
     assert b"/day/2025-12-07/pdf" in r.data
+    assert b"style=document" in r.data
+
+
+def test_day_pdf_styles(client):
+    # Card is the default style; ?style=document renders the plain sheet.
+    for lect in ("one_year", "three_year"):
+        for suffix in ("", "&style=card", "&style=document"):
+            r = client.get(f"/day/2026-06-07/pdf?lectionary={lect}{suffix}")
+            assert r.status_code == 200
+            assert r.data[:5] == b"%PDF-"
+
+
+def test_about_page(client):
+    r = client.get("/about")
+    assert r.status_code == 200
+    assert b"Common Service Book" in r.data
+    assert b"Calendar Explorer" in r.data
+    # About is linked in the nav
+    assert b'href="/about"' in client.get("/").data
+
+
+def test_day_pdf_citation_is_conditional():
+    # The 1917 (CSB) source must only be cited where those texts actually appear —
+    # i.e. the one-year series, never the three-year (which carries no introit/collect/gradual).
+    from pdf_gen import _day_citation
+    one_year = {"introit": {"name": "x"}, "collect": "y", "gradual": "z"}
+    three_year = {"introit": None, "collect": None, "gradual": None}
+    assert "Common Service Book" in _day_citation(one_year, "one_year")
+    assert "Common Service Book" not in _day_citation(three_year, "three_year")
+    assert "Lutheran Service Book" in _day_citation(three_year, "three_year")
 
 
 def test_ical_includes_propers_and_daily(client):
