@@ -194,7 +194,7 @@
         .catch(() => { /* offline / rate-limited / private repo — silently no-op */ });
     })();
   </script>
-  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script src="{{ url_for('static', filename='main.js') }}?v=20260617a"></script>
   {% if umami_script_url and umami_website_id %}
   <script defer src="{{ umami_script_url }}" data-website-id="{{ umami_website_id }}"></script>
   {% endif %}

@@ -10,6 +10,14 @@ function getTranslationPref() {
   return localStorage.getItem('lcms_translation') || 'ESV';
 }
 
+// Lectionary references use half-verse suffixes (e.g. "Matthew 10:5a",
+// "Psalm 16:9b") that no Bible API understands — bible-api.com 404s on them
+// and the ESV API silently drops the partial verse. Strip the trailing letter
+// so the whole verse is fetched (the closest the APIs can serve).
+function normalizeRef(ref) {
+  return ref.replace(/(\d)[a-z]\b/g, '$1');
+}
+
 function showScripture(event, ref, bgUrl) {
   if (event) event.preventDefault();
   const modal   = document.getElementById('scripture-modal');
@@ -25,9 +33,11 @@ function showScripture(event, ref, bgUrl) {
   linkEl.href        = bgUrl;
   modal.style.display = 'flex';
 
+  const apiRef = normalizeRef(ref);
+
   if (trans === 'KJV' || trans === 'ASV') {
     // Public-domain translations — bible-api.com serves them without a key
-    fetch('https://bible-api.com/' + encodeURIComponent(ref) + '?translation=' + trans.toLowerCase())
+    fetch('https://bible-api.com/' + encodeURIComponent(apiRef) + '?translation=' + trans.toLowerCase())
       .then(r => { if (!r.ok) throw new Error('unavailable'); return r.json(); })
       .then(data => {
         if (data.text) bodyEl.textContent = data.text.trim();
@@ -41,7 +51,7 @@ function showScripture(event, ref, bgUrl) {
   const ESV_API_KEY = '146f3dcaf64091437ccf1e1268b999e901c6c4c8';
   // include-short-copyright=true appends the "(ESV)" attribution the Crossway
   // API license requires whenever ESV text is displayed.
-  const apiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(ref)}&include-headings=false&include-footnotes=false&include-verse-numbers=true&include-short-copyright=true`;
+  const apiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(apiRef)}&include-headings=false&include-footnotes=false&include-verse-numbers=true&include-short-copyright=true`;
 
   fetch(apiUrl, {
     headers: { 'Authorization': `Token ${ESV_API_KEY}` }
@@ -53,7 +63,10 @@ function showScripture(event, ref, bgUrl) {
   .then(data => {
     const passages = data.passages;
     if (passages && passages.length > 0) {
-      bodyEl.textContent = passages[0].trim();
+      // A discontiguous reference (e.g. "Matthew 10:5a, 21-33") comes back as
+      // one passage string per contiguous range — render them all, not just
+      // the first.
+      bodyEl.textContent = passages.map(p => p.trim()).join('\n\n');
     } else {
       showFallback(bodyEl, ref, bgUrl);
     }
