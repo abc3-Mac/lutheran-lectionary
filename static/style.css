@@ -1012,6 +1012,34 @@ a.almanac-card:hover { border-color: var(--accent-text); box-shadow: var(--shado
   border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2px 8px;
 }
 
+.help-body { max-width: 46rem; line-height: 1.6; }
+.help-body h2 { font-size: 1.15rem; margin: 1.75rem 0 0.6rem; }
+.help-body h3 { font-size: 1rem; margin: 1.1rem 0 0.3rem; color: var(--text-strong); }
+.help-body p { color: var(--text-soft); margin: 0.4rem 0; }
+.help-tools dt { font-weight: 600; margin-top: 0.85rem; }
+.help-tools dd { margin: 0.2rem 0 0; color: var(--text-soft); }
+.help-sources { color: var(--text-soft); font-size: 0.9rem; }
+.help-sources li { margin: 0.25rem 0; }
+
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+.stat-card { background: var(--row-alt); border-radius: var(--radius); padding: 0.85rem 1rem; }
+.stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat-val { font-size: 1.5rem; font-weight: 600; color: var(--text-strong); }
+.stat-sub { font-size: 0.78rem; color: var(--muted); }
+.stat-h2 { font-size: 1.05rem; margin: 1rem 0 0.75rem; }
+.stat-dist { display: flex; flex-direction: column; gap: 3px; }
+.stat-row { display: grid; grid-template-columns: 4.5rem 1fr 5.5rem; align-items: center; gap: 8px; font-size: 0.82rem; }
+.stat-row-label { color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.stat-bar-wrap { background: var(--row-alt); border-radius: 3px; overflow: hidden; }
+.stat-bar { display: block; height: 14px; background: var(--accent-text); border-radius: 3px; min-width: 2px; }
+.stat-row-count { text-align: right; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.stat-row-pct { color: var(--muted); }
+
+.convert-result { max-width: 30rem; }
+.convert-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 0.5px solid var(--row-border); font-size: 0.95rem; }
+.convert-row span { color: var(--muted); }
+.convert-row strong { color: var(--text-strong); }
+
 .passover-jumps { margin-top: 0.6rem; font-size: 0.85rem; color: var(--muted); }
 .passover-jumps a { color: var(--accent-text); }
 

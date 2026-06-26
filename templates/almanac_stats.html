@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Easter Statistics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Easter Statistics</h1>
+  <p class="page-sub">{{ tradition|capitalize }} Easter &middot; {{ start }}–{{ end }} ({{ total }} years)</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/easter-stats" method="get" class="toolbar-form">
+    <label>From <input type="number" name="start" value="{{ start }}" min="1583" max="4000" style="width:5.5rem;"></label>
+    <label>To <input type="number" name="end" value="{{ end }}" min="1583" max="4000" style="width:5.5rem;"></label>
+    <label>Tradition
+      <select name="tradition">
+        <option value="western" {{ 'selected' if tradition=='western' }}>Western</option>
+        <option value="eastern" {{ 'selected' if tradition=='eastern' }}>Eastern</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+<div class="stat-cards">
+  <div class="stat-card"><div class="stat-label">Earliest</div><div class="stat-val">{{ earliest.date }}</div><div class="stat-sub">first in {{ earliest.year }}</div></div>
+  <div class="stat-card"><div class="stat-label">Latest</div><div class="stat-val">{{ latest.date }}</div><div class="stat-sub">first in {{ latest.year }}</div></div>
+  <div class="stat-card"><div class="stat-label">Most common</div><div class="stat-val">{{ most_common }}</div><div class="stat-sub">{{ most_common_count }} times</div></div>
+  <div class="stat-card"><div class="stat-label">West = East</div><div class="stat-val">{{ coincidences }}</div><div class="stat-sub">coincident years</div></div>
+</div>
+
+<h2 class="stat-h2">Distribution by date</h2>
+<div class="stat-dist">
+  {% for r in dist %}
+  <div class="stat-row">
+    <span class="stat-row-label">{{ r.label }}</span>
+    <span class="stat-bar-wrap"><span class="stat-bar" style="width: {{ r.bar }}%;"></span></span>
+    <span class="stat-row-count">{{ r.count }} <span class="stat-row-pct">({{ r.pct }}%)</span></span>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

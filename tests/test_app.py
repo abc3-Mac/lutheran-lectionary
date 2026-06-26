@@ -216,6 +216,41 @@ def test_almanac_passover_bc_range(client):
     assert b"1490 BC" in r.data
 
 
+def test_almanac_easter_stats(client):
+    r = client.get("/almanac/easter-stats?start=1583&end=2582&tradition=western")
+    assert r.status_code == 200
+    assert b"March 22" in r.data       # earliest possible Western Easter
+    assert b"April 25" in r.data       # latest possible
+    assert b"Distribution" in r.data
+
+
+def test_almanac_convert(client):
+    # Gregorian 2026-04-05 is a Sunday; the Julian equivalent is March 23.
+    r = client.get("/almanac/convert?year=2026&month=4&day=5&src=gregorian")
+    assert r.status_code == 200
+    assert b"Sunday" in r.data
+    assert b"March 23" in r.data       # Julian equivalent
+    # bad input is handled
+    r = client.get("/almanac/convert?year=2026&month=13&day=5")
+    assert b"valid date" in r.data
+
+
+def test_almanac_feasts(client):
+    r = client.get("/almanac/feasts?year=2026")
+    assert r.status_code == 200
+    assert b"Ash Wednesday" in r.data
+    assert b"Corpus Christi" in r.data
+    assert b"February 18" in r.data    # Western Ash Wednesday 2026
+
+
+def test_almanac_help(client):
+    r = client.get("/almanac/help")
+    assert r.status_code == 200
+    assert b"Quartodeciman" in r.data
+    assert b"AD 33" in r.data          # the assumed crucifixion year
+    assert b"Jeremias" in r.data
+
+
 def test_almanac_moon_ancient_year(client):
     # AD 33: Julian calendar, the Paschal-Controversy retrojection note, and the
     # accuracy caveat all appear.

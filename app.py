@@ -922,6 +922,155 @@ def almanac_passover():
     )
 
 
+@app.route("/almanac/easter-stats")
+def almanac_easter_stats():
+    """Statistics on the date of Easter over a year range: earliest, latest,
+    the full distribution, and how often West and East coincide."""
+    from liturgical_calendar.almanac import computus
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except (ValueError, TypeError):
+            return default
+
+    tradition = request.args.get("tradition", "western")
+    if tradition not in ("western", "eastern"):
+        tradition = "western"
+    # Gregorian computus only makes sense from 1583; default to a long window.
+    start = max(1583, _int("start", 1583))
+    end = _int("end", 2582)
+    end = max(start, min(start + 1999, end))            # cap 2000 years
+
+    fn = computus.orthodox_easter if tradition == "eastern" else computus.gregorian_easter
+    counts = {}                                          # (month, day) -> count
+    earliest = latest = None
+    coincidences = 0
+    for y in range(start, end + 1):
+        e = fn(y)
+        key = (e.month, e.day)
+        counts[key] = counts.get(key, 0) + 1
+        if earliest is None or (e.month, e.day) < earliest[0]:
+            earliest = ((e.month, e.day), y)
+        if latest is None or (e.month, e.day) > latest[0]:
+            latest = ((e.month, e.day), y)
+        if computus.gregorian_easter(y) == computus.orthodox_easter(y):
+            coincidences += 1
+
+    total = end - start + 1
+    peak = max(counts.values())
+    dist = []
+    for key in sorted(counts):
+        m, d = key
+        dist.append({
+            "label": f"{_MONTHS[m][:3]} {d}",
+            "count": counts[key],
+            "pct": round(100 * counts[key] / total, 1),
+            "bar": round(100 * counts[key] / peak),       # bar width %
+        })
+    most_common = max(counts, key=counts.get)
+
+    return render_template(
+        "almanac_stats.html",
+        tradition=tradition, start=start, end=end, total=total,
+        earliest={"date": f"{_MONTHS[earliest[0][0]]} {earliest[0][1]}", "year": earliest[1]},
+        latest={"date": f"{_MONTHS[latest[0][0]]} {latest[0][1]}", "year": latest[1]},
+        most_common=f"{_MONTHS[most_common[0]]} {most_common[1]}",
+        most_common_count=counts[most_common],
+        coincidences=coincidences,
+        dist=dist,
+    )
+
+
+@app.route("/almanac/convert")
+def almanac_convert():
+    """Convert a date between the Julian and Gregorian calendars, with the
+    Julian Day number and weekday. Works for BC years (astronomical numbering)."""
+    import math
+    from liturgical_calendar.almanac import convert as cv
+
+    result = error = None
+    src = request.args.get("src", "gregorian")
+    if src not in ("gregorian", "julian"):
+        src = "gregorian"
+    y = request.args.get("year")
+    m = request.args.get("month")
+    d = request.args.get("day")
+    if y is not None and m is not None and d is not None:
+        try:
+            yi, mi, di = int(y), int(m), int(d)
+            if not (1 <= mi <= 12 and 1 <= di <= 31):
+                raise ValueError
+            jd = (cv.julian_to_jd(yi, mi, di) if src == "julian"
+                  else cv.gregorian_to_jd(yi, mi, di))
+            gy, gm, gd = cv.jd_to_gregorian(jd)
+            jy, jm, jd_ = cv.jd_to_julian(jd)
+            wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                  "Friday", "Saturday"][int(math.floor(jd + 1.5)) % 7]
+            result = {
+                "weekday": wd,
+                "gregorian": f"{_MONTHS[gm]} {int(gd)}, {_year_label(gy)}",
+                "julian": f"{_MONTHS[jm]} {int(jd_)}, {_year_label(jy)}",
+                "jdn": int(jd + 0.5),
+            }
+        except (ValueError, TypeError):
+            error = "Enter a valid date (month 1–12, day 1–31)."
+
+    return render_template("almanac_convert.html",
+                           src=src, year=y or "", month=m or "", day=d or "",
+                           result=result, error=error)
+
+
+@app.route("/almanac/help")
+def almanac_help():
+    """Help & guide: how the tools work and why Easter is hard to calculate."""
+    return render_template("almanac_help.html")
+
+
+@app.route("/almanac/feasts")
+def almanac_feasts():
+    """All movable feasts for a single year, Western and Eastern."""
+    from datetime import timedelta
+    from liturgical_calendar.almanac import computus
+
+    try:
+        year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        year = date.today().year
+    year = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, year))
+    julian = year < computus.GREGORIAN_START_YEAR
+
+    order = ["septuagesima", "sexagesima", "quinquagesima", "ash_wednesday",
+             "lent_1", "palm_sunday", "maundy_thursday", "good_friday",
+             "holy_saturday", "easter", "ascension", "pentecost", "trinity",
+             "corpus_christi"]
+    labels = {
+        "septuagesima": "Septuagesima", "sexagesima": "Sexagesima",
+        "quinquagesima": "Quinquagesima", "ash_wednesday": "Ash Wednesday",
+        "lent_1": "First Sunday in Lent", "palm_sunday": "Palm Sunday",
+        "maundy_thursday": "Maundy Thursday", "good_friday": "Good Friday",
+        "holy_saturday": "Holy Saturday", "easter": "Easter Day",
+        "ascension": "Ascension", "pentecost": "Pentecost",
+        "trinity": "Holy Trinity", "corpus_christi": "Corpus Christi",
+    }
+    west_base = computus.orthodox_easter(year) if julian else computus.gregorian_easter(year)
+    east_base = computus.orthodox_easter(year)
+    rows = []
+    for key in order:
+        off = computus.MOVABLE_OFFSETS[key]
+        rows.append({
+            "name": labels[key],
+            "western": _fmt_date(west_base + timedelta(days=off), julian, with_weekday=False),
+            "eastern": _fmt_date(east_base + timedelta(days=off), julian, with_weekday=False),
+        })
+
+    return render_template("almanac_feasts.html", year=year, rows=rows,
+                           julian=julian, same=(west_base == east_base),
+                           prev_year=max(ALMANAC_MIN_YEAR, year - 1),
+                           next_year=min(ALMANAC_MAX_YEAR, year + 1),
+                           min_year=ALMANAC_MIN_YEAR, max_year=ALMANAC_MAX_YEAR)
+
+
 # ---------------------------------------------------------------------------
 # JSON API
 # ---------------------------------------------------------------------------

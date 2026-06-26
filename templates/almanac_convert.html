@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Calendar Converter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Calendar Converter</h1>
+  <p class="page-sub">Convert between the Julian and Gregorian calendars, with the Julian day number. Use negative-free BC years via the date below; the result labels the era.</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/convert" method="get" class="toolbar-form">
+    <label>Year <input type="number" name="year" value="{{ year }}" placeholder="2026" style="width:5.5rem;"></label>
+    <label>Month <input type="number" name="month" value="{{ month }}" min="1" max="12" placeholder="4" style="width:4rem;"></label>
+    <label>Day <input type="number" name="day" value="{{ day }}" min="1" max="31" placeholder="5" style="width:4rem;"></label>
+    <label>is a
+      <select name="src">
+        <option value="gregorian" {{ 'selected' if src=='gregorian' }}>Gregorian date</option>
+        <option value="julian" {{ 'selected' if src=='julian' }}>Julian date</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-sm">Convert</button>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+{% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+
+{% if result %}
+<div class="card convert-result">
+  <div class="convert-row"><span>Day of week</span><strong>{{ result.weekday }}</strong></div>
+  <div class="convert-row"><span>Gregorian</span><strong>{{ result.gregorian }}</strong></div>
+  <div class="convert-row"><span>Julian</span><strong>{{ result.julian }}</strong></div>
+  <div class="convert-row"><span>Julian day number</span><strong>{{ result.jdn }}</strong></div>
+</div>
+{% endif %}
+{% endblock %}

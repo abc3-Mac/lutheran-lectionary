@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Almanac — Help &amp; Guide{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Almanac — Help &amp; Guide</h1>
+  <p class="page-sub">What each tool does, and a short history of why the date of Easter is so hard to pin down.</p>
+</div>
+
+<div class="help-body">
+
+  <h2>The tools</h2>
+  <dl class="help-tools">
+    <dt><a href="/almanac/moon">🌙 Moon Phases</a></dt>
+    <dd>Every phase of the Moon for a year, with the dates and Universal Time of each new, first-quarter, full, and last-quarter moon. Lists full and new moons, flags <strong>blue moons</strong> (both the calendar-month and the seasonal definitions), and shows how the <em>ecclesiastical</em> Paschal full moon behind Easter compares with the real astronomical one. Works back to AD 30; pre-1582 dates are shown on the Julian calendar.</dd>
+
+    <dt><a href="/almanac/easter">📅 Date of Easter</a></dt>
+    <dd>Easter and the movable feasts for a range of years. <em>Compare</em> mode places the Western (Gregorian) and Eastern (Orthodox) dates side by side and marks the years they coincide; the single-tradition modes give the full feast table from Septuagesima to Holy Trinity.</dd>
+
+    <dt><a href="/almanac/feasts">✠ Movable Feasts</a></dt>
+    <dd>For a single year, every feast that moves with Easter — Septuagesima, Ash Wednesday, Lent, Holy Week, Ascension, Pentecost, Trinity, Corpus Christi — in both traditions.</dd>
+
+    <dt><a href="/almanac/passover">🌑 Passover &amp; the Paschal Moon</a></dt>
+    <dd>The spring full moon (14 Nisan) reconstructed astronomically from the Exodus era to the present, on both the Gregorian and Julian calendars. This is a reconstruction of the sky, not a record of the historical calendar (see the accuracy note below).</dd>
+
+    <dt><a href="/almanac/easter-stats">📊 Easter Statistics</a></dt>
+    <dd>Over any range of years: the earliest and latest Easter, the full distribution of dates, and how often Western and Eastern Easter fall together. Western Easter can never be earlier than 22 March or later than 25 April.</dd>
+
+    <dt><a href="/almanac/convert">🔄 Calendar Converter</a></dt>
+    <dd>Convert any date between the Julian and Gregorian calendars, with its Julian day number and day of the week. Handles BC years (it labels the era on output).</dd>
+  </dl>
+
+  <h2>Why is the date of Easter so hard?</h2>
+  <p>
+    The rule sounds simple — Easter is the first Sunday after the first full moon on or after the spring equinox — but every clause hides centuries of difficulty.
+  </p>
+
+  <h3>1. Even the first Easter's date is debated</h3>
+  <p>
+    The Gospels disagree on whether the Last Supper was the Passover meal. The Synoptics (Matthew, Mark, Luke) present it as a Passover meal, with Jesus dying on <strong>15 Nisan</strong>; John places the crucifixion on <strong>14 Nisan</strong>, the Day of Preparation, before the festival. This is the classic problem treated in Joachim Jeremias' <em>The Eucharistic Words of Jesus</em>. It matters here because the choice decides which year's astronomy fits.
+  </p>
+
+  <h3>2. The Quartodeciman controversy</h3>
+  <p>
+    In the second century the churches of Asia Minor kept Pascha on <strong>14 Nisan whatever the weekday</strong>, following the Jewish reckoning, while Rome insisted on the following <strong>Sunday</strong>. The dispute grew so sharp that Victor of Rome (c. 190) threatened to break communion with the East over it.
+  </p>
+
+  <h3>3. Nicaea cuts the cord with the Jewish calendar</h3>
+  <p>
+    The Council of Nicaea (325) ruled that Easter should be computed independently of the Jewish calendar — a Sunday, after the first full moon on or after the equinox. But it did not hand down a formula, which left the <em>how</em> open.
+  </p>
+
+  <h3>4. Whose equinox? Whose full moon?</h3>
+  <p>
+    Alexandria fixed the equinox at <strong>21 March</strong> and used the 19-year (Metonic) lunar cycle; Rome long used <strong>18 March</strong> and a different cycle. For centuries the two great sees could announce <em>different</em> dates for the same Easter. Unifying the calculation took the work of <strong>Dionysius Exiguus</strong> (525) and, in the West, the <strong>Venerable Bede</strong>.
+  </p>
+
+  <h3>5. The drift, and the Gregorian reform</h3>
+  <p>
+    The Julian calendar runs slightly long, so over a millennium its dates slipped against the seasons. By 1582 the equinox had drifted ten days, and Pope Gregory XIII reformed the calendar — dropping ten days and adjusting the leap-year rule. Most of the East kept the Julian reckoning, which is why <strong>Eastern and Western Easter still differ</strong> today, sometimes by over a month.
+  </p>
+
+  <h2>The ecclesiastical moon vs. the sky</h2>
+  <p>
+    To keep Easter calculable, the Church uses a <strong>tabular ("ecclesiastical") moon</strong> and a <strong>fixed equinox of 21 March</strong> — neither of which is the real astronomical event. The Moon Phases tool shows the gap: the ecclesiastical Paschal full moon usually agrees with the astronomical full moon to the day, but not always.
+  </p>
+
+  <h2>The year of the crucifixion</h2>
+  <p>
+    The two serious candidates are <strong>AD 30</strong> (Friday 7 April) and <strong>AD 33</strong> (Friday 3 April), each a Friday at Passover under Pontius Pilate. Weighing the chronology of the ministry (John names at least three Passovers, and Luke dates John the Baptist to Tiberius' fifteenth year) together with a lunar eclipse visible from Jerusalem on the evening of 3 April AD 33, <strong>this site assumes AD 33</strong>. The Passover tool's Passion-era view reproduces that Friday-3-April full moon to the day.
+  </p>
+
+  <h2>A note on accuracy</h2>
+  <p>
+    Moon positions are computed with Jean Meeus' methods and match the U.S. Naval Observatory to within about two minutes for the modern era. The lunar model holds up remarkably well even in antiquity — our 4 BC full moon matches NASA's eclipse catalog to about eight minutes. The dominant uncertainty deep in BC is <strong>ΔT</strong> (the gradual slowing of the Earth's rotation), which can shift the time of day and, occasionally, the calendar date. The date of Easter itself, by contrast, is computed by exact integer arithmetic and is correct for every year.
+  </p>
+  <p>
+    For the Passover reconstruction, remember that the ancient Hebrew calendar was <strong>observational</strong> — set by sighting the new moon and the ripening of the barley — so even a perfect astronomical full moon is not a guarantee of the day Passover was actually kept. These tools reconstruct the sky; they do not replace the historical record.
+  </p>
+
+  <h2>Sources</h2>
+  <ul class="help-sources">
+    <li>Jean Meeus, <em>Astronomical Algorithms</em> (2nd ed.) — lunar phases and calendar conversion.</li>
+    <li>U.S. Naval Observatory and the NASA Five Millennium Catalog of Lunar Eclipses — validation data.</li>
+    <li>Joachim Jeremias, <em>The Eucharistic Words of Jesus</em> — the Last Supper / Passover question.</li>
+    <li>C. Humphreys &amp; W. Waddington, on the astronomical dating of the crucifixion.</li>
+  </ul>
+</div>
+{% endblock %}

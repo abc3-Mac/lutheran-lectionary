@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Movable Feasts {{ year }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Movable Feasts — {{ year }}</h1>
+  <p class="page-sub">The feasts that move with the date of Easter{% if julian %} &middot; <strong>Julian calendar</strong>{% endif %}</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/feasts" method="get" class="toolbar-form">
+    <a href="/almanac/feasts?year={{ prev_year }}" class="btn btn-sm btn-outline" title="Previous year">←</a>
+    <label>Year <input type="number" name="year" value="{{ year }}" min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;"></label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/almanac/feasts?year={{ next_year }}" class="btn btn-sm btn-outline" title="Next year">→</a>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+{% if same %}
+<p class="easter-summary">Western and Eastern Easter coincide this year, so the feasts fall on the same days.</p>
+{% endif %}
+
+<table class="easter-table">
+  <thead>
+    <tr><th>Feast</th><th>Western</th><th>Eastern</th></tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr><td class="easter-year">{{ r.name }}</td><td>{{ r.western }}</td><td>{{ r.eastern }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
