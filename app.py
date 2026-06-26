@@ -695,6 +695,391 @@ def export_ical_subscribe():
 
 
 # ---------------------------------------------------------------------------
+# Almanac — calendar and lunar utilities
+# ---------------------------------------------------------------------------
+
+ALMANAC_MIN_YEAR = 30      # back to apostolic times (Julian calendar)
+ALMANAC_MAX_YEAR = 2200
+
+_MONTHS = ["", "January", "February", "March", "April", "May", "June",
+           "July", "August", "September", "October", "November", "December"]
+
+
+def _fmt_date(d, julian: bool, with_year: bool = False, with_weekday: bool = True):
+    """Format a (proleptic-Gregorian) date in the era-appropriate calendar."""
+    from liturgical_calendar.almanac.convert import gregorian_to_julian
+    if julian:
+        y, m, day = gregorian_to_julian(d)
+    else:
+        y, m, day = d.year, d.month, d.day
+    wd = d.strftime("%a") + ", " if with_weekday else ""
+    yr = f", {y}" if with_year else ""
+    return f"{wd}{_MONTHS[m]} {day}{yr}"
+
+
+@app.route("/almanac")
+def almanac():
+    """Hub page linking the calendar/lunar tools."""
+    return render_template("almanac.html", year=date.today().year)
+
+
+@app.route("/almanac/moon")
+def almanac_moon():
+    """Moon phases for a year: full/new lists, blue moons, and the
+    ecclesiastical-vs-astronomical comparison behind the date of Easter.
+
+    Works back to apostolic times: before the 1582 reform, dates are shown on
+    the Julian calendar and the astronomical positions are approximate (the
+    lunar series drifts ~a day across two millennia)."""
+    from liturgical_calendar.almanac import moon, computus
+    from liturgical_calendar.almanac.icons import phase_icon, moon_svg
+    from markupsafe import Markup
+
+    try:
+        year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        year = date.today().year
+    year = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, year))
+    julian = year < computus.GREGORIAN_START_YEAR
+
+    events = []
+    for p in moon.phases_in_range(date(year, 1, 1), date(year, 12, 31)):
+        events.append({
+            "phase":   p.phase,
+            "icon":    Markup(phase_icon(p.phase, size=30)),
+            "date":    _fmt_date(p.dt.date(), julian),
+            "time":    p.dt.strftime("%H:%M") + " UT",
+        })
+
+    blue = []
+    for b in moon.blue_moons(year):
+        blue.append({
+            "kind": b["kind"],
+            "date": _fmt_date(b["date"], julian, with_weekday=False),
+            "season": b.get("season", ""),
+        })
+
+    cmp = computus.easter_moon_comparison(year)
+    comparison = {
+        "golden_number":   cmp["golden_number"],
+        "eccl_equinox":    _fmt_date(cmp["ecclesiastical_equinox"], julian, with_weekday=False),
+        "eccl_full_moon":  _fmt_date(cmp["ecclesiastical_full_moon"], julian, with_weekday=False),
+        "astro_full_moon": _fmt_date(cmp["astronomical_full_moon"], julian, with_weekday=False),
+        "astro_time":      cmp["astronomical_full_moon_ut"].strftime("%H:%M UT"),
+        "delta_days":      cmp["delta_days"],
+        "easter":          _fmt_date(cmp["easter"], julian, with_year=True, with_weekday=False),
+        "full_icon":       Markup(moon_svg(1.0, True, size=30, label="Full moon")),
+    }
+
+    return render_template(
+        "almanac_moon.html",
+        year=year,
+        julian=julian,
+        before_nicaea=cmp["before_nicaea"],
+        events=events,
+        full_count=sum(1 for e in events if e["phase"] == moon.FULL_MOON),
+        new_count=sum(1 for e in events if e["phase"] == moon.NEW_MOON),
+        blue_moons=blue,
+        comparison=comparison,
+        min_year=ALMANAC_MIN_YEAR,
+        max_year=ALMANAC_MAX_YEAR,
+        prev_year=max(ALMANAC_MIN_YEAR, year - 1),
+        next_year=min(ALMANAC_MAX_YEAR, year + 1),
+    )
+
+
+@app.route("/almanac/easter")
+def almanac_easter():
+    """Date of Easter and the movable feasts over a year range.
+
+    Three modes: 'compare' (Western vs Eastern, with the gap in days),
+    'western', and 'eastern' (a full movable-feast table for one tradition).
+    Pre-1583 rows are shown on the Julian calendar."""
+    from datetime import timedelta
+    from liturgical_calendar.almanac import computus
+
+    mode = request.args.get("mode", "compare")
+    if mode not in ("compare", "western", "eastern"):
+        mode = "compare"
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except ValueError:
+            return default
+
+    start = _int("start", date.today().year)
+    end = _int("end", start + 24)
+    start = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, start))
+    end = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, end))
+    if end < start:
+        start, end = end, start
+    if end - start > 199:                    # keep the table bounded
+        end = start + 199
+
+    # The movable feasts to show in single-tradition mode, in liturgical order.
+    feast_cols = [
+        ("Septuagesima", "septuagesima"), ("Ash Wednesday", "ash_wednesday"),
+        ("Easter", "easter"), ("Ascension", "ascension"),
+        ("Pentecost", "pentecost"), ("Trinity", "trinity"),
+    ]
+
+    rows = []
+    coincidences = 0
+    if mode == "compare":
+        for y in range(start, end + 1):
+            julian = y < computus.GREGORIAN_START_YEAR
+            east = computus.orthodox_easter(y)
+            west = east if julian else computus.gregorian_easter(y)
+            gap = (east - west).days
+            if gap == 0:
+                coincidences += 1
+            rows.append({
+                "year": y,
+                "western": _fmt_date(west, julian, with_weekday=False),
+                "eastern": _fmt_date(east, julian, with_weekday=False),
+                "gap": gap,
+                "same": gap == 0,
+            })
+    else:
+        for y in range(start, end + 1):
+            julian = y < computus.GREGORIAN_START_YEAR
+            if mode == "eastern" or julian:
+                base = computus.orthodox_easter(y)
+            else:
+                base = computus.gregorian_easter(y)
+            cells = [_fmt_date(base + timedelta(days=computus.MOVABLE_OFFSETS[key]),
+                               julian, with_weekday=False)
+                     for _, key in feast_cols]
+            rows.append({"year": y, "cells": cells})
+
+    return render_template(
+        "almanac_easter.html",
+        mode=mode,
+        start=start,
+        end=end,
+        rows=rows,
+        feast_headers=[label for label, _ in feast_cols],
+        coincidences=coincidences,
+        spans_julian=start < computus.GREGORIAN_START_YEAR,
+        min_year=ALMANAC_MIN_YEAR,
+        max_year=ALMANAC_MAX_YEAR,
+    )
+
+
+ALMANAC_PASSOVER_MIN = -1499      # 1500 BC — the calculator's floor
+ALMANAC_PASSOVER_MAX = 2200
+
+
+def _astro_year(num: int, era: str) -> int:
+    """(number, 'BC'|'AD') -> astronomical year numbering (0 = 1 BC)."""
+    return num if era == "AD" else 1 - num
+
+
+def _year_label(astro: int) -> str:
+    return f"AD {astro}" if astro > 0 else f"{1 - astro} BC"
+
+
+@app.route("/almanac/passover")
+def almanac_passover():
+    """Astronomical Passover (the spring / Paschal full moon) reconstructed from
+    the Exodus era to the present. The Hebrew calendar was observational, so this
+    is an astronomical reconstruction, not a calendar record."""
+    from liturgical_calendar.almanac import moon
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except (ValueError, TypeError):
+            return default
+
+    s_era = request.args.get("s_era", "BC")
+    e_era = request.args.get("e_era", "BC")
+    s_era = s_era if s_era in ("BC", "AD") else "BC"
+    e_era = e_era if e_era in ("BC", "AD") else "BC"
+    s_num = _int("s_num", 1446)        # default: a classic early-Exodus date
+    e_num = _int("e_num", 1400)
+
+    start = _astro_year(s_num, s_era)
+    end = _astro_year(e_num, e_era)
+    start = max(ALMANAC_PASSOVER_MIN, min(ALMANAC_PASSOVER_MAX, start))
+    end = max(ALMANAC_PASSOVER_MIN, min(ALMANAC_PASSOVER_MAX, end))
+    if end < start:
+        start, end = end, start
+    if end - start > 199:
+        end = start + 199
+
+    rows = []
+    for y in range(start, end + 1):
+        m = moon.spring_full_moon(y)
+        gy, gm, gd = m["gregorian"]
+        jy, jm, jd = m["julian"]
+        rows.append({
+            "year": _year_label(y),
+            "weekday": m["weekday"],
+            "gregorian": f"{_MONTHS[gm]} {gd}",
+            "julian": f"{_MONTHS[jm]} {jd}",
+            "time": f"{m['hour']:02d}:{m['minute']:02d} UT",
+        })
+
+    return render_template(
+        "almanac_passover.html",
+        rows=rows,
+        s_num=s_num, s_era=s_era, e_num=e_num, e_era=e_era,
+        count=len(rows),
+    )
+
+
+@app.route("/almanac/easter-stats")
+def almanac_easter_stats():
+    """Statistics on the date of Easter over a year range: earliest, latest,
+    the full distribution, and how often West and East coincide."""
+    from liturgical_calendar.almanac import computus
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except (ValueError, TypeError):
+            return default
+
+    tradition = request.args.get("tradition", "western")
+    if tradition not in ("western", "eastern"):
+        tradition = "western"
+    # Gregorian computus only makes sense from 1583; default to a long window.
+    start = max(1583, _int("start", 1583))
+    end = _int("end", 2582)
+    end = max(start, min(start + 1999, end))            # cap 2000 years
+
+    fn = computus.orthodox_easter if tradition == "eastern" else computus.gregorian_easter
+    counts = {}                                          # (month, day) -> count
+    earliest = latest = None
+    coincidences = 0
+    for y in range(start, end + 1):
+        e = fn(y)
+        key = (e.month, e.day)
+        counts[key] = counts.get(key, 0) + 1
+        if earliest is None or (e.month, e.day) < earliest[0]:
+            earliest = ((e.month, e.day), y)
+        if latest is None or (e.month, e.day) > latest[0]:
+            latest = ((e.month, e.day), y)
+        if computus.gregorian_easter(y) == computus.orthodox_easter(y):
+            coincidences += 1
+
+    total = end - start + 1
+    peak = max(counts.values())
+    dist = []
+    for key in sorted(counts):
+        m, d = key
+        dist.append({
+            "label": f"{_MONTHS[m][:3]} {d}",
+            "count": counts[key],
+            "pct": round(100 * counts[key] / total, 1),
+            "bar": round(100 * counts[key] / peak),       # bar width %
+        })
+    most_common = max(counts, key=counts.get)
+
+    return render_template(
+        "almanac_stats.html",
+        tradition=tradition, start=start, end=end, total=total,
+        earliest={"date": f"{_MONTHS[earliest[0][0]]} {earliest[0][1]}", "year": earliest[1]},
+        latest={"date": f"{_MONTHS[latest[0][0]]} {latest[0][1]}", "year": latest[1]},
+        most_common=f"{_MONTHS[most_common[0]]} {most_common[1]}",
+        most_common_count=counts[most_common],
+        coincidences=coincidences,
+        dist=dist,
+    )
+
+
+@app.route("/almanac/convert")
+def almanac_convert():
+    """Convert a date between the Julian and Gregorian calendars, with the
+    Julian Day number and weekday. Works for BC years (astronomical numbering)."""
+    import math
+    from liturgical_calendar.almanac import convert as cv
+
+    result = error = None
+    src = request.args.get("src", "gregorian")
+    if src not in ("gregorian", "julian"):
+        src = "gregorian"
+    y = request.args.get("year")
+    m = request.args.get("month")
+    d = request.args.get("day")
+    if y is not None and m is not None and d is not None:
+        try:
+            yi, mi, di = int(y), int(m), int(d)
+            if not (1 <= mi <= 12 and 1 <= di <= 31):
+                raise ValueError
+            jd = (cv.julian_to_jd(yi, mi, di) if src == "julian"
+                  else cv.gregorian_to_jd(yi, mi, di))
+            gy, gm, gd = cv.jd_to_gregorian(jd)
+            jy, jm, jd_ = cv.jd_to_julian(jd)
+            wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                  "Friday", "Saturday"][int(math.floor(jd + 1.5)) % 7]
+            result = {
+                "weekday": wd,
+                "gregorian": f"{_MONTHS[gm]} {int(gd)}, {_year_label(gy)}",
+                "julian": f"{_MONTHS[jm]} {int(jd_)}, {_year_label(jy)}",
+                "jdn": int(jd + 0.5),
+            }
+        except (ValueError, TypeError):
+            error = "Enter a valid date (month 1–12, day 1–31)."
+
+    return render_template("almanac_convert.html",
+                           src=src, year=y or "", month=m or "", day=d or "",
+                           result=result, error=error)
+
+
+@app.route("/almanac/help")
+def almanac_help():
+    """Help & guide: how the tools work and why Easter is hard to calculate."""
+    return render_template("almanac_help.html")
+
+
+@app.route("/almanac/feasts")
+def almanac_feasts():
+    """All movable feasts for a single year, Western and Eastern."""
+    from datetime import timedelta
+    from liturgical_calendar.almanac import computus
+
+    try:
+        year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        year = date.today().year
+    year = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, year))
+    julian = year < computus.GREGORIAN_START_YEAR
+
+    order = ["septuagesima", "sexagesima", "quinquagesima", "ash_wednesday",
+             "lent_1", "palm_sunday", "maundy_thursday", "good_friday",
+             "holy_saturday", "easter", "ascension", "pentecost", "trinity",
+             "corpus_christi"]
+    labels = {
+        "septuagesima": "Septuagesima", "sexagesima": "Sexagesima",
+        "quinquagesima": "Quinquagesima", "ash_wednesday": "Ash Wednesday",
+        "lent_1": "First Sunday in Lent", "palm_sunday": "Palm Sunday",
+        "maundy_thursday": "Maundy Thursday", "good_friday": "Good Friday",
+        "holy_saturday": "Holy Saturday", "easter": "Easter Day",
+        "ascension": "Ascension", "pentecost": "Pentecost",
+        "trinity": "Holy Trinity", "corpus_christi": "Corpus Christi",
+    }
+    west_base = computus.orthodox_easter(year) if julian else computus.gregorian_easter(year)
+    east_base = computus.orthodox_easter(year)
+    rows = []
+    for key in order:
+        off = computus.MOVABLE_OFFSETS[key]
+        rows.append({
+            "name": labels[key],
+            "western": _fmt_date(west_base + timedelta(days=off), julian, with_weekday=False),
+            "eastern": _fmt_date(east_base + timedelta(days=off), julian, with_weekday=False),
+        })
+
+    return render_template("almanac_feasts.html", year=year, rows=rows,
+                           julian=julian, same=(west_base == east_base),
+                           prev_year=max(ALMANAC_MIN_YEAR, year - 1),
+                           next_year=min(ALMANAC_MAX_YEAR, year + 1),
+                           min_year=ALMANAC_MIN_YEAR, max_year=ALMANAC_MAX_YEAR)
+
+
+# ---------------------------------------------------------------------------
 # JSON API
 # ---------------------------------------------------------------------------
 

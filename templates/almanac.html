@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Almanac{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Almanac</h1>
+  <p class="page-sub">Calendar and lunar tools — the computational side of the church year, after the manner of the old <em>Calendar Explorer</em>.</p>
+</div>
+
+<div class="cards">
+  <a class="card almanac-card" href="/almanac/moon">
+    <h2>🌙 Moon Phases</h2>
+    <p>Every phase for a year with full and new moon dates, blue moons, and how the ecclesiastical "Paschal full moon" behind Easter compares with the astronomical sky.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/easter">
+    <h2>📅 Date of Easter</h2>
+    <p>Easter and every movable feast for a range of years, Western and Eastern side by side — with the years they coincide.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/passover">
+    <h2>🌑 Passover &amp; the Paschal Moon</h2>
+    <p>The spring full moon (14 Nisan) reconstructed astronomically — from the Exodus era to the present, on both calendars.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/easter-stats">
+    <h2>📊 Easter Statistics</h2>
+    <p>Earliest and latest Easter, how often it falls on each date, and the years East and West agree.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/feasts">
+    <h2>✠ Movable Feasts</h2>
+    <p>Every feast that moves with Easter — Septuagesima through Corpus Christi — for any year.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/convert">
+    <h2>🔄 Calendar Converter</h2>
+    <p>Convert between the Julian and Gregorian calendars, with the Julian day number.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/almanac/help">
+    <h2>❓ Help &amp; Guide</h2>
+    <p>How each tool works — and a short history of why calculating Easter is so hard.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+</div>
+{% endblock %}

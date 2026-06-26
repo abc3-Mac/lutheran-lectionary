@@ -137,6 +137,130 @@ def test_ical_export(client):
     assert b"BEGIN:VCALENDAR" in r.data
 
 
+def test_almanac_hub(client):
+    r = client.get("/almanac")
+    assert r.status_code == 200
+    assert b"Moon Phases" in r.data
+    assert b'href="/almanac/moon"' in r.data
+    # linked in the nav
+    assert b'href="/almanac"' in client.get("/").data
+
+
+def test_almanac_moon_page(client):
+    r = client.get("/almanac/moon?year=2026")
+    assert r.status_code == 200
+    assert b"Moon Phases" in r.data
+    assert b"Full moon" in r.data
+    assert b"<svg" in r.data                       # phase icons render
+    assert b"Blue moon" in r.data                  # 2026 has one (May 31)
+    assert b"Paschal full moon" in r.data          # eccl-vs-astro panel
+    assert b"April 5, 2026" in r.data              # Easter 2026
+
+
+def test_almanac_moon_year_clamped(client):
+    r = client.get("/almanac/moon?year=99999")
+    assert r.status_code == 200
+    r = client.get("/almanac/moon?year=notayear")
+    assert r.status_code == 200
+
+
+def test_almanac_easter_compare(client):
+    r = client.get("/almanac/easter?start=2026&end=2026&mode=compare")
+    assert r.status_code == 200
+    assert b"April 5" in r.data      # Western Easter 2026
+    assert b"April 12" in r.data     # Eastern Easter 2026
+    assert b"+7" in r.data           # the gap
+
+
+def test_almanac_easter_coincidence(client):
+    # 2025 is a rare year when West and East agree (both April 20).
+    r = client.get("/almanac/easter?start=2025&end=2025&mode=compare")
+    assert b"coincide" in r.data
+    assert b"same" in r.data
+
+
+def test_almanac_easter_western_feasts(client):
+    r = client.get("/almanac/easter?start=2026&end=2026&mode=western")
+    assert r.status_code == 200
+    assert b"Ash Wednesday" in r.data
+    assert b"Pentecost" in r.data
+    assert b"February 18" in r.data   # Ash Wednesday 2026
+
+
+def test_almanac_easter_span_capped(client):
+    r = client.get("/almanac/easter?start=2000&end=9999&mode=compare")
+    assert r.status_code == 200       # span clamped, no error
+
+
+def test_almanac_passover_default_exodus(client):
+    r = client.get("/almanac/passover")
+    assert r.status_code == 200
+    assert b"1446 BC" in r.data          # default early-Exodus start
+    assert b"Paschal Moon" in r.data
+    assert b"reconstruction" in r.data    # the caveat
+
+
+def test_almanac_passover_passion_era(client):
+    # AD 33 spring full moon = Friday, April 3 (Julian) — the crucifixion moon.
+    r = client.get("/almanac/passover?s_num=33&s_era=AD&e_num=33&e_era=AD")
+    assert r.status_code == 200
+    assert b"AD 33" in r.data
+    assert b"Friday" in r.data
+    assert b"April 3" in r.data           # Julian column
+
+
+def test_almanac_passover_bc_range(client):
+    r = client.get("/almanac/passover?s_num=1500&s_era=BC&e_num=1490&e_era=BC")
+    assert r.status_code == 200
+    assert b"1500 BC" in r.data
+    assert b"1490 BC" in r.data
+
+
+def test_almanac_easter_stats(client):
+    r = client.get("/almanac/easter-stats?start=1583&end=2582&tradition=western")
+    assert r.status_code == 200
+    assert b"March 22" in r.data       # earliest possible Western Easter
+    assert b"April 25" in r.data       # latest possible
+    assert b"Distribution" in r.data
+
+
+def test_almanac_convert(client):
+    # Gregorian 2026-04-05 is a Sunday; the Julian equivalent is March 23.
+    r = client.get("/almanac/convert?year=2026&month=4&day=5&src=gregorian")
+    assert r.status_code == 200
+    assert b"Sunday" in r.data
+    assert b"March 23" in r.data       # Julian equivalent
+    # bad input is handled
+    r = client.get("/almanac/convert?year=2026&month=13&day=5")
+    assert b"valid date" in r.data
+
+
+def test_almanac_feasts(client):
+    r = client.get("/almanac/feasts?year=2026")
+    assert r.status_code == 200
+    assert b"Ash Wednesday" in r.data
+    assert b"Corpus Christi" in r.data
+    assert b"February 18" in r.data    # Western Ash Wednesday 2026
+
+
+def test_almanac_help(client):
+    r = client.get("/almanac/help")
+    assert r.status_code == 200
+    assert b"Quartodeciman" in r.data
+    assert b"AD 33" in r.data          # the assumed crucifixion year
+    assert b"Jeremias" in r.data
+
+
+def test_almanac_moon_ancient_year(client):
+    # AD 33: Julian calendar, the Paschal-Controversy retrojection note, and the
+    # accuracy caveat all appear.
+    r = client.get("/almanac/moon?year=33")
+    assert r.status_code == 200
+    assert b"Julian calendar" in r.data
+    assert b"approximate" in r.data
+    assert b"Paschal Controversy" in r.data
+
+
 def test_api_today_includes_civil_holidays(client):
     # 2026-06-21 is the Fourth Sunday after Pentecost AND Father's Day (USA).
     r = client.get("/api/today?date=2026-06-21&lectionary=three_year")

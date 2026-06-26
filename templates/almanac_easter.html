@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Date of Easter {{ start }}–{{ end }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Date of Easter</h1>
+  <p class="page-sub">
+    {% if mode == 'compare' %}Western (Gregorian) and Eastern (Orthodox) Easter, side by side{% else %}{{ mode|capitalize }} Easter and the movable feasts{% endif %}
+    &middot; {{ start }}–{{ end }}
+  </p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/easter" method="get" class="toolbar-form">
+    <label>From
+      <input type="number" name="start" value="{{ start }}" min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;">
+    </label>
+    <label>To
+      <input type="number" name="end" value="{{ end }}" min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;">
+    </label>
+    <label>View
+      <select name="mode">
+        <option value="compare" {{ 'selected' if mode == 'compare' }}>Compare West / East</option>
+        <option value="western" {{ 'selected' if mode == 'western' }}>Western feasts</option>
+        <option value="eastern" {{ 'selected' if mode == 'eastern' }}>Eastern feasts</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+{% if spans_julian %}
+<div class="moon-caveat">
+  <strong>Historical note.</strong> Years before the 1582 reform are shown on the <strong>Julian calendar</strong>, reckoned with the Julian (Alexandrian) computus. The separate Western (Gregorian) date begins in 1583.
+</div>
+{% endif %}
+
+{% if mode == 'compare' %}
+<p class="easter-summary">
+  {% if coincidences %}Western and Eastern Easter coincide in <strong>{{ coincidences }}</strong> of these years.{% else %}Western and Eastern Easter do not coincide in any of these years.{% endif %}
+</p>
+<table class="easter-table">
+  <thead>
+    <tr><th>Year</th><th>Western</th><th>Eastern</th><th class="easter-num">Gap</th></tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr class="{{ 'easter-coincide' if r.same }}">
+      <td class="easter-year">{{ r.year }}</td>
+      <td>{{ r.western }}</td>
+      <td>{{ r.eastern }}</td>
+      <td class="easter-num">{% if r.same %}same{% else %}+{{ r.gap }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<table class="easter-table">
+  <thead>
+    <tr><th>Year</th>{% for h in feast_headers %}<th>{{ h }}</th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="easter-year">{{ r.year }}</td>
+      {% for c in r.cells %}<td>{{ c }}</td>{% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
