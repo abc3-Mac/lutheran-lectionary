@@ -109,6 +109,40 @@ def _add_daily_events(cal: Calendar, advent_year: int, base_url: str = _BASE_URL
         d += timedelta(1)
 
 
+def _civil_uid_slug(name: str) -> str:
+    """Stable, file-safe slug for a civil-holiday UID."""
+    keep = [c.lower() if c.isalnum() else "-" for c in name]
+    slug = "".join(keep)
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug.strip("-")
+
+
+def _add_civil_events(cal: Calendar, advent_year: int, base_url: str = _BASE_URL):
+    """One transparent all-day event per U.S. civil holiday in the church year.
+
+    Civil observances are informational only — marked TRANSPARENT (don't block
+    free/busy) and clearly labelled so they're never confused with feasts.
+    """
+    from liturgical_calendar.calculator import LiturgicalCalendar
+    from liturgical_calendar.data.civil_holidays import civil_holidays_for
+
+    lc = LiturgicalCalendar(advent_year)
+    d = lc.advent_1
+    while d < lc.next_advent_1:
+        for h in civil_holidays_for(d):
+            vevent = Event()
+            vevent.add("SUMMARY", f"🇺🇸 {h['name']}")
+            vevent.add("DTSTART", vDate(d))
+            vevent.add("DTEND", vDate(d + timedelta(1)))
+            vevent.add("UID", f"{d.isoformat()}-civil-{_civil_uid_slug(h['name'])}@lectionary.collver.biz")
+            vevent.add("DESCRIPTION", "U.S. civil observance — not a church festival.")
+            vevent.add("CATEGORIES", vText("Civil Holiday"))
+            vevent.add("TRANSP", "TRANSPARENT")
+            cal.add_component(vevent)
+        d += timedelta(1)
+
+
 def _add_events(cal: Calendar, advent_year: int, lectionary: str,
                 base_url: str = _BASE_URL):
     from liturgical_calendar.calculator import LiturgicalCalendar, daily_readings
@@ -167,11 +201,13 @@ def _add_events(cal: Calendar, advent_year: int, lectionary: str,
 
 
 def build_ical_year(advent_year: int, lectionary: str = "three_year",
-                    base_url: str = _BASE_URL, include_daily: bool = False) -> bytes:
+                    base_url: str = _BASE_URL, include_daily: bool = False,
+                    include_civil: bool = False) -> bytes:
     """
     Return a .ics byte string for one complete church year.
     Used for the download (/export/ical?year=2025&lectionary=three_year).
     include_daily adds one transparent event per day with the LSB daily readings.
+    include_civil adds U.S. civil holidays as informational, transparent events.
     """
     lect_label = "Three-Year Series" if lectionary == "three_year" else "One-Year Historic Series"
     name = f"LCMS Liturgical Calendar {advent_year}–{advent_year+1} ({lect_label})"
@@ -183,12 +219,15 @@ def build_ical_year(advent_year: int, lectionary: str = "three_year",
     _add_events(cal, advent_year, lectionary, base_url)
     if include_daily:
         _add_daily_events(cal, advent_year, base_url)
+    if include_civil:
+        _add_civil_events(cal, advent_year, base_url)
     return cal.to_ical()
 
 
 def build_ical_subscription(lectionary: str = "three_year",
                              base_url: str = _BASE_URL,
-                             include_daily: bool = False) -> bytes:
+                             include_daily: bool = False,
+                             include_civil: bool = False) -> bytes:
     """
     Return a .ics byte string covering the current church year + the next one.
     Used for the webcal:// subscription endpoint — always returns fresh data
@@ -211,4 +250,7 @@ def build_ical_subscription(lectionary: str = "three_year",
     if include_daily:
         _add_daily_events(cal, current_ay,     base_url)
         _add_daily_events(cal, current_ay + 1, base_url)
+    if include_civil:
+        _add_civil_events(cal, current_ay,     base_url)
+        _add_civil_events(cal, current_ay + 1, base_url)
     return cal.to_ical()
