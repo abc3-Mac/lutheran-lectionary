@@ -859,6 +859,69 @@ def almanac_easter():
     )
 
 
+ALMANAC_PASSOVER_MIN = -1499      # 1500 BC — the calculator's floor
+ALMANAC_PASSOVER_MAX = 2200
+
+
+def _astro_year(num: int, era: str) -> int:
+    """(number, 'BC'|'AD') -> astronomical year numbering (0 = 1 BC)."""
+    return num if era == "AD" else 1 - num
+
+
+def _year_label(astro: int) -> str:
+    return f"AD {astro}" if astro > 0 else f"{1 - astro} BC"
+
+
+@app.route("/almanac/passover")
+def almanac_passover():
+    """Astronomical Passover (the spring / Paschal full moon) reconstructed from
+    the Exodus era to the present. The Hebrew calendar was observational, so this
+    is an astronomical reconstruction, not a calendar record."""
+    from liturgical_calendar.almanac import moon
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except (ValueError, TypeError):
+            return default
+
+    s_era = request.args.get("s_era", "BC")
+    e_era = request.args.get("e_era", "BC")
+    s_era = s_era if s_era in ("BC", "AD") else "BC"
+    e_era = e_era if e_era in ("BC", "AD") else "BC"
+    s_num = _int("s_num", 1446)        # default: a classic early-Exodus date
+    e_num = _int("e_num", 1400)
+
+    start = _astro_year(s_num, s_era)
+    end = _astro_year(e_num, e_era)
+    start = max(ALMANAC_PASSOVER_MIN, min(ALMANAC_PASSOVER_MAX, start))
+    end = max(ALMANAC_PASSOVER_MIN, min(ALMANAC_PASSOVER_MAX, end))
+    if end < start:
+        start, end = end, start
+    if end - start > 199:
+        end = start + 199
+
+    rows = []
+    for y in range(start, end + 1):
+        m = moon.spring_full_moon(y)
+        gy, gm, gd = m["gregorian"]
+        jy, jm, jd = m["julian"]
+        rows.append({
+            "year": _year_label(y),
+            "weekday": m["weekday"],
+            "gregorian": f"{_MONTHS[gm]} {gd}",
+            "julian": f"{_MONTHS[jm]} {jd}",
+            "time": f"{m['hour']:02d}:{m['minute']:02d} UT",
+        })
+
+    return render_template(
+        "almanac_passover.html",
+        rows=rows,
+        s_num=s_num, s_era=s_era, e_num=e_num, e_era=e_era,
+        count=len(rows),
+    )
+
+
 # ---------------------------------------------------------------------------
 # JSON API
 # ---------------------------------------------------------------------------

@@ -316,12 +316,18 @@ def _moment(jd_ut: float, jde: float) -> dict:
     mi = int(round((hours - h) * 60))
     if mi == 60:
         h, mi = h + 1, 0
+    # Weekday straight from the JD (date objects can't represent BC years).
+    weekday = _WEEKDAYS[int(math.floor(jd_ut + 1.5)) % 7]
     return {
         "jd_ut": jd_ut, "jde": jde,
         "gregorian": (gy, gm, int(gday)),
         "julian": (jy, jm, int(jday)),
-        "hour": h, "minute": mi,
+        "hour": h, "minute": mi, "weekday": weekday,
     }
+
+
+_WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday",
+             "Thursday", "Friday", "Saturday"]
 
 
 def full_moon_near(jd_target: float) -> dict:

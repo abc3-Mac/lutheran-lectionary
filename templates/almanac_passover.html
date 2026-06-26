@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Passover &amp; the Paschal Moon{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Passover &amp; the Paschal Moon</h1>
+  <p class="page-sub">The spring full moon (14 Nisan) reconstructed astronomically — from the Exodus era to the present.</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/passover" method="get" class="toolbar-form">
+    <label>From
+      <input type="number" name="s_num" value="{{ s_num }}" min="1" max="2200" style="width:5rem;">
+      <select name="s_era"><option value="BC" {{ 'selected' if s_era=='BC' }}>BC</option><option value="AD" {{ 'selected' if s_era=='AD' }}>AD</option></select>
+    </label>
+    <label>To
+      <input type="number" name="e_num" value="{{ e_num }}" min="1" max="2200" style="width:5rem;">
+      <select name="e_era"><option value="BC" {{ 'selected' if e_era=='BC' }}>BC</option><option value="AD" {{ 'selected' if e_era=='AD' }}>AD</option></select>
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+  <div class="passover-jumps">
+    Jump to:
+    <a href="/almanac/passover?s_num=1446&s_era=BC&e_num=1400&e_era=BC">Exodus (early date)</a> ·
+    <a href="/almanac/passover?s_num=1260&s_era=BC&e_num=1214&e_era=BC">Exodus (late date)</a> ·
+    <a href="/almanac/passover?s_num=30&s_era=AD&e_num=36&e_era=AD">The Passion</a> ·
+    <a href="/almanac/passover?s_num=2020&s_era=AD&e_num=2040&e_era=AD">Present</a>
+  </div>
+</div>
+
+<div class="moon-caveat">
+  <strong>What this is.</strong> Passover falls on <strong>14 Nisan</strong>, the spring full moon. In antiquity it was fixed by <strong>observation</strong> — sighting the new moon and the ripening barley — not by calculation, and the fixed Hebrew calendar is later (c. 4th c. AD). So this is an <strong>astronomical reconstruction</strong> of the first full moon after the spring equinox, not a record of what was observed.
+  The lunar positions hold to minutes even in antiquity; the main uncertainty deep in BC is <strong>ΔT</strong> (the Earth's slowing rotation), which can shift the time of day and occasionally the date. Dates are given on both the modern <strong>Gregorian</strong> (season-anchored) and the historical <strong>Julian</strong> calendars — note how the Julian date drifts later across the millennia as that calendar slips from the seasons. The date of the Exodus is itself debated (early c. 1446 BC vs late c. 1260 BC); the calculator simply runs back to 1500 BC.
+</div>
+
+<table class="easter-table">
+  <thead>
+    <tr><th>Year</th><th>Day</th><th>Gregorian</th><th>Julian</th><th>Full moon</th></tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="easter-year">{{ r.year }}</td>
+      <td>{{ r.weekday }}</td>
+      <td>{{ r.gregorian }}</td>
+      <td>{{ r.julian }}</td>
+      <td class="easter-num">{{ r.time }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

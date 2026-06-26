@@ -192,6 +192,30 @@ def test_almanac_easter_span_capped(client):
     assert r.status_code == 200       # span clamped, no error
 
 
+def test_almanac_passover_default_exodus(client):
+    r = client.get("/almanac/passover")
+    assert r.status_code == 200
+    assert b"1446 BC" in r.data          # default early-Exodus start
+    assert b"Paschal Moon" in r.data
+    assert b"reconstruction" in r.data    # the caveat
+
+
+def test_almanac_passover_passion_era(client):
+    # AD 33 spring full moon = Friday, April 3 (Julian) — the crucifixion moon.
+    r = client.get("/almanac/passover?s_num=33&s_era=AD&e_num=33&e_era=AD")
+    assert r.status_code == 200
+    assert b"AD 33" in r.data
+    assert b"Friday" in r.data
+    assert b"April 3" in r.data           # Julian column
+
+
+def test_almanac_passover_bc_range(client):
+    r = client.get("/almanac/passover?s_num=1500&s_era=BC&e_num=1490&e_era=BC")
+    assert r.status_code == 200
+    assert b"1500 BC" in r.data
+    assert b"1490 BC" in r.data
+
+
 def test_almanac_moon_ancient_year(client):
     # AD 33: Julian calendar, the Paschal-Controversy retrojection note, and the
     # accuracy caveat all appear.
