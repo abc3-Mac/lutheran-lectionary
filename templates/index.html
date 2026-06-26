@@ -18,6 +18,10 @@
       <div id="today-date" class="today-date"></div>
       <div id="today-name" class="today-name"></div>
       <div id="today-meta" class="today-meta"></div>
+      <div id="today-civil" class="today-civil" style="display:none;">
+        <span class="today-civil-label">Civil calendar:</span>
+        <span id="today-civil-text"></span>
+      </div>
       <div id="today-daily" class="today-daily" style="display:none;">
         <span class="today-daily-label">Today's readings:</span>
         <a id="today-daily-ot" href="#" target="_blank" rel="noopener"></a>
@@ -135,6 +139,9 @@
         <label class="checkbox-label">
           <input type="checkbox" name="daily" value="1" id="ical-daily"> Include daily readings
         </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="civil" value="1" id="ical-civil"> Include civil holidays
+        </label>
       </div>
       <button type="submit" class="btn btn-outline">Download .ics</button>
     </form>
@@ -221,7 +228,9 @@ document.querySelectorAll('form').forEach(form => {
 function updateSubscribeLinks(lect) {
   const dailyCb  = document.getElementById('ical-daily');
   const daily    = dailyCb && dailyCb.checked ? '&daily=1' : '';
-  const base     = 'lectionary.collver.biz/export/ical/subscribe?lectionary=' + lect + daily;
+  const civilCb  = document.getElementById('ical-civil');
+  const civil    = civilCb && civilCb.checked ? '&civil=1' : '';
+  const base     = 'lectionary.collver.biz/export/ical/subscribe?lectionary=' + lect + daily + civil;
   const webcal   = 'webcal://' + base;
   const httpsEnc = encodeURIComponent('https://' + base);
   const gcal     = 'https://calendar.google.com/calendar/r?cid=' + httpsEnc;
@@ -240,6 +249,8 @@ if (icalForm) {
     updateSubscribeLinks(icalSel.value);
     icalSel.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
     if (icalDaily) icalDaily.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
+    const icalCivil = document.getElementById('ical-civil');
+    if (icalCivil) icalCivil.addEventListener('change', () => updateSubscribeLinks(icalSel.value));
   }
 }
 
@@ -297,6 +308,17 @@ function loadTodayCard(lect) {
       metaParts.push(data.church_year + ' Church Year');
       if (data.minor_feast) metaParts.push(data.minor_feast.name);
       document.getElementById('today-meta').textContent = metaParts.join(' • ');
+      // Civil calendar — informational only, kept separate from the liturgical
+      // meta line so it can never be mistaken for a feast. Hidden when off.
+      const civilBox = document.getElementById('today-civil');
+      const showCivil = localStorage.getItem('lcms_civil_holidays') !== '0';
+      if (showCivil && data.civil_holidays && data.civil_holidays.length) {
+        document.getElementById('today-civil-text').textContent =
+          data.civil_holidays.map(h => h.name).join(' · ');
+        civilBox.style.display = 'block';
+      } else {
+        civilBox.style.display = 'none';
+      }
       const dailyBox = document.getElementById('today-daily');
       if (data.daily && data.daily.length === 2) {
         const ot = document.getElementById('today-daily-ot');

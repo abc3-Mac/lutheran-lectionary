@@ -498,6 +498,24 @@ blockquote.collect-text {
 .minor-feast-name  { font-weight: 600; color: var(--text-strong); }
 .minor-feast-color { color: var(--muted); font-size: 0.8rem; }
 
+/* Civil / secular holidays — informational overlay, deliberately styled
+   distinct from liturgical feasts (civic blue rule, no liturgical color). */
+.civil-holiday-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--feast-row);
+  border-left: 3px solid #3b6ea5;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+.civil-holiday-label { color: var(--text-soft); font-weight: 500; }
+.civil-holiday-name  { font-weight: 600; color: var(--text-strong); }
+.civil-holiday-sep   { color: var(--muted); }
+.civil-holiday-note  { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+
 /* ---- Alerts ---- */
 .alert {
   padding: 0.75rem 1rem;
@@ -871,6 +889,21 @@ blockquote.collect-text {
 }
 .today-daily a { color: var(--accent-text); }
 .today-daily-sep { color: var(--muted); margin: 0 0.3rem; }
+
+/* ---- Today card: civil calendar line (informational, not liturgical) ---- */
+.today-civil {
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  color: var(--text-soft);
+}
+.today-civil-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-right: 0.3rem;
+}
 
 /* ---- Historic colors (violet Advent) — One-Year series opt-in ---- */
 .historic-colors .season-blue { background-color: var(--purple); }

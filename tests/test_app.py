@@ -137,6 +137,32 @@ def test_ical_export(client):
     assert b"BEGIN:VCALENDAR" in r.data
 
 
+def test_api_today_includes_civil_holidays(client):
+    # 2026-06-21 is the Fourth Sunday after Pentecost AND Father's Day (USA).
+    r = client.get("/api/today?date=2026-06-21&lectionary=three_year")
+    assert r.status_code == 200
+    data = r.get_json()
+    names = [h["name"] for h in data.get("civil_holidays", [])]
+    assert "Father's Day" in names
+
+
+def test_day_lookup_shows_civil_holiday(client):
+    r = client.get("/day/2026-07-04?lectionary=three_year")
+    assert r.status_code == 200
+    assert b"Independence Day" in r.data
+    assert b"civil-holiday-banner" in r.data
+
+
+def test_ical_civil_flag(client):
+    # Without the flag, no civil events; with it, they appear.
+    r = client.get("/export/ical?year=2026&lectionary=three_year")
+    assert b"Independence Day" not in r.data
+    r = client.get("/export/ical?year=2026&lectionary=three_year&civil=1")
+    assert r.status_code == 200
+    assert b"Independence Day" in r.data
+    assert b"Civil Holiday" in r.data
+
+
 def test_daily_page(client):
     r = client.get("/daily?year=2025")
     assert r.status_code == 200
