@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Almanac{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Almanac</h1>
+  <p class="page-sub">Calendar and lunar tools — the computational side of the church year, after the manner of the old <em>Calendar Explorer</em>.</p>
+</div>
+
+<div class="cards">
+  <a class="card almanac-card" href="/almanac/moon">
+    <h2>🌙 Moon Phases</h2>
+    <p>Every phase for a year with full and new moon dates, blue moons, and how the ecclesiastical "Paschal full moon" behind Easter compares with the astronomical sky.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <div class="card almanac-card almanac-soon">
+    <h2>📅 Date of Easter</h2>
+    <p>Easter and every movable feast for a range of years, Western and Eastern side by side.</p>
+    <span class="almanac-soon-tag">Coming soon</span>
+  </div>
+
+  <div class="card almanac-card almanac-soon">
+    <h2>📊 Easter Statistics</h2>
+    <p>Earliest and latest Easter, how often it falls on each date, and the years East and West agree.</p>
+    <span class="almanac-soon-tag">Coming soon</span>
+  </div>
+
+  <div class="card almanac-card almanac-soon">
+    <h2>🔄 Calendar Converter</h2>
+    <p>Convert between the Julian and Gregorian calendars, with the Julian day number.</p>
+    <span class="almanac-soon-tag">Coming soon</span>
+  </div>
+</div>
+{% endblock %}

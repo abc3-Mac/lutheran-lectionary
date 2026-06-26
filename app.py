@@ -687,6 +687,100 @@ def export_ical_subscribe():
 
 
 # ---------------------------------------------------------------------------
+# Almanac — calendar and lunar utilities
+# ---------------------------------------------------------------------------
+
+ALMANAC_MIN_YEAR = 30      # back to apostolic times (Julian calendar)
+ALMANAC_MAX_YEAR = 2200
+
+_MONTHS = ["", "January", "February", "March", "April", "May", "June",
+           "July", "August", "September", "October", "November", "December"]
+
+
+def _fmt_date(d, julian: bool, with_year: bool = False, with_weekday: bool = True):
+    """Format a (proleptic-Gregorian) date in the era-appropriate calendar."""
+    from liturgical_calendar.almanac.convert import gregorian_to_julian
+    if julian:
+        y, m, day = gregorian_to_julian(d)
+    else:
+        y, m, day = d.year, d.month, d.day
+    wd = d.strftime("%a") + ", " if with_weekday else ""
+    yr = f", {y}" if with_year else ""
+    return f"{wd}{_MONTHS[m]} {day}{yr}"
+
+
+@app.route("/almanac")
+def almanac():
+    """Hub page linking the calendar/lunar tools."""
+    return render_template("almanac.html", year=date.today().year)
+
+
+@app.route("/almanac/moon")
+def almanac_moon():
+    """Moon phases for a year: full/new lists, blue moons, and the
+    ecclesiastical-vs-astronomical comparison behind the date of Easter.
+
+    Works back to apostolic times: before the 1582 reform, dates are shown on
+    the Julian calendar and the astronomical positions are approximate (the
+    lunar series drifts ~a day across two millennia)."""
+    from liturgical_calendar.almanac import moon, computus
+    from liturgical_calendar.almanac.icons import phase_icon, moon_svg
+    from markupsafe import Markup
+
+    try:
+        year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        year = date.today().year
+    year = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, year))
+    julian = year < computus.GREGORIAN_START_YEAR
+
+    events = []
+    for p in moon.phases_in_range(date(year, 1, 1), date(year, 12, 31)):
+        events.append({
+            "phase":   p.phase,
+            "icon":    Markup(phase_icon(p.phase, size=30)),
+            "date":    _fmt_date(p.dt.date(), julian),
+            "time":    p.dt.strftime("%H:%M") + " UT",
+        })
+
+    blue = []
+    for b in moon.blue_moons(year):
+        blue.append({
+            "kind": b["kind"],
+            "date": _fmt_date(b["date"], julian, with_weekday=False),
+            "season": b.get("season", ""),
+        })
+
+    cmp = computus.easter_moon_comparison(year)
+    comparison = {
+        "golden_number":   cmp["golden_number"],
+        "eccl_equinox":    _fmt_date(cmp["ecclesiastical_equinox"], julian, with_weekday=False),
+        "eccl_full_moon":  _fmt_date(cmp["ecclesiastical_full_moon"], julian, with_weekday=False),
+        "astro_full_moon": _fmt_date(cmp["astronomical_full_moon"], julian, with_weekday=False),
+        "astro_time":      cmp["astronomical_full_moon_ut"].strftime("%H:%M UT"),
+        "delta_days":      cmp["delta_days"],
+        "easter":          _fmt_date(cmp["easter"], julian, with_year=True, with_weekday=False),
+        "full_icon":       Markup(moon_svg(1.0, True, size=30, label="Full moon")),
+    }
+
+    return render_template(
+        "almanac_moon.html",
+        year=year,
+        julian=julian,
+        before_nicaea=cmp["before_nicaea"],
+        events=events,
+        full_count=sum(1 for e in events if e["phase"] == moon.FULL_MOON),
+        new_count=sum(1 for e in events if e["phase"] == moon.NEW_MOON),
+        blue_moons=blue,
+        comparison=comparison,
+        min_year=ALMANAC_MIN_YEAR,
+        max_year=ALMANAC_MAX_YEAR,
+        prev_year=max(ALMANAC_MIN_YEAR, year - 1),
+        next_year=min(ALMANAC_MAX_YEAR, year + 1),
+    )
+
+
+# ---------------------------------------------------------------------------
 # JSON API
 # ---------------------------------------------------------------------------
 

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Moon Phases {{ year }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Moon Phases — {{ year }}{% if year < 100 %} AD{% endif %}</h1>
+  <p class="page-sub">Astronomical phases in Universal Time &middot; {{ full_count }} full moons &middot; {{ new_count }} new moons{% if julian %} &middot; <strong>Julian calendar</strong>{% endif %}</p>
+</div>
+
+{% if julian %}
+<div class="moon-caveat">
+  <strong>Historical note.</strong> Dates before the 1582 reform are shown on the <strong>Julian calendar</strong>.
+  The astronomical positions are computed but <strong>approximate this far back</strong> — the lunar theory drifts by roughly a day across two millennia.
+  {% if before_nicaea %} The date of Easter shown is a <strong>retrojection</strong>: before the Council of Nicaea (325) there was no single agreed Easter (the Paschal Controversy).{% endif %}
+</div>
+{% endif %}
+
+<div class="toolbar">
+  <form action="/almanac/moon" method="get" class="toolbar-form">
+    <a href="/almanac/moon?year={{ prev_year }}" class="btn btn-sm btn-outline" title="Previous year">←</a>
+    <label>Year
+      <input type="number" name="year" value="{{ year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;">
+    </label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/almanac/moon?year={{ next_year }}" class="btn btn-sm btn-outline" title="Next year">→</a>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+{% if blue_moons %}
+<div class="moon-bluebanner">
+  <span class="moon-bluebanner-label">Blue moon{{ 's' if blue_moons|length > 1 }} in {{ year }}:</span>
+  {% for b in blue_moons %}
+  <span class="moon-bluebanner-item">{{ b.date }}{% if b.kind == 'monthly' %} (second full moon of the month){% else %} (third of four in {{ b.season }}){% endif %}</span>{% if not loop.last %}<span class="moon-sep">·</span>{% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="moon-grid">
+  {% for e in events %}
+  <div class="moon-cell">
+    <span class="moon-cell-icon">{{ e.icon }}</span>
+    <span class="moon-cell-body">
+      <span class="moon-cell-phase">{{ e.phase }}</span>
+      <span class="moon-cell-date">{{ e.date }} &middot; {{ e.time }}</span>
+    </span>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card moon-easter-card">
+  <h2>The moon behind Easter</h2>
+  <p class="moon-easter-intro">
+    Easter is the first Sunday after the first full moon on or after the spring
+    equinox — but the Church reckons this with a <strong>tabular ("ecclesiastical") moon</strong>
+    and a <strong>fixed equinox of March 21</strong>, not the astronomical sky. The two usually
+    agree to the day, but not always.
+  </p>
+  <div class="moon-easter-grid">
+    <div class="moon-easter-col">
+      <p class="moon-easter-h">Ecclesiastical (computus)</p>
+      <p class="moon-easter-row"><span>Equinox (fixed)</span><strong>{{ comparison.eccl_equinox }}</strong></p>
+      <p class="moon-easter-row"><span>Paschal full moon</span><strong>{{ comparison.eccl_full_moon }}</strong></p>
+      <p class="moon-easter-row"><span>Golden number</span><strong>{{ comparison.golden_number }}</strong></p>
+    </div>
+    <div class="moon-easter-col">
+      <p class="moon-easter-h">{{ comparison.full_icon }} Astronomical</p>
+      <p class="moon-easter-row"><span>Nearest full moon</span><strong>{{ comparison.astro_full_moon }}</strong></p>
+      <p class="moon-easter-row"><span>Time</span><strong>{{ comparison.astro_time }}</strong></p>
+      <p class="moon-easter-row"><span>Difference</span><strong>
+        {% if comparison.delta_days == 0 %}same day{% else %}{{ comparison.delta_days|abs }} day{{ 's' if comparison.delta_days|abs != 1 }}{% endif %}
+      </strong></p>
+    </div>
+  </div>
+  <p class="moon-easter-foot">Easter {{ year }} falls on <strong>{{ comparison.easter }}</strong>.</p>
+</div>
+{% endblock %}

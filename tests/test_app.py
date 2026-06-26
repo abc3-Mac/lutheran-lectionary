@@ -137,6 +137,43 @@ def test_ical_export(client):
     assert b"BEGIN:VCALENDAR" in r.data
 
 
+def test_almanac_hub(client):
+    r = client.get("/almanac")
+    assert r.status_code == 200
+    assert b"Moon Phases" in r.data
+    assert b'href="/almanac/moon"' in r.data
+    # linked in the nav
+    assert b'href="/almanac"' in client.get("/").data
+
+
+def test_almanac_moon_page(client):
+    r = client.get("/almanac/moon?year=2026")
+    assert r.status_code == 200
+    assert b"Moon Phases" in r.data
+    assert b"Full moon" in r.data
+    assert b"<svg" in r.data                       # phase icons render
+    assert b"Blue moon" in r.data                  # 2026 has one (May 31)
+    assert b"Paschal full moon" in r.data          # eccl-vs-astro panel
+    assert b"April 5, 2026" in r.data              # Easter 2026
+
+
+def test_almanac_moon_year_clamped(client):
+    r = client.get("/almanac/moon?year=99999")
+    assert r.status_code == 200
+    r = client.get("/almanac/moon?year=notayear")
+    assert r.status_code == 200
+
+
+def test_almanac_moon_ancient_year(client):
+    # AD 33: Julian calendar, the Paschal-Controversy retrojection note, and the
+    # accuracy caveat all appear.
+    r = client.get("/almanac/moon?year=33")
+    assert r.status_code == 200
+    assert b"Julian calendar" in r.data
+    assert b"approximate" in r.data
+    assert b"Paschal Controversy" in r.data
+
+
 def test_daily_page(client):
     r = client.get("/daily?year=2025")
     assert r.status_code == 200
