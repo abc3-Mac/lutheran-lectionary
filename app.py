@@ -780,6 +780,85 @@ def almanac_moon():
     )
 
 
+@app.route("/almanac/easter")
+def almanac_easter():
+    """Date of Easter and the movable feasts over a year range.
+
+    Three modes: 'compare' (Western vs Eastern, with the gap in days),
+    'western', and 'eastern' (a full movable-feast table for one tradition).
+    Pre-1583 rows are shown on the Julian calendar."""
+    from datetime import timedelta
+    from liturgical_calendar.almanac import computus
+
+    mode = request.args.get("mode", "compare")
+    if mode not in ("compare", "western", "eastern"):
+        mode = "compare"
+
+    def _int(name, default):
+        try:
+            return int(request.args.get(name, default))
+        except ValueError:
+            return default
+
+    start = _int("start", date.today().year)
+    end = _int("end", start + 24)
+    start = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, start))
+    end = max(ALMANAC_MIN_YEAR, min(ALMANAC_MAX_YEAR, end))
+    if end < start:
+        start, end = end, start
+    if end - start > 199:                    # keep the table bounded
+        end = start + 199
+
+    # The movable feasts to show in single-tradition mode, in liturgical order.
+    feast_cols = [
+        ("Septuagesima", "septuagesima"), ("Ash Wednesday", "ash_wednesday"),
+        ("Easter", "easter"), ("Ascension", "ascension"),
+        ("Pentecost", "pentecost"), ("Trinity", "trinity"),
+    ]
+
+    rows = []
+    coincidences = 0
+    if mode == "compare":
+        for y in range(start, end + 1):
+            julian = y < computus.GREGORIAN_START_YEAR
+            east = computus.orthodox_easter(y)
+            west = east if julian else computus.gregorian_easter(y)
+            gap = (east - west).days
+            if gap == 0:
+                coincidences += 1
+            rows.append({
+                "year": y,
+                "western": _fmt_date(west, julian, with_weekday=False),
+                "eastern": _fmt_date(east, julian, with_weekday=False),
+                "gap": gap,
+                "same": gap == 0,
+            })
+    else:
+        for y in range(start, end + 1):
+            julian = y < computus.GREGORIAN_START_YEAR
+            if mode == "eastern" or julian:
+                base = computus.orthodox_easter(y)
+            else:
+                base = computus.gregorian_easter(y)
+            cells = [_fmt_date(base + timedelta(days=computus.MOVABLE_OFFSETS[key]),
+                               julian, with_weekday=False)
+                     for _, key in feast_cols]
+            rows.append({"year": y, "cells": cells})
+
+    return render_template(
+        "almanac_easter.html",
+        mode=mode,
+        start=start,
+        end=end,
+        rows=rows,
+        feast_headers=[label for label, _ in feast_cols],
+        coincidences=coincidences,
+        spans_julian=start < computus.GREGORIAN_START_YEAR,
+        min_year=ALMANAC_MIN_YEAR,
+        max_year=ALMANAC_MAX_YEAR,
+    )
+
+
 # ---------------------------------------------------------------------------
 # JSON API
 # ---------------------------------------------------------------------------

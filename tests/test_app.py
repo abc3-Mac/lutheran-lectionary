@@ -164,6 +164,34 @@ def test_almanac_moon_year_clamped(client):
     assert r.status_code == 200
 
 
+def test_almanac_easter_compare(client):
+    r = client.get("/almanac/easter?start=2026&end=2026&mode=compare")
+    assert r.status_code == 200
+    assert b"April 5" in r.data      # Western Easter 2026
+    assert b"April 12" in r.data     # Eastern Easter 2026
+    assert b"+7" in r.data           # the gap
+
+
+def test_almanac_easter_coincidence(client):
+    # 2025 is a rare year when West and East agree (both April 20).
+    r = client.get("/almanac/easter?start=2025&end=2025&mode=compare")
+    assert b"coincide" in r.data
+    assert b"same" in r.data
+
+
+def test_almanac_easter_western_feasts(client):
+    r = client.get("/almanac/easter?start=2026&end=2026&mode=western")
+    assert r.status_code == 200
+    assert b"Ash Wednesday" in r.data
+    assert b"Pentecost" in r.data
+    assert b"February 18" in r.data   # Ash Wednesday 2026
+
+
+def test_almanac_easter_span_capped(client):
+    r = client.get("/almanac/easter?start=2000&end=9999&mode=compare")
+    assert r.status_code == 200       # span clamped, no error
+
+
 def test_almanac_moon_ancient_year(client):
     # AD 33: Julian calendar, the Paschal-Controversy retrojection note, and the
     # accuracy caveat all appear.

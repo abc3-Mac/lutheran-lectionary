@@ -1012,6 +1012,21 @@ a.almanac-card:hover { border-color: var(--accent-text); box-shadow: var(--shado
   border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2px 8px;
 }
 
+.easter-summary { color: var(--text-soft); font-size: 0.92rem; margin: 0 0 1rem; }
+.easter-table {
+  width: 100%; border-collapse: collapse; font-size: 0.9rem;
+  background: var(--card-bg); border: 0.5px solid var(--border); border-radius: var(--radius);
+  overflow: hidden;
+}
+.easter-table th, .easter-table td { padding: 0.4rem 0.75rem; text-align: left; border-bottom: 0.5px solid var(--row-border); }
+.easter-table th { background: var(--feast-row); color: var(--text-strong); font-weight: 600; }
+.easter-table tbody tr:nth-child(even) { background: var(--row-alt); }
+.easter-table tbody tr:hover { background: var(--row-hover); }
+.easter-year { font-weight: 600; color: var(--text-strong); }
+.easter-num { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.easter-coincide { background: var(--feast-row) !important; }
+.easter-coincide .easter-num { color: var(--accent-text); font-weight: 600; }
+
 .moon-caveat {
   padding: 0.6rem 1rem; margin-bottom: 1rem;
   background: var(--quote-bg); border-left: 3px solid var(--muted);

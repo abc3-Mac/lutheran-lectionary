@@ -210,6 +210,16 @@ def test_historical_easter_flags():
     assert h2026["calendar"] == "Gregorian" and h2026["western"] == date(2026, 4, 5)
 
 
+def test_easter_west_east_coincidence_and_gap():
+    # 2025: West and East coincide (both April 20). 2026: East is 7 days later.
+    assert computus.gregorian_easter(2025) == computus.orthodox_easter(2025)
+    assert (computus.orthodox_easter(2026) - computus.gregorian_easter(2026)).days == 7
+    # The gap is always a non-negative multiple of 7 (both are Sundays).
+    for y in range(1990, 2050):
+        gap = (computus.orthodox_easter(y) - computus.gregorian_easter(y)).days
+        assert gap >= 0 and gap % 7 == 0
+
+
 def test_easter_comparison_julian_era():
     c = computus.easter_moon_comparison(1000)
     assert c["calendar"] == "Julian"
