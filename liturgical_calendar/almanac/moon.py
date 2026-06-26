@@ -19,7 +19,8 @@ Public API:
 import math
 from datetime import date, datetime, timedelta
 
-from .convert import jd_to_datetime, datetime_to_jd
+from .convert import (jd_to_datetime, datetime_to_jd, jd_to_gregorian,
+                      jd_to_julian, gregorian_to_jd)
 
 _RAD = math.pi / 180.0
 
@@ -281,6 +282,70 @@ def blue_moons(year: int) -> list[dict]:
 
     out.sort(key=lambda b: b["date"])
     return out
+
+
+# ---------------------------------------------------------------------------
+# BC-capable path (works in Julian Day space; no Python date/datetime, so it
+# handles years <= 0, which datetime cannot represent). Used for the Passover
+# reconstruction back to the Exodus era. Years are astronomical numbering
+# (0 = 1 BC, -1 = 2 BC, ...).
+# ---------------------------------------------------------------------------
+
+# Nominal March equinox on the (proleptic) Gregorian calendar; the Gregorian
+# calendar is designed to hold the equinox near March 20, and the proleptic
+# extension keeps it there for ancient years too. Good enough for classifying
+# the "first full moon after the equinox" (Passover/Paschal moon).
+_NOMINAL_MARCH_EQUINOX_DAY = 20.5
+
+
+def _full_moon_jd_ut(k_int: int) -> tuple[float, float]:
+    """(jd_ut, jde) for the full moon of integer lunation index k_int."""
+    jde = _phase_jde(k_int, 0.5)
+    gy, gm, _ = jd_to_gregorian(jde)
+    jd_ut = jde - delta_t_seconds(gy + (gm - 1) / 12.0) / 86400.0
+    return jd_ut, jde
+
+
+def _moment(jd_ut: float, jde: float) -> dict:
+    """Describe a JD instant on both calendars, BC-safe (tuples, not dates)."""
+    gy, gm, gday = jd_to_gregorian(jd_ut)
+    jy, jm, jday = jd_to_julian(jd_ut)
+    frac = gday - int(gday)
+    hours = frac * 24.0
+    h = int(hours)
+    mi = int(round((hours - h) * 60))
+    if mi == 60:
+        h, mi = h + 1, 0
+    return {
+        "jd_ut": jd_ut, "jde": jde,
+        "gregorian": (gy, gm, int(gday)),
+        "julian": (jy, jm, int(jday)),
+        "hour": h, "minute": mi,
+    }
+
+
+def full_moon_near(jd_target: float) -> dict:
+    """The full moon whose UT instant is closest to jd_target. BC-safe."""
+    gy, gm, _ = jd_to_gregorian(jd_target)
+    kf = (gy + (gm - 1) / 12.0 - 2000) * 12.3685
+    best = None
+    for k_int in range(math.floor(kf) - 2, math.floor(kf) + 3):
+        jd_ut, jde = _full_moon_jd_ut(k_int)
+        if best is None or abs(jd_ut - jd_target) < abs(best[0] - jd_target):
+            best = (jd_ut, jde)
+    return _moment(*best)
+
+
+def spring_full_moon(year: int) -> dict:
+    """First full moon on or after the March equinox (the Passover / Paschal
+    full moon), for any astronomical year including BC. BC-safe."""
+    equinox_jd = gregorian_to_jd(year, 3, _NOMINAL_MARCH_EQUINOX_DAY)
+    kf = (year + 0.22 - 2000) * 12.3685     # ~late March of `year`
+    for k_int in range(math.floor(kf) - 3, math.floor(kf) + 4):
+        jd_ut, jde = _full_moon_jd_ut(k_int)
+        if jd_ut >= equinox_jd:
+            return _moment(jd_ut, jde)
+    raise ValueError(f"no spring full moon found for year {year}")
 
 
 _SYNODIC = 29.530588861   # mean length of a lunation, days

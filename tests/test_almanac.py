@@ -227,6 +227,44 @@ def test_easter_comparison_julian_era():
     assert c["easter_os"] is not None
 
 
+# --- BC-capable path (Julian Day space) -----------------------------------
+
+def test_jd_epoch_and_bc_roundtrips():
+    # Definitional anchor: JD 0 = -4712 Jan 1.5 (Julian calendar).
+    assert convert.julian_to_jd(-4712, 1, 1.5) == 0.0
+    # Round-trip BC dates (astronomical year numbering) through JD, both calendars.
+    for y, m, d in [(-1499, 4, 20), (-1259, 4, 7), (-3, 3, 13), (0, 1, 1)]:
+        jy, jm, jd_ = convert.jd_to_julian(convert.julian_to_jd(y, m, d))
+        assert (jy, jm, round(jd_)) == (y, m, d)
+        gy, gm, gd_ = convert.jd_to_gregorian(convert.gregorian_to_jd(y, m, d))
+        assert (gy, gm, round(gd_)) == (y, m, d)
+
+
+def test_bc_full_moon_matches_nasa_4bc_eclipse():
+    # NASA Five Millennium Catalog of Lunar Eclipses: the 4 BC (year -0003)
+    # partial lunar eclipse, greatest at March 13, 03:37 TD (Julian). A lunar
+    # eclipse occurs at full moon, so our full moon must match to the day and to
+    # within a few minutes in TD.
+    nasa_td = convert.julian_to_jd(-3, 3, 13 + (3 + 37 / 60) / 24)
+    fm = moon.full_moon_near(nasa_td)
+    assert fm["julian"] == (-3, 3, 13)
+    assert abs(fm["jde"] - nasa_td) * 1440 < 30      # < 30 minutes
+
+
+def test_spring_full_moon_known_and_bc():
+    # AD 33 Passover (Paschal) full moon: April 3 (Julian) — crucifixion moon.
+    assert moon.spring_full_moon(33)["julian"] == (33, 4, 3)
+    # 2026: first full moon after the equinox is April 2 (Gregorian), matching USNO.
+    assert moon.spring_full_moon(2026)["gregorian"] == (2026, 4, 2)
+    # Back to the Exodus era: computes without error and lands just after the
+    # (season-anchored, proleptic-Gregorian) equinox. NB the *Julian* label
+    # drifts toward May this far back because the Julian calendar itself has
+    # slipped ~2 weeks from the seasons by 1500 BC.
+    for y in range(-1499, -1240):                    # ~1500-1241 BC
+        s = moon.spring_full_moon(y)
+        assert s["gregorian"][1] in (3, 4)           # late March / April (Gregorian)
+
+
 # --- Moon-phase icons -----------------------------------------------------
 
 def test_moon_icons():
