@@ -20,6 +20,7 @@ if _HERE not in sys.path:
 
 from liturgical_calendar.calculator import LiturgicalCalendar, advent1_for_year, daily_readings
 from liturgical_calendar.data.hymn_of_the_day import hymn_of_the_day
+from liturgical_calendar.data.civil_holidays import civil_holidays_for
 from liturgical_calendar.utils import parse_readings, file_label, season_color_class, bg_url
 
 app = Flask(__name__, template_folder=os.path.join(_HERE, "templates"),
@@ -240,6 +241,7 @@ def _lookup_result(d: date, lectionary: str):
         "readings_parsed": parse_readings(readings_raw),
         "file_label":      cal.file_label(gov_date or d, lectionary=lectionary),
         "minor_feast":     minor_feast,
+        "civil_holidays":  civil_holidays_for(d),
         "collect":         info.get("collect"),
         "introit":         info.get("introit"),
         "gradual":         info.get("gradual"),
@@ -468,6 +470,7 @@ def api_today():
         "color":        info.get("color"),
         "file_label":   lbl,
         "minor_feast":  minor_feast,
+        "civil_holidays": civil_holidays_for(today),
         "daily":        _daily_for_display(today),
         "hymn_of_the_day": hymn_of_the_day(info["slot"], lectionary, info.get("series")),
     })
@@ -653,8 +656,11 @@ def export_ical():
         advent_year = date.today().year
     lectionary    = request.args.get("lectionary", "three_year")
     include_daily = request.args.get("daily", "0") == "1"
+    include_civil = request.args.get("civil", "0") == "1"
 
-    ics_bytes = build_ical_year(advent_year, lectionary, include_daily=include_daily)
+    ics_bytes = build_ical_year(advent_year, lectionary,
+                                include_daily=include_daily,
+                                include_civil=include_civil)
     lect_tag  = "3yr" if lectionary == "three_year" else "1yr"
     filename  = f"LCMS_Lectionary_{advent_year}-{advent_year+1}_{lect_tag}.ics"
     return send_file(
@@ -675,7 +681,9 @@ def export_ical_subscribe():
     from liturgical_calendar.ical_export import build_ical_subscription
     lectionary    = request.args.get("lectionary", "three_year")
     include_daily = request.args.get("daily", "0") == "1"
-    ics_bytes  = build_ical_subscription(lectionary, include_daily=include_daily)
+    include_civil = request.args.get("civil", "0") == "1"
+    ics_bytes  = build_ical_subscription(lectionary, include_daily=include_daily,
+                                         include_civil=include_civil)
     response   = app.response_class(
         ics_bytes,
         mimetype="text/calendar; charset=utf-8",

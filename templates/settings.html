@@ -39,6 +39,13 @@
   </div>
 
   <div class="card settings-card">
+    <h2>🗓️ Civil Calendar</h2>
+    <p>Show U.S. civil holidays and observances (Mother's Day, Memorial Day, Independence Day, Thanksgiving…) alongside the liturgical day, so they're visible when planning. These are informational only — never part of the Church's propers.</p>
+    <label class="settings-radio"><input type="radio" name="set-civil" value="1"> Show civil holidays</label>
+    <label class="settings-radio"><input type="radio" name="set-civil" value="0"> Hide civil holidays</label>
+  </div>
+
+  <div class="card settings-card">
     <h2>📜 Scripture Translation</h2>
     <p>Translation used for the click-to-preview scripture popups and BibleGateway links.</p>
     <label class="settings-radio"><input type="radio" name="set-translation" value="ESV"> ESV — English Standard Version</label>
@@ -61,6 +68,7 @@
                    toStore: v => v === 'violet' ? '1' : '0' },
     theme:       { store: 'lcms_theme',           def: 'system' },
     minor:       { store: 'lcms_minor_feasts',    def: '1' },
+    civil:       { store: 'lcms_civil_holidays',  def: '1' },
     translation: { store: 'lcms_translation',     def: 'ESV' },
   };
 

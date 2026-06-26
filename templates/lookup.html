@@ -84,6 +84,16 @@
   </div>
   {% endif %}
 
+  {% if result.civil_holidays %}
+  <div class="civil-holiday-banner" data-civil>
+    <span class="civil-holiday-label">Civil calendar:</span>
+    {% for h in result.civil_holidays %}
+    <span class="civil-holiday-name">{{ h.name }}</span>{% if not loop.last %}<span class="civil-holiday-sep">·</span>{% endif %}
+    {% endfor %}
+    <span class="civil-holiday-note">— civil observance, not a church festival</span>
+  </div>
+  {% endif %}
+
   <div class="result-readings">
     {% if result.readings_parsed %}
     <h3>{% if result.is_weekday %}Appointed Readings for {{ result.sun_name }}{% else %}Appointed Readings{% endif %}</h3>
@@ -244,6 +254,10 @@ document.querySelectorAll('form').forEach(form => {
     if (sel) localStorage.setItem(PREF_KEY, sel.value);
   });
 });
+// Honor the "Civil Calendar" preference (default on)
+if (localStorage.getItem('lcms_civil_holidays') === '0') {
+  document.querySelectorAll('[data-civil]').forEach(el => { el.style.display = 'none'; });
+}
 </script>
 {% endif %}
 {% endblock %}
