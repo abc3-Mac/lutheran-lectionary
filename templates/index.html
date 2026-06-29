@@ -313,8 +313,15 @@ function loadTodayCard(lect) {
       const civilBox = document.getElementById('today-civil');
       const showCivil = localStorage.getItem('lcms_civil_holidays') !== '0';
       if (showCivil && data.civil_holidays && data.civil_holidays.length) {
-        document.getElementById('today-civil-text').textContent =
-          data.civil_holidays.map(h => h.name).join(' · ');
+        // Names come from our own civil-holiday registry (no user input), so
+        // building markup here is safe. "on" = bold; "nearby" = lighter + date.
+        const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+        const html = data.civil_holidays.map(h =>
+          h.relationship === 'nearby'
+            ? `<span class="civil-holiday-name civil-holiday-nearby">${esc(h.name)} <span class="civil-holiday-when">(${esc(h.when)})</span></span>`
+            : `<span class="civil-holiday-name">${esc(h.name)}</span>`
+        ).join('<span class="civil-holiday-sep"> · </span>');
+        document.getElementById('today-civil-text').innerHTML = html;
         civilBox.style.display = 'block';
       } else {
         civilBox.style.display = 'none';

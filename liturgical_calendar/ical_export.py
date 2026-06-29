@@ -130,7 +130,7 @@ def _add_civil_events(cal: Calendar, advent_year: int, base_url: str = _BASE_URL
     lc = LiturgicalCalendar(advent_year)
     d = lc.advent_1
     while d < lc.next_advent_1:
-        for h in civil_holidays_for(d):
+        for h in civil_holidays_for(d, include_nearby=False):
             vevent = Event()
             vevent.add("SUMMARY", f"🇺🇸 {h['name']}")
             vevent.add("DTSTART", vDate(d))

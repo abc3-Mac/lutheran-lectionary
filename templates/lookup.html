@@ -88,9 +88,17 @@
   <div class="civil-holiday-banner" data-civil>
     <span class="civil-holiday-label">Civil calendar:</span>
     {% for h in result.civil_holidays %}
+    {% if h.relationship == 'nearby' %}
+    <span class="civil-holiday-name civil-holiday-nearby">{{ h.name }} <span class="civil-holiday-when">({{ h.when }})</span></span>{% if not loop.last %}<span class="civil-holiday-sep">·</span>{% endif %}
+    {% else %}
     <span class="civil-holiday-name">{{ h.name }}</span>{% if not loop.last %}<span class="civil-holiday-sep">·</span>{% endif %}
+    {% endif %}
     {% endfor %}
+    {% if result.civil_holidays | selectattr('relationship', 'equalto', 'nearby') | list %}
+    <span class="civil-holiday-note">— nearest Sunday to a civil observance; not a church festival</span>
+    {% else %}
     <span class="civil-holiday-note">— civil observance, not a church festival</span>
+    {% endif %}
   </div>
   {% endif %}
 
