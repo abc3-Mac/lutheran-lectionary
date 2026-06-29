@@ -60,9 +60,48 @@ def test_no_holiday_on_ordinary_day():
 
 def test_shape_and_kind():
     h = civil_holidays_for(date(2026, 7, 4))[0]
-    assert h == {"name": "Independence Day", "kind": "federal", "country": "USA"}
+    assert h == {
+        "name": "Independence Day", "kind": "federal", "country": "USA",
+        "relationship": "on", "date": "2026-07-04", "when": "Saturday, July 4",
+    }
     h = civil_holidays_for(date(2026, 6, 21))[0]
     assert h["kind"] == "observance"   # Father's Day is not a federal holiday
+    assert h["relationship"] == "on"
+
+
+def test_nearest_sunday_surfaces_holiday():
+    # July 4, 2026 is a Saturday; the nearest Sunday is July 5. The Sunday
+    # should surface Independence Day as a "nearby" observance with its real date.
+    sun = civil_holidays_for(date(2026, 7, 5))
+    indep = [h for h in sun if h["name"] == "Independence Day"]
+    assert indep, "Independence Day should surface on the nearest Sunday"
+    assert indep[0]["relationship"] == "nearby"
+    assert indep[0]["date"] == "2026-07-04"
+    assert indep[0]["when"] == "Saturday, July 4"
+
+
+def test_nearest_sunday_is_the_only_one():
+    # The Sunday *before* July 4 (June 28) is farther away, so it must NOT
+    # surface Independence Day — only the genuinely nearest Sunday does.
+    assert "Independence Day" not in _names(date(2026, 6, 28))
+
+
+def test_monday_holiday_surfaces_on_prior_sunday():
+    # Memorial Day 2026 is Mon May 25; the nearest Sunday is the day before.
+    h = [x for x in civil_holidays_for(date(2026, 5, 24)) if x["name"] == "Memorial Day"]
+    assert h and h[0]["relationship"] == "nearby"
+    assert h[0]["date"] == "2026-05-25"
+
+
+def test_holiday_on_sunday_is_on_not_nearby():
+    # Father's Day already falls on a Sunday — it must be "on", never duplicated.
+    fathers = [h for h in civil_holidays_for(date(2026, 6, 21)) if h["name"] == "Father's Day"]
+    assert len(fathers) == 1 and fathers[0]["relationship"] == "on"
+
+
+def test_include_nearby_can_be_disabled():
+    # iCal feeds want only holidays that land squarely on the day.
+    assert civil_holidays_for(date(2026, 7, 5), include_nearby=False) == []
 
 
 def test_unknown_country_is_empty():

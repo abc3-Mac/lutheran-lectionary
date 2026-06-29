@@ -513,6 +513,11 @@ blockquote.collect-text {
 }
 .civil-holiday-label { color: var(--text-soft); font-weight: 500; }
 .civil-holiday-name  { font-weight: 600; color: var(--text-strong); }
+/* "Nearby" = falls within a few days of this Sunday, not on it. Deliberately
+   lighter than an "on" holiday so the distinction reads at a glance, with the
+   actual date shown in parentheses. */
+.civil-holiday-nearby { font-weight: 400; font-style: italic; color: var(--text-soft); }
+.civil-holiday-when  { color: var(--muted); font-style: normal; font-size: 0.8rem; }
 .civil-holiday-sep   { color: var(--muted); }
 .civil-holiday-note  { color: var(--muted); font-size: 0.8rem; font-style: italic; }
 
