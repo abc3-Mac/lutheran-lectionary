@@ -8,3 +8,6 @@ __pycache__/
 *.app/
 .app_build/
 heritage/
+
+# Local editor/agent config
+.claude/

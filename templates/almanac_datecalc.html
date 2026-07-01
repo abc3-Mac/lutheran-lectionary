@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Date Calculator{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Date Calculator</h1>
+  <p class="page-sub">Days between two dates, or a date shifted forward or back by a number of days.</p>
+</div>
+
+<div class="toolbar">
+  <div class="ph-toggle" style="display:inline-flex; border:1px solid var(--accent,#1f3a5f); border-radius:6px; overflow:hidden;">
+    <a href="/almanac/datecalc?mode=between" style="padding:0.35rem 0.9rem; font-size:0.85rem; text-decoration:none; color:var(--accent,#1f3a5f); {{ 'background:#1f3a5f;color:#fff;' if mode == 'between' }}">Days between</a>
+    <a href="/almanac/datecalc?mode=offset" style="padding:0.35rem 0.9rem; font-size:0.85rem; text-decoration:none; color:var(--accent,#1f3a5f); {{ 'background:#1f3a5f;color:#fff;' if mode == 'offset' }}">Add / subtract days</a>
+  </div>
+  <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+</div>
+
+{% if mode == 'between' %}
+<form action="/almanac/datecalc" method="get" class="toolbar-form" style="flex-wrap:wrap; gap:0.6rem;">
+  <input type="hidden" name="mode" value="between">
+  <label>From <input type="date" name="d1" value="{{ d1 }}"></label>
+  <label>To <input type="date" name="d2" value="{{ d2 }}"></label>
+  <button type="submit" class="btn btn-sm">Calculate</button>
+</form>
+{% else %}
+<form action="/almanac/datecalc" method="get" class="toolbar-form" style="flex-wrap:wrap; gap:0.6rem;">
+  <input type="hidden" name="mode" value="offset">
+  <label>Start date <input type="date" name="d1" value="{{ d1 }}"></label>
+  <label>Days <input type="number" name="n" value="{{ n }}" style="width:6rem;"></label>
+  <label>Direction
+    <select name="direction">
+      <option value="after" {{ 'selected' if direction == 'after' }}>after (＋)</option>
+      <option value="before" {{ 'selected' if direction == 'before' }}>before (－)</option>
+    </select>
+  </label>
+  <button type="submit" class="btn btn-sm">Calculate</button>
+</form>
+{% endif %}
+
+{% if error %}<div class="alert alert-warn">{{ error }}</div>{% endif %}
+
+{% if result and result.kind == 'between' %}
+{% if result.same %}
+<p class="easter-summary">That's the same day — zero days apart.</p>
+{% else %}
+<table class="easter-table" style="max-width:36rem;">
+  <tbody>
+    <tr><td class="easter-year">From</td><td>{{ result.lo.strftime('%A, %B %-d, %Y') }}</td></tr>
+    <tr><td class="easter-year">To</td><td>{{ result.hi.strftime('%A, %B %-d, %Y') }}</td></tr>
+    <tr><td class="easter-year">Total days</td><td><strong>{{ result.total }}</strong></td></tr>
+    <tr><td class="easter-year">In weeks</td><td>{{ result.weeks }} week{{ '' if result.weeks == 1 else 's' }}{% if result.rem %}, {{ result.rem }} day{{ '' if result.rem == 1 else 's' }}{% endif %}</td></tr>
+    <tr><td class="easter-year">Weekdays (Mon–Fri)</td><td>{{ result.business }}</td></tr>
+  </tbody>
+</table>
+{% endif %}
+{% endif %}
+
+{% if result and result.kind == 'offset' %}
+<table class="easter-table" style="max-width:36rem;">
+  <tbody>
+    <tr><td class="easter-year">Start</td><td>{{ result.base.strftime('%A, %B %-d, %Y') }}</td></tr>
+    <tr><td class="easter-year">{{ result.n }} day{{ '' if result.n == 1 else 's' }} {{ result.direction }}</td>
+        <td><strong>{{ result.date.strftime('%A, %B %-d, %Y') }}</strong></td></tr>
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

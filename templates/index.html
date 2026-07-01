@@ -77,6 +77,34 @@
   </div>
 
   <div class="card">
+    <h2>✠ Lenten Weekday Lectionary</h2>
+    <p>The historic Western lectionary — a proper Epistle and Gospel for <em>every</em> day of Lent, Ash Wednesday through Good Friday, each reading marked for its Roman or Lutheran origin. Each day opens a printable card.</p>
+    <form action="/lent/ferial" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Year
+          <input type="number" name="year" value="{{ today.year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+      </div>
+      <button type="submit" class="btn">View Lenten Lectionary</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>📖 The Passion History</h2>
+    <p>The <em>Common Service Book</em> (1917) harmony of the four Evangelists in seven Parts — read on the Wednesdays of Lent or through Holy Week, with the King James text and the historic rubrics.</p>
+    <form action="/lent/passion" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Year
+          <input type="number" name="year" value="{{ today.year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+      </div>
+      <button type="submit" class="btn">View Passion History</button>
+    </form>
+  </div>
+
+  <div class="card">
     <h2>🔍 Date Lookup</h2>
     <p>Enter any date to find its place in the church year and look up the appointed readings.</p>
     <form action="/lookup" method="get" class="quick-form">

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Historic Lent{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Historic Lent</h1>
+  <p class="page-sub">The two ways the Church has kept the weekdays of Lent — the ancient daily
+    Mass lectionary, and the Lutheran midweek reading of the Passion.</p>
+</div>
+
+<div class="cards">
+  <a class="card almanac-card" href="/lent/ferial">
+    <h2>✠ Lenten Weekday Lectionary</h2>
+    <p>The historic Western lectionary that appoints a proper Epistle and Gospel for
+      <em>every day</em> of Lent — Ash Wednesday through Good Friday — for any year, with each
+      reading marked for its Roman or Lutheran provenance.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/lent/passion">
+    <h2>📖 The Passion History</h2>
+    <p>The harmonized narrative of our Lord's Passion, divided for reading at the Wednesday
+      midweek services through Lent, as arranged in the <em>Common Service Book</em> (1917).</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+
+  <a class="card almanac-card" href="/lent/sources">
+    <h2>❓ Where These Come From</h2>
+    <p>A short history of the Lenten weekday readings — what is Roman in origin, what is Lutheran,
+      and how the sources were established — with citations for the documentation.</p>
+    <span class="almanac-go">Open →</span>
+  </a>
+</div>
+
+<p style="max-width:52rem;margin-top:1.5rem;font-size:0.9rem;color:#666;">
+  These belong to the <strong>Lutheran (LCMS)</strong> tradition within this project. As other
+  traditions are added (Revised Common Lectionary, the Roman Missal, and others), the same historic
+  material will appear under each — the daily Lenten lectionary is, after all, Roman in origin and
+  Lutheran in keeping.
+</p>
+{% endblock %}

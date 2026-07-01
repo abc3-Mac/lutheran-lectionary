@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Weekday Finder{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Weekday Finder</h1>
+  <p class="page-sub">The day of the week for any date — and when a date next falls on the weekday you choose.</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/weekday" method="get" class="toolbar-form" style="flex-wrap:wrap; gap:0.6rem;">
+    <label>Date <input type="date" name="date" value="{{ q_date }}"></label>
+    <label>Falls on
+      <select name="weekday">
+        <option value="">— any (just tell me the day) —</option>
+        {% for i, name in weekdays %}
+        <option value="{{ i }}" {{ 'selected' if target == i|string }}>{{ name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn-sm">Find</button>
+    <a href="/almanac" class="btn btn-sm btn-outline">← Almanac</a>
+  </form>
+</div>
+
+{% if error %}<div class="alert alert-warn">{{ error }}</div>{% endif %}
+
+{% if result %}
+<table class="easter-table" style="max-width:34rem;">
+  <tbody>
+    <tr><td class="easter-year">Date</td><td>{{ result.date_str }}</td></tr>
+    <tr><td class="easter-year">Day of the week</td><td><strong>{{ result.weekday }}</strong></td></tr>
+    <tr><td class="easter-year">Day of the year</td><td>{{ result.day_of_year }}</td></tr>
+    <tr><td class="easter-year">ISO week number</td><td>{{ result.iso_week }}</td></tr>
+    <tr><td class="easter-year">Leap year</td><td>{{ 'Yes' if result.leap else 'No' }}</td></tr>
+  </tbody>
+</table>
+{% endif %}
+
+{% if occurrences %}
+<h2 style="margin-top:1.5rem;font-size:1.05rem;">Next times this date falls on a {{ occurrences.weekday }}</h2>
+{% if occurrences.dates %}
+<table class="easter-table" style="max-width:34rem;">
+  <tbody>
+    {% for d in occurrences.dates %}
+    <tr><td class="easter-year">{{ d.strftime('%A, %B %-d, %Y') }}</td>
+        <td>{{ (d.year - result.date.year) }} yr{{ '' if (d.year - result.date.year) == 1 else 's' }} away</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No occurrence found within the next 4000 years.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

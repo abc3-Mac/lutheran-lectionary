@@ -1083,6 +1083,288 @@ def almanac_feasts():
 # JSON API
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Almanac — Calendar Explorer revivals: Weekday Finder & Date Calculator
+# ---------------------------------------------------------------------------
+
+_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday",
+             "Friday", "Saturday", "Sunday"]   # index = date.weekday()
+
+
+@app.route("/almanac/weekday")
+def almanac_weekday():
+    """Day-of-week for any date, plus when a date next falls on a chosen weekday."""
+    import calendar as _cal
+    q_date = request.args.get("date", date.today().strftime("%Y-%m-%d"))
+    target = request.args.get("weekday", "")
+    result = None
+    occurrences = None
+    error = None
+    try:
+        d = datetime.strptime(q_date, "%Y-%m-%d").date()
+        result = {
+            "date": d,
+            "date_str": d.strftime("%A, %B %-d, %Y"),
+            "weekday": d.strftime("%A"),
+            "day_of_year": d.timetuple().tm_yday,
+            "iso_week": d.isocalendar()[1],
+            "leap": _cal.isleap(d.year),
+        }
+        if target != "":
+            tw = int(target)
+            if 0 <= tw <= 6:
+                found = []
+                yy = d.year
+                while len(found) < 10 and yy < d.year + 4000:
+                    try:
+                        cand = date(yy, d.month, d.day)
+                    except ValueError:      # e.g. Feb 29 in a common year
+                        yy += 1
+                        continue
+                    if cand >= d and cand.weekday() == tw:
+                        found.append(cand)
+                    yy += 1
+                occurrences = {"weekday": _WEEKDAYS[tw], "dates": found}
+    except (ValueError, TypeError):
+        error = "Please enter a valid date."
+    return render_template("almanac_weekday.html", q_date=q_date, target=target,
+                           weekdays=list(enumerate(_WEEKDAYS)), result=result,
+                           occurrences=occurrences, error=error)
+
+
+@app.route("/almanac/datecalc")
+def almanac_datecalc():
+    """Days between two dates, or a date shifted by a number of days."""
+    mode = request.args.get("mode", "between")
+    if mode not in ("between", "offset"):
+        mode = "between"
+    ctx = {"mode": mode, "result": None, "error": None,
+           "d1": request.args.get("d1", date.today().strftime("%Y-%m-%d")),
+           "d2": request.args.get("d2", date.today().strftime("%Y-%m-%d")),
+           "n": request.args.get("n", "100"),
+           "direction": request.args.get("direction", "after")}
+    try:
+        if mode == "between":
+            a = datetime.strptime(ctx["d1"], "%Y-%m-%d").date()
+            b = datetime.strptime(ctx["d2"], "%Y-%m-%d").date()
+            lo, hi = sorted((a, b))
+            total = (hi - lo).days
+            # business days (Mon–Fri) strictly between? count days lo<day<=hi
+            biz = sum(1 for i in range(1, total + 1)
+                      if (lo + timedelta(i)).weekday() < 5)
+            ctx["result"] = {
+                "kind": "between", "lo": lo, "hi": hi, "total": total,
+                "weeks": total // 7, "rem": total % 7, "business": biz,
+                "same": a == b,
+            }
+        else:
+            a = datetime.strptime(ctx["d1"], "%Y-%m-%d").date()
+            n = int(ctx["n"])
+            delta = n if ctx["direction"] == "after" else -n
+            res = a + timedelta(delta)
+            ctx["result"] = {"kind": "offset", "base": a, "n": n,
+                             "direction": ctx["direction"], "date": res,
+                             "weekday": res.strftime("%A")}
+    except (ValueError, TypeError, OverflowError):
+        ctx["error"] = "Please check your dates and number of days."
+    return render_template("almanac_datecalc.html", **ctx)
+
+
+# ---------------------------------------------------------------------------
+# Historic Lent — ferial (weekday) lectionary & Passion History
+# ---------------------------------------------------------------------------
+
+def _ferial_weeks(cal):
+    """Build the Lenten ferial lectionary for one church year, grouped by week,
+    with resolved dates and BibleGateway-linked readings."""
+    from liturgical_calendar.data import lenten_ferial as LF
+    weeks = []
+    for wk in LF.LENTEN_WEEKS:
+        days = []
+        for day in wk["days"]:
+            d = LF.resolve_date(day, cal)
+            readings = [{
+                "label":  r["label"],
+                "ref":    r["ref"],
+                "url":    bg_url(r["ref"]),
+                "mark":   r["mark"],
+                "origin": r["origin"],
+                "origin_label": LF.ORIGIN_LABELS[r["origin"]],
+            } for r in day["readings"]]
+            days.append({
+                "date":       d,
+                "iso":        d.strftime("%Y-%m-%d"),
+                "date_str":   d.strftime("%a, %b %-d"),
+                "name":       day["name"],
+                "is_sunday":  day.get("is_sunday", False),
+                "note":       day.get("note"),
+                "readings":   readings,
+            })
+        weeks.append({"key": wk["key"], "name": wk["name"], "days": days})
+    return weeks
+
+
+def _lent_civil_year(raw):
+    """Clamp a requested civil year (the year Lent falls in) to a valid range."""
+    try:
+        year = int(raw)
+    except (TypeError, ValueError):
+        year = date.today().year
+    # Lent's civil year = advent_year + 1; advent_year must be in [MIN_YEAR, MAX_YEAR]
+    return max(MIN_YEAR + 1, min(MAX_YEAR, year))
+
+
+@app.route("/lent")
+def lent_hub():
+    """Landing page for the historic-Lent tracks (Lutheran tradition)."""
+    return render_template("lent.html", year=date.today().year)
+
+
+@app.route("/lent/ferial")
+def lent_ferial():
+    """The historic Lenten weekday (ferial) lectionary as a reference table."""
+    from liturgical_calendar.data import lenten_ferial as LF
+    year = _lent_civil_year(request.args.get("year"))
+    cal = get_calendar(year - 1)          # Lent falls in advent_year + 1
+    weeks = _ferial_weeks(cal)
+    return render_template(
+        "lenten_ferial.html",
+        year=year,
+        weeks=weeks,
+        ash_wednesday=cal.ash_wednesday,
+        good_friday=cal.good_friday,
+        mark_legend=LF.MARK_LEGEND,
+        origin_labels=LF.ORIGIN_LABELS,
+        holy_week_note=LF.HOLY_WEEK_NOTE,
+        source_citation=LF.SOURCE_CITATION,
+        prev_year=max(MIN_YEAR + 1, year - 1),
+        next_year=min(MAX_YEAR, year + 1),
+        min_year=MIN_YEAR + 1,
+        max_year=MAX_YEAR,
+    )
+
+
+def _ferial_day_result(d):
+    """Find the Lenten ferial day for a date and build a day-card result dict.
+    Returns (result, week_name) or (None, None) if the date is not a ferial day."""
+    from liturgical_calendar.data import lenten_ferial as LF
+    ay = d.year if d >= advent1_for_year(d.year) else d.year - 1
+    if not (MIN_YEAR <= ay <= MAX_YEAR):
+        return None, None
+    cal = get_calendar(ay)
+    for week, day in LF.iter_days():
+        if LF.resolve_date(day, cal) != d:
+            continue
+        readings_parsed = [{
+            "label": r["label"], "ref": r["ref"], "url": bg_url(r["ref"]),
+            "alts": [], "alt_urls": [],
+            "mark": r["mark"], "origin": r["origin"],
+            "origin_label": LF.ORIGIN_LABELS[r["origin"]],
+        } for r in day["readings"]]
+        result = {
+            "date": d,
+            "date_str": d.strftime("%A, %B %-d, %Y"),
+            "slot": day["slot"],
+            "name": day["name"],
+            "season": "Lent",
+            "color": "Purple",
+            "color_class": season_color_class("Purple"),
+            "church_year": f"{ay}–{ay + 1}",
+            "series": "",
+            "readings_parsed": readings_parsed,
+            "note": day.get("note"),
+            "is_sunday": day.get("is_sunday", False),
+            "collect": None, "introit": None, "gradual": None,
+            "hymn_of_the_day": None, "daily": None, "minor_feast": None,
+            "source": LF.SOURCE_CITATION,
+        }
+        return result, week["name"]
+    return None, None
+
+
+@app.route("/lent/ferial/<date_str>")
+def lent_ferial_day(date_str):
+    """A printable day card for a single Lenten ferial day."""
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        abort(404)
+    result, week_name = _ferial_day_result(d)
+    if result is None:
+        abort(404)
+    from liturgical_calendar.data import lenten_ferial as LF
+    return render_template(
+        "lent_ferial_day.html",
+        result=result, week_name=week_name, date_str=date_str,
+        origin_labels=LF.ORIGIN_LABELS,
+        og_title=f"{result['name']} — {result['date_str']}",
+        og_description=f"Historic Lenten weekday readings for {result['date_str']}.",
+    )
+
+
+@app.route("/lent/ferial/<date_str>/pdf")
+def lent_ferial_day_pdf(date_str):
+    """One-page printable card for a single Lenten ferial day."""
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        abort(404)
+    result, _ = _ferial_day_result(d)
+    if result is None:
+        abort(404)
+    from pdf_gen import build_day_card_pdf
+    buf = build_day_card_pdf(result, "one_year", violet_advent=True)
+    return send_file(buf, mimetype="application/pdf", as_attachment=True,
+                     download_name=f"Lenten_Ferial_{date_str}.pdf")
+
+
+@app.route("/lent/passion")
+def lent_passion():
+    """The CSB 1917 Passion History — seven Parts, with a schedule toggle."""
+    from liturgical_calendar.data import passion_history as PH
+    schedule = request.args.get("schedule", "wednesdays")
+    if schedule not in PH.SCHEDULES:
+        schedule = "wednesdays"
+    year = _lent_civil_year(request.args.get("year"))
+    cal = get_calendar(year - 1)
+    rows = []
+    for part, label, d in PH.resolve_schedule(schedule, cal):
+        rows.append({
+            "part":      part,
+            "day_label": label,
+            "date":      d,
+            "date_str":  d.strftime("%a, %b %-d"),
+            "readings":  [{"ref": r, "url": bg_url(r, PH.BIBLE_VERSION)} for r in part["refs"]],
+        })
+    return render_template(
+        "passion_history.html",
+        year=year,
+        schedule=schedule,
+        schedules=PH.SCHEDULES,
+        rows=rows,
+        rubrics=PH.CSB_RUBRICS,
+        scan_url=PH.SCAN_URL,
+        bible_version=PH.BIBLE_VERSION,
+        source_citation=PH.SOURCE_CITATION,
+        prev_year=max(MIN_YEAR + 1, year - 1),
+        next_year=min(MAX_YEAR, year + 1),
+        min_year=MIN_YEAR + 1,
+        max_year=MAX_YEAR,
+    )
+
+
+@app.route("/lent/sources")
+def lent_sources():
+    """Documentation: where these readings come from — Roman vs. Lutheran."""
+    from liturgical_calendar.data import lenten_ferial as LF
+    return render_template(
+        "lent_sources.html",
+        mark_legend=LF.MARK_LEGEND,
+        origin_labels=LF.ORIGIN_LABELS,
+        holy_week_note=LF.HOLY_WEEK_NOTE,
+    )
+
+
 def _event_to_json(ev: dict) -> dict:
     """Serialize an event dict for the JSON API."""
     out = dict(ev)

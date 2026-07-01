@@ -1137,3 +1137,19 @@ a.almanac-card:hover { border-color: var(--accent-text); box-shadow: var(--shado
 .moon-easter-row strong { color: var(--text-strong); }
 .moon-easter-foot { margin-top: 0.75rem; font-size: 0.92rem; color: var(--text-soft); }
 @media (max-width: 560px) { .moon-easter-grid { grid-template-columns: 1fr; } }
+
+/* ── Reading font preference (Settings → Reading Font) ────────────────────
+   Default is sans (Arial) for body text; serif mode switches the main reading
+   content to Georgia. Scoped to <main> so the nav/header/footer chrome is left
+   untouched; the compound selector outranks the single-class Arial rules.
+   Form controls keep the system font so inputs/buttons stay legible. */
+html[data-font="serif"] main,
+html[data-font="serif"] main * {
+  font-family: Georgia, "Times New Roman", serif;
+}
+html[data-font="serif"] main input,
+html[data-font="serif"] main select,
+html[data-font="serif"] main button,
+html[data-font="serif"] main .btn {
+  font-family: Arial, sans-serif;
+}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Historic Lent — Where These Readings Come From{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Where These Readings Come From</h1>
+  <p class="page-sub">A short history of the Lenten weekday lectionary — what is Roman in origin,
+    what is Lutheran, and how the sources were established.</p>
+</div>
+
+<div class="help-body">
+
+  <p>
+    Among all the seasons of the church year, <strong>Lent alone has proper readings appointed for
+    every weekday</strong>, not only for Sundays. From Ash Wednesday through Good Friday each day has,
+    as a rule, two lessons — an <em>Epistle</em>, which in Lent is almost always drawn from the Old
+    Testament, and a <em>Gospel</em>. This page explains where that daily lectionary came from, and
+    marks out plainly which parts are Roman in origin and which are Lutheran.
+  </p>
+
+  <h2>1. Roman in origin — the substance of the lectionary</h2>
+  <p>
+    The daily Lenten Mass framework, and with it nearly every Gospel and Old-Testament lesson in the
+    table, is the historic <strong>Western (Roman-rite) ferial lectionary</strong>. It is not a modern
+    construction and it is not, in its bones, Lutheran: it is the inheritance of the whole Western
+    Church.
+  </p>
+  <ul>
+    <li><strong>The ancient station days.</strong> Long before Lent had a daily system, Rome kept
+      <em>stational</em> liturgies on Sundays, <strong>Wednesdays</strong>, and <strong>Fridays</strong>
+      — the old fast and assembly days. This is why the Wednesday and Friday readings are the oldest
+      layer of the whole scheme.</li>
+    <li><strong>Thursdays came last.</strong> For the early centuries Rome celebrated no Mass on
+      Thursdays in Lent; Thursday propers were only supplied in the <strong>eighth century</strong>
+      (traditionally credited to Pope Gregory II, †731). The Lenten Thursdays are therefore the
+      latest-added weekdays.</li>
+    <li><strong>Attested in the oldest books.</strong> The system appears, essentially complete, in
+      the <em>Gregorian Sacramentary</em> and in the earliest Roman lectionaries — the
+      <em>Würzburg Comes</em> (7th c.) and the <em>Comes of Murbach</em> (8th c.) — and was codified
+      in the <em>Missale Romanum</em> of 1570 (the Tridentine Missal), carried down to the 1962
+      Missal. The Ember-Day multiple prophecies and the readings from the Old-Testament apocrypha
+      (Susanna, Bel and the Dragon, the Prayer of Azariah, 2 Maccabees, Sirach) are all part of this
+      Roman inheritance.</li>
+  </ul>
+
+  <h2>2. Lutheran in keeping — retention and curation</h2>
+  <p>
+    The Lutheran Reformation did not invent a new lectionary; it <em>kept</em> the Western one. What is
+    distinctly Lutheran here is preservation and framing:
+  </p>
+  <ul>
+    <li>The Reformers retained the inherited pericope tradition and the Latin day-names taken from the
+      old Introits — <strong>Invocavit, Reminiscere, Oculi, Laetare, Judica</strong> — which this table
+      uses.</li>
+    <li>The readings survived in the <strong>late-medieval German missals</strong> and the Lutheran
+      church orders that grew from them. It is that specific German recension — not the later
+      Tridentine standardization — that Lutherans carried forward.</li>
+    <li>The Collects, Introits, and Graduals that accompany these days come into English through the
+      <em>Common Service</em> tradition — the <em>Common Service Book</em> (1917), <em>The Lutheran
+      Hymnal</em> (1941), and the <em>Lutheran Service Book</em> (2006).</li>
+  </ul>
+
+  <h2>3. How this table was reconstructed</h2>
+  <p>
+    The specific form shown in this app is the one assembled by <strong>The Lutheran Missal</strong>
+    project, which is cataloguing and tagging the actual manuscript and printed missals of the German
+    Lutheran world and reconstructing the historic lectionary from them. Their published
+    <em>&ldquo;Lenten Lections&rdquo;</em> table is the immediate source; the readings here were
+    transcribed from its page and cross-checked reading-by-reading.
+  </p>
+  <p>
+    Their method is itself the best evidence for the Roman-vs-Lutheran distinction. Where the German
+    Lutheran books agree with the wider Roman tradition, the reading is simply the common Western
+    inheritance. Where they diverge, the divergence is documented — see the showcase case below.
+  </p>
+
+  <h2>4. Reading the provenance marks</h2>
+  <p>Each reading in the table is tagged with its origin, following The Lutheran Missal's own legend:</p>
+  <dl class="help-tools">
+    <dt>(unmarked)</dt>
+    <dd>{{ origin_labels['core'] }} — the common core, historic <em>and</em> still appointed in today's
+      LSB one-year lectionary.</dd>
+    <dt><span style="color:#7a5a12;font-weight:700;">pre-LSB</span> &nbsp;(<code>*</code>)</dt>
+    <dd>{{ origin_labels['hist'] }}. These are the <em>most</em> Roman items — historic readings that
+      the modern LSB dropped, which The Lutheran Missal restores. Examples: the second lesson on Ember
+      Wednesday (1 Kings 19), Isaiah 53 on Wednesday of Holy Week, and Hosea 5–6 with Exodus 12 on
+      Good Friday.</dd>
+    <dt><span style="color:#2b4c7e;font-weight:700;">LSB add.</span> &nbsp;(<code>**</code>)</dt>
+    <dd>{{ origin_labels['lsb'] }}. These are modern additions found in LSB but not in the historic
+      set — chiefly the third, Old-Testament reading now given on the Sundays (e.g. Genesis 3 on
+      Invocavit), and the 2 Peter Epistle on Ash Wednesday. Historically Ash Wednesday's Epistle was
+      Joel alone, with no New-Testament reading before the Gospel.</dd>
+  </dl>
+
+  <h2>5. A Roman-vs-Lutheran showcase: the Holy Week Gospels</h2>
+  <p>
+    The clearest place where Lutheran usage parts from Rome is the Passion Gospel order on Monday and
+    Tuesday of Holy Week. {{ holy_week_note }}
+  </p>
+  <p>
+    In the same way, Isaiah 53 stands on Wednesday of Holy Week and Exodus 12 (the Passover lamb) on
+    Good Friday — placements &ldquo;fairly universally attested&rdquo; across the German sources,
+    though LSB and the later Roman books arrange Holy Week somewhat differently.
+  </p>
+
+  <h2>6. The Lutheran alternative: the Passion History</h2>
+  <p>
+    There is a second, distinctly <strong>Lutheran</strong> way of keeping the Lenten weekdays that is
+    not a Mass lectionary at all. Rather than the daily ferial readings, Lutheran congregations have
+    long gathered at <strong>midweek services</strong> to hear the <em>Passion History</em> — a
+    harmony of the four Gospels' Passion narratives — read in continuous portions across the weeks of
+    Lent, ending in Holy Week. The <em>Common Service Book</em> of 1917 prints such an arrangement
+    (by John Caspar Mattes), divided into <strong>seven Parts</strong>. It is provided under
+    <a href="/lent/passion">The Passion History</a> as the companion to this daily lectionary.
+  </p>
+
+  <h3>The rubrics of the Passion History</h3>
+  <p>
+    The Common Service Book prints three <em>rubrics</em> — directions for how the History is to be
+    used — at the head of the text (p. 250). A rubric (from Latin <em>ruber</em>, &ldquo;red,&rdquo;
+    because such directions were traditionally printed in red ink) is an instruction, not something
+    read aloud. The three are:
+  </p>
+  <ol>
+    <li><strong>Read it through Holy Week.</strong> &ldquo;The History of the Passion may be read as
+      the Lesson at Matins or Vespers during Holy Week, beginning with the Vespers of Palm
+      Sunday.&rdquo; One Part is read at each office through the week.</li>
+    <li><strong>Or read it through Lent.</strong> &ldquo;Or it may be read during Lent, and repeated
+      during Holy Week.&rdquo; This is the familiar midweek-Lenten practice — one Part at each
+      Wednesday service. (There are, providentially, exactly seven Wednesdays from Ash Wednesday
+      through Wednesday of Holy Week, one for each Part.) The toggle on the
+      <a href="/lent/passion">Passion History</a> page switches between these two schedules.</li>
+    <li><strong>Hymns between the Parts.</strong> &ldquo;Suitable hymns may be sung between the
+      paragraphs of each Part of the History&rdquo; — the congregation's response woven into the
+      reading, in the manner of a sung Passion.</li>
+  </ol>
+  <p>
+    A fourth, more solemn rubric stands within <strong>Part Six</strong>, at the death of our Lord:
+    &ldquo;At the words, <em>He bowed his head, and gave up the ghost</em>, all may kneel and
+    silently say the Lord's Prayer or other suitable prayers.&rdquo; This momentary kneeling in
+    silence at the death of Christ is an old and widely-kept ceremony (the Roman rite prescribes a
+    like genuflection at the same point in the Good Friday Passion); the Common Service Book keeps it
+    as a permission — <em>may</em> kneel — in its characteristically unforced way.
+  </p>
+
+  <h2>Sources</h2>
+  <ul class="help-sources">
+    <li>The Lutheran Missal, <em>&ldquo;Lenten Lections&rdquo;</em> (11 February 2020) —
+      <a href="https://lutheranmissal.home.blog/2020/02/11/lenten-lections/" target="_blank" rel="noopener">lutheranmissal.home.blog</a>.
+      The immediate source of the reading list and provenance marks.</li>
+    <li>The Lutheran Missal, <em>&ldquo;On Ferial (Weekday) Masses&rdquo;</em> (24 November 2020).</li>
+    <li><em>Missale Romanum</em> (1570; 1962) — the Tridentine Lenten ferial propers.</li>
+    <li>The <em>Gregorian Sacramentary</em>; the <em>Würzburg Comes</em> (7th c.) and <em>Comes of
+      Murbach</em> (8th c.) — earliest witnesses to the Roman Lenten lectionary.</li>
+    <li><em>Common Service Book of the Lutheran Church</em> (Philadelphia, 1917) — Collects, Introits,
+      Graduals, and the Passion History.</li>
+  </ul>
+
+  <p class="muted" style="margin-top:1.5rem;font-size:0.82rem;">
+    Reading citations are transcribed as printed in the source (including its Ember Saturday
+    &ldquo;2 Maccabees 1:23, 2–5&rdquo;). Always verify against the printed missal or altar book
+    before liturgical use.
+  </p>
+
+</div>
+{% endblock %}

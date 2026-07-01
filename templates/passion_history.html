@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}The Passion History — {{ schedules[schedule].label }} {{ year }}{% endblock %}
+
+{% block content %}
+<style>
+  .ph-rubrics { margin:0 0 1.25rem; padding:0.85rem 1rem; background:var(--card-bg,#fff);
+    border:1px solid var(--border,#e2e2e2); border-left:4px solid #1f3a5f; border-radius:0 8px 8px 0;
+    font-size:0.85rem; }
+  .ph-rubrics ul { margin:0.4rem 0 0; padding-left:1.1rem; }
+  .ph-rubrics li { margin:0.25rem 0; }
+  .ph-toggle { display:inline-flex; border:1px solid var(--accent,#1f3a5f); border-radius:6px; overflow:hidden; }
+  .ph-toggle a { padding:0.35rem 0.9rem; font-size:0.85rem; text-decoration:none; color:var(--accent,#1f3a5f); }
+  .ph-toggle a.active { background:var(--accent,#1f3a5f); color:#fff; }
+  .ph-part { margin:1.1rem 0; padding:1rem 1.1rem; border:1px solid var(--border,#e6e6e6);
+    border-radius:8px; background:var(--card-bg,#fff); }
+  .ph-part-head { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+  .ph-part-n { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c9a44c; }
+  .ph-part h2 { font-size:1.06rem; margin:0.1rem 0 0.15rem; color:var(--accent,#1f3a5f); }
+  .ph-day { text-align:right; font-size:0.85rem; white-space:nowrap; }
+  .ph-day .ph-date { display:block; color:#888; font-size:0.76rem; }
+  .ph-incipit { font-style:italic; color:#666; font-size:0.9rem; margin:0.2rem 0 0.5rem; }
+  .ph-summary { font-size:0.92rem; margin:0.35rem 0 0.6rem; }
+  .ph-refs { font-size:0.9rem; }
+  .ph-refs .ph-label { color:#777; font-size:0.78rem; margin-right:0.35rem; }
+  .ph-refs a { margin-right:0.6rem; white-space:nowrap; }
+  .ph-rubric-note { margin:0.55rem 0 0; padding:0.5rem 0.7rem; background:rgba(201,164,76,0.1);
+    border-radius:6px; font-size:0.82rem; color:#8a6d3b; }
+  .ph-src { margin-top:1.75rem; font-size:0.78rem; color:#888; }
+</style>
+
+<div class="page-header">
+  <h1>The History of the Passion</h1>
+  <p class="page-sub">A harmony of the four Evangelists in seven Parts &middot;
+    <em>Common Service Book of the Lutheran Church</em> (1917) &middot; read here in {{ schedules[schedule].label }} — {{ year }}</p>
+</div>
+
+<div class="toolbar" style="gap:0.75rem; flex-wrap:wrap;">
+  <div class="ph-toggle">
+    <a href="/lent/passion?schedule=wednesdays&year={{ year }}" class="{{ 'active' if schedule == 'wednesdays' }}">Wednesdays of Lent</a>
+    <a href="/lent/passion?schedule=holy_week&year={{ year }}" class="{{ 'active' if schedule == 'holy_week' }}">Holy Week</a>
+  </div>
+  <form action="/lent/passion" method="get" class="toolbar-form">
+    <input type="hidden" name="schedule" value="{{ schedule }}">
+    <a href="/lent/passion?schedule={{ schedule }}&year={{ prev_year }}" class="btn btn-sm btn-outline" title="Previous year">←</a>
+    <label>Year <input type="number" name="year" value="{{ year }}" min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;"></label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/lent/passion?schedule={{ schedule }}&year={{ next_year }}" class="btn btn-sm btn-outline" title="Next year">→</a>
+    <a href="/lent" class="btn btn-sm btn-outline">← Historic Lent</a>
+  </form>
+</div>
+
+<p style="font-size:0.9rem;max-width:52rem;">{{ schedules[schedule].blurb }}
+  The seven Parts and their rubrics are those of the CSB; the text of each Part is the
+  <strong>{{ bible_version }}</strong> the arrangement follows — tap any reference to read it, or see the
+  <a href="{{ scan_url }}" target="_blank" rel="noopener">CSB scan</a> for the exact harmonized wording.</p>
+
+<div class="ph-rubrics">
+  <strong>From the Common Service Book (p. 250):</strong>
+  <ul>
+    {% for r in rubrics %}<li>{{ r }}</li>{% endfor %}
+  </ul>
+</div>
+
+{% for row in rows %}
+<div class="ph-part">
+  <div class="ph-part-head">
+    <div>
+      <div class="ph-part-n">Part {{ row.part.n }}</div>
+      <h2>{{ row.part.title }}</h2>
+    </div>
+    <div class="ph-day">{{ row.day_label }}<span class="ph-date">{{ row.date_str }}</span></div>
+  </div>
+  <p class="ph-incipit">“{{ row.part.incipit }}”</p>
+  <p class="ph-summary">{{ row.part.summary }}</p>
+  <p class="ph-refs"><span class="ph-label">Read ({{ bible_version }}):</span>
+    {% for r in row.readings %}<a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.ref }}</a>{% endfor %}
+  </p>
+  {% if row.part.rubric %}<p class="ph-rubric-note">✠ {{ row.part.rubric }}</p>{% endif %}
+</div>
+{% endfor %}
+
+<p class="ph-src">Source: {{ source_citation }}
+  The daily-Mass alternative for the weekdays of Lent is the
+  <a href="/lent/ferial">Historic Lenten Weekday Lectionary</a>; on how the two relate, see
+  <a href="/lent/sources">Where these readings come from</a>.</p>
+{% endblock %}

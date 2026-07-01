@@ -32,6 +32,13 @@
   </div>
 
   <div class="card settings-card">
+    <h2>🔤 Reading Font</h2>
+    <p>The typeface for reading content — the lectionary tables, propers, and day cards. Sans-serif (Arial) is crisp on screen; serif (Georgia) reads more like a printed altar book. Headings stay serif either way.</p>
+    <label class="settings-radio"><input type="radio" name="set-font" value="sans"> Sans-serif (default)</label>
+    <label class="settings-radio"><input type="radio" name="set-font" value="serif"> Serif</label>
+  </div>
+
+  <div class="card settings-card">
     <h2>✠ Minor Feasts</h2>
     <p>Whether the full calendar includes the sanctoral calendar (apostles, evangelists, commemorations) by default.</p>
     <label class="settings-radio"><input type="radio" name="set-minor" value="1"> Show minor feasts</label>
@@ -67,6 +74,7 @@
                    toForm: v => v === '1' ? 'violet' : 'blue',
                    toStore: v => v === 'violet' ? '1' : '0' },
     theme:       { store: 'lcms_theme',           def: 'system' },
+    font:        { store: 'lcms_font',            def: 'sans' },
     minor:       { store: 'lcms_minor_feasts',    def: '1' },
     civil:       { store: 'lcms_civil_holidays',  def: '1' },
     translation: { store: 'lcms_translation',     def: 'ESV' },
@@ -90,6 +98,7 @@
         const store = cfg.toStore ? cfg.toStore(r.value) : r.value;
         localStorage.setItem(cfg.store, store);
         if (name === 'theme' && typeof applyThemePref === 'function') applyThemePref();
+        if (name === 'font' && typeof applyFontPref === 'function') applyFontPref();
         flash();
       });
     });
@@ -98,6 +107,7 @@
   document.getElementById('settings-reset').addEventListener('click', () => {
     for (const cfg of Object.values(KEYS)) localStorage.removeItem(cfg.store);
     if (typeof applyThemePref === 'function') applyThemePref();
+    if (typeof applyFontPref === 'function') applyFontPref();
     location.reload();
   });
 })();

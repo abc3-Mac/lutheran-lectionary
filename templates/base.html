@@ -29,6 +29,12 @@
     }
     applyThemePref();
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyThemePref);
+    // Apply saved reading-font preference before first paint. Default 'sans'.
+    function applyFontPref() {
+      const f = localStorage.getItem('lcms_font') || 'sans';
+      document.documentElement.setAttribute('data-font', f);
+    }
+    applyFontPref();
   </script>
 </head>
 <body{% if lectionary is defined and lectionary %} data-lectionary="{{ lectionary }}"{% endif %}>
@@ -40,6 +46,7 @@
         <a href="/calendar">Full Calendar</a>
         <a href="/propers" title="One-Year Introits, Collects &amp; Graduals">Propers</a>
         <a href="/daily" title="Daily Lectionary">Daily</a>
+        <a href="/lent" title="Historic Lenten weekday lectionary &amp; Passion History">Lent</a>
         <a href="/lookup">Date Lookup</a>
         <a href="/search">Search</a>
         <a href="/almanac" title="Easter dates, moon phases &amp; calendar tools">Almanac</a>

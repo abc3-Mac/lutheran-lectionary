@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Historic Lenten Weekday Lectionary {{ year }}{% endblock %}
+
+{% block content %}
+<style>
+  .ferial-legend { display:flex; flex-wrap:wrap; gap:1rem; margin:0 0 1.25rem;
+    padding:0.85rem 1rem; background:var(--card-bg,#fff); border:1px solid var(--border,#e2e2e2);
+    border-radius:8px; font-size:0.82rem; }
+  .ferial-legend .leg { display:flex; gap:0.5rem; align-items:flex-start; max-width:22rem; }
+  .prov-chip { display:inline-block; font-size:0.66rem; font-weight:700; letter-spacing:0.03em;
+    text-transform:uppercase; padding:0.08rem 0.4rem; border-radius:4px; vertical-align:middle;
+    margin-left:0.4rem; white-space:nowrap; }
+  .prov-hist { background:#f3e6c4; color:#7a5a12; }        /* * historic, pre-LSB (most Roman) */
+  .prov-lsb  { background:#dbe7f5; color:#2b4c7e; }         /* ** modern LSB */
+  .ferial-week { margin:1.6rem 0; }
+  .ferial-week > h2 { font-size:1.05rem; margin:0 0 0.4rem; padding-bottom:0.3rem;
+    border-bottom:2px solid var(--accent,#1f3a5f); color:var(--accent,#1f3a5f); }
+  table.ferial { width:100%; border-collapse:collapse; }
+  table.ferial td { padding:0.5rem 0.6rem; border-top:1px solid var(--border,#ececec); vertical-align:top; }
+  table.ferial td.fday { white-space:nowrap; width:15rem; }
+  .fday .fdate { display:block; font-size:0.74rem; color:#888; }
+  .fday .fname { font-weight:600; display:inline-block; text-decoration:none; }
+  .fday .fname:hover { text-decoration:underline; }
+  tr.fsunday td { background:rgba(31,58,95,0.06); }
+  tr.fsunday .fname { color:var(--accent,#1f3a5f); }
+  .frdg { margin:0.1rem 0; font-size:0.92rem; }
+  .frdg .flabel { display:inline-block; min-width:6.5rem; color:#777; font-size:0.78rem; }
+  .fnote { margin:0.3rem 0 0; font-size:0.78rem; color:#8a6d3b; font-style:italic; }
+  .ferial-callout { margin:1.5rem 0; padding:0.9rem 1.1rem; border-left:4px solid #c9a44c;
+    background:rgba(201,164,76,0.08); border-radius:0 6px 6px 0; font-size:0.88rem; }
+  .ferial-src { margin-top:1.75rem; font-size:0.78rem; color:#888; }
+</style>
+
+<div class="page-header">
+  <h1>Historic Lenten Weekday Lectionary — {{ year }}</h1>
+  <p class="page-sub">A proper Mass for <em>every day</em> of Lent, Ash Wednesday through Good Friday
+    &middot; {{ ash_wednesday.strftime('%B %-d') }} – {{ good_friday.strftime('%B %-d, %Y') }}</p>
+</div>
+
+<div class="toolbar">
+  <form action="/lent/ferial" method="get" class="toolbar-form">
+    <a href="/lent/ferial?year={{ prev_year }}" class="btn btn-sm btn-outline" title="Previous year">←</a>
+    <label>Year <input type="number" name="year" value="{{ year }}" min="{{ min_year }}" max="{{ max_year }}" style="width:5.5rem;"></label>
+    <button type="submit" class="btn btn-sm">Go</button>
+    <a href="/lent/ferial?year={{ next_year }}" class="btn btn-sm btn-outline" title="Next year">→</a>
+    <a href="/lent" class="btn btn-sm btn-outline">← Historic Lent</a>
+    <a href="/lent/sources" class="btn btn-sm btn-outline">Where these come from →</a>
+  </form>
+</div>
+
+<p style="font-size:0.9rem;max-width:52rem;">
+  In the historic Western rite, Lent alone has proper readings appointed for every weekday, not just
+  Sundays. As a rule each day has two lessons — an <em>Epistle</em> (in Lent almost always from the Old
+  Testament) and a <em>Gospel</em>; the Ember Days and the Wednesday and Saturday of Laetare carry
+  extra lessons. Sunday rows are shaded, for context. Tap any reference to open it at BibleGateway.
+</p>
+
+<div class="ferial-legend">
+  <div class="leg"><span class="prov-chip prov-hist">pre-LSB</span>
+    <span>{{ origin_labels['hist'] }} — the older usage The Lutheran Missal preserves.</span></div>
+  <div class="leg"><span class="prov-chip prov-lsb">LSB add.</span>
+    <span>{{ origin_labels['lsb'] }} — mostly the modern third (Old-Testament) reading on Sundays.</span></div>
+  <div class="leg"><span style="color:#777;">(unmarked)</span>
+    <span>{{ origin_labels['core'] }}.</span></div>
+</div>
+
+{% for week in weeks %}
+<div class="ferial-week">
+  <h2>{{ week.name }}</h2>
+  <table class="ferial">
+    <tbody>
+      {% for day in week.days %}
+      <tr class="{% if day.is_sunday %}fsunday{% endif %}">
+        <td class="fday">
+          <span class="fdate">{{ day.date_str }}</span>
+          <a class="fname" href="/lent/ferial/{{ day.iso }}" title="Open the day card for {{ day.name }}">{{ day.name }}</a>
+        </td>
+        <td>
+          {% for r in day.readings %}
+          <p class="frdg">
+            <span class="flabel">{{ r.label }}</span>
+            <a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.ref }}</a>
+            {% if r.mark == '*' %}<span class="prov-chip prov-hist" title="{{ r.origin_label }}">pre-LSB</span>
+            {% elif r.mark == '**' %}<span class="prov-chip prov-lsb" title="{{ r.origin_label }}">LSB add.</span>{% endif %}
+          </p>
+          {% endfor %}
+          {% if day.note %}<p class="fnote">{{ day.note }}</p>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+
+<div class="ferial-callout">
+  <strong>On the Holy Week Gospels.</strong> {{ holy_week_note }}
+</div>
+
+<p class="ferial-src">Source: {{ source_citation }} See <a href="/lent/sources">Where these readings come from</a>
+  for the full Roman-vs-Lutheran history.</p>
+{% endblock %}

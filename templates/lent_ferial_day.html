@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ result.name }} — {{ result.date_str }}{% endblock %}
+
+{% block content %}
+<style>
+  .prov-chip { display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.03em;
+    text-transform:uppercase; padding:0.05rem 0.38rem; border-radius:4px; margin-left:0.45rem; vertical-align:middle; }
+  .prov-hist { background:#f3e6c4; color:#7a5a12; }
+  .prov-lsb  { background:#dbe7f5; color:#2b4c7e; }
+  .ferial-day-note { margin:0.9rem 0 0; padding:0.6rem 0.8rem; background:rgba(201,164,76,0.1);
+    border-radius:6px; font-size:0.85rem; color:#8a6d3b; font-style:italic; }
+</style>
+
+<div class="lookup-result">
+  <div class="result-header {{ result.color_class }}">
+    <div class="result-date">{{ result.date_str }}</div>
+    <div class="result-name">{{ result.name }}</div>
+    <div class="result-week-note">{{ week_name }} &middot; Historic Lenten weekday Mass</div>
+    <div class="result-meta">
+      <span>{{ result.season }}</span>
+      <span>{{ result.church_year }} Church Year</span>
+      {% if result.color %}<span class="color-dot {{ result.color_class }}">{{ result.color }}</span>{% endif %}
+    </div>
+  </div>
+
+  <div class="result-readings">
+    <h3>Appointed Readings</h3>
+    <div class="readings-grid">
+      {% for r in result.readings_parsed %}
+      <div class="reading-item">
+        <div class="reading-label">{{ r.label }}</div>
+        <div class="reading-refs">
+          <a href="{{ r.url }}" class="reading-ref scripture-link"
+             onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+             title="Click to preview {{ r.ref }}">{{ r.ref }}</a>
+          {% if r.mark == '*' %}<span class="prov-chip prov-hist" title="{{ r.origin_label }}">pre-LSB</span>
+          {% elif r.mark == '**' %}<span class="prov-chip prov-lsb" title="{{ r.origin_label }}">LSB add.</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if result.note %}<p class="ferial-day-note">{{ result.note }}</p>{% endif %}
+  </div>
+
+  <div class="result-actions" style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1rem;">
+    <a class="btn" href="/lent/ferial/{{ date_str }}/pdf">⬇ PDF card</a>
+    <a class="btn btn-outline" href="/lent/ferial?year={{ result.date.year }}">← Full Lenten table</a>
+    <a class="btn btn-outline" href="/lent/sources">Where these come from</a>
+  </div>
+
+  <p class="propers-source" style="margin-top:1rem;font-size:0.78rem;color:#888;">
+    Source: {{ result.source }}
+  </p>
+</div>
+{% endblock %}
