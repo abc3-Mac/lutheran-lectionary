@@ -42,6 +42,50 @@
     {% if result.note %}<p class="ferial-day-note">{{ result.note }}</p>{% endif %}
   </div>
 
+  {% if result.introit or result.collect %}
+  <div class="result-propers">
+    <h3 style="margin-bottom:0.15rem;">Introit &amp; Collect
+      <span class="prov-chip prov-hist" title="{{ result.propers_label }}">Historic Western</span>
+    </h3>
+    <p class="muted" style="margin:0 0 0.7rem; font-size:0.78rem;">
+      The historic Western rite&rsquo;s propers for this weekday Mass &mdash; not found in
+      Lutheran service books; given for reference alongside the readings.
+    </p>
+
+    {% if result.introit %}
+    <div class="proper-row">
+      <h3 class="proper-label">Introit</h3>
+      <div class="proper-introit">
+        <span class="introit-name">{{ result.introit.name }}</span>
+        <span class="introit-ref">— {{ result.introit.ref }}</span>
+      </div>
+      {% if result.introit.text %}
+      <p class="introit-text">{{ result.introit.text }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if result.collect %}
+    <div class="proper-row">
+      <h3 class="proper-label">Collect of the Day</h3>
+      <blockquote class="collect-text">{{ result.collect }}</blockquote>
+    </div>
+    {% endif %}
+
+    {% if result.propers_note %}<p class="ferial-day-note">{{ result.propers_note }}</p>{% endif %}
+
+    <p class="propers-source">
+      Introit and Collect from Husenbeth&rsquo;s <em>Missal for the Use of the Laity</em>
+      (London, 1853), public domain; cross-verified against the Philadelphia
+      <em>Roman Missal &hellip; for the Use of the Laity</em> (1861).
+    </p>
+  </div>
+  {% elif result.propers_note %}
+  <div class="result-propers">
+    <p class="ferial-day-note">{{ result.propers_note }}</p>
+  </div>
+  {% endif %}
+
   <div class="result-actions" style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1rem;">
     <a class="btn" href="/lent/ferial/{{ date_str }}/pdf">⬇ PDF card</a>
     <a class="btn btn-outline" href="/lent/ferial?year={{ result.date.year }}">← Full Lenten table</a>

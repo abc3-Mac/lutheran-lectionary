@@ -1278,6 +1278,19 @@ def _ferial_day_result(d):
             "hymn_of_the_day": None, "daily": None, "minor_feast": None,
             "source": LF.SOURCE_CITATION,
         }
+        # Historic Western introit + collect for the weekday Masses
+        # (Sundays draw theirs from one_year_propers; Good Friday has none).
+        from liturgical_calendar.data import lenten_ferial_propers as LFP
+        propers = None if day.get("is_sunday") else LFP.propers_for_slot(day["slot"])
+        if propers:
+            result["introit"] = propers["introit"]
+            result["collect"] = propers["collect"]
+            result["propers_note"] = propers.get("note")
+            result["propers_label"] = LFP.PROVENANCE_LABEL
+            result["propers_source"] = propers["source"]
+            result["source"] = f"{LF.SOURCE_CITATION} {LFP.SOURCE_CITATION}"
+        elif day["slot"] == "good_friday_fer":
+            result["propers_note"] = LFP.GOOD_FRIDAY_NOTE
         return result, week["name"]
     return None, None
 

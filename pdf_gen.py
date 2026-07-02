@@ -424,6 +424,12 @@ def _day_citation(result: dict, lectionary: str) -> str:
     LSB readings, hymn-of-the-day numbers, and the LSB Daily Lectionary, all facts.
     Citing the 1917 texts on a three-year sheet would describe content that isn't there.
     """
+    if result.get("propers_source"):
+        # Lenten ferial day: introit/collect are the historic Western texts,
+        # not CSB 1917 — cite the actual source.
+        return (f"Introit and collect: {result['propers_source']}, public domain "
+                "(historic Western propers; not from Lutheran service books). "
+                "Readings per The Lutheran Missal, “Lenten Lections” (2020).")
     has_csb = lectionary == "one_year" and (
         result.get("introit") or result.get("collect") or result.get("gradual"))
     if has_csb:

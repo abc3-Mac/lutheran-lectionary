@@ -108,6 +108,68 @@ def test_ferial_day_card_and_pdf():
     assert c.get("/lent/ferial/not-a-date").status_code == 404
 
 
+# --- Lenten ferial propers (introits & collects) ----------------------------
+
+def test_ferial_propers_cover_every_weekday_but_good_friday():
+    from liturgical_calendar.data import lenten_ferial_propers as LFP
+    weekday_slots = {day["slot"] for _, day in LF.iter_days(include_sundays=False)}
+    assert set(LFP.FERIAL_PROPERS) == weekday_slots - {"good_friday_fer"}
+    assert len(LFP.FERIAL_PROPERS) == 38
+    assert LFP.propers_for_slot("good_friday_fer") is None
+    assert "Presanctified" in LFP.GOOD_FRIDAY_NOTE
+
+
+def test_ferial_propers_structure():
+    from liturgical_calendar.data import lenten_ferial_propers as LFP
+    for slot, e in LFP.FERIAL_PROPERS.items():
+        assert e["introit"]["name"], slot
+        assert e["introit"]["ref"], slot
+        assert len(e["introit"]["text"]) > 40, slot
+        assert "Psalm." in e["introit"]["text"], slot   # antiphon + psalm verse
+        assert len(e["collect"]) > 40, slot
+        assert "Husenbeth" in e["source"], slot
+
+
+def test_ferial_propers_key_texts():
+    from liturgical_calendar.data import lenten_ferial_propers as LFP
+    P = LFP.FERIAL_PROPERS
+    assert P["fer_ash_wed"]["introit"]["name"] == "Misereris omnium"
+    assert P["fer_ash_wed"]["collect"].startswith("Grant to thy faithful")
+    assert P["maundy_thursday_fer"]["introit"]["name"] == "Nos autem gloriari"
+    assert P["maundy_thursday_fer"]["collect"].startswith("O God, from whom Judas")
+    # Introits the missal itself shares between adjacent days
+    assert P["fer_ash_fri"]["introit"]["text"] == P["fer_ash_sat"]["introit"]["text"]
+    assert P["fer_judica_fri"]["introit"]["text"] == P["fer_judica_sat"]["introit"]["text"]
+    assert (P["fer_holyweek_tue"]["introit"]["text"]
+            == P["maundy_thursday_fer"]["introit"]["text"])
+    # Station-church collect kept as printed
+    assert "Cosmas and Damian" in P["fer_oculi_thu"]["collect"]
+
+
+def test_ferial_day_card_shows_propers():
+    import app as A
+    c = A.app.test_client()
+    # Ash Wednesday 2026: introit + collect on the card
+    card = c.get("/lent/ferial/2026-02-18")
+    assert b"Misereris omnium" in card.data
+    assert b"Collect of the Day" in card.data
+    assert b"Historic Western" in card.data
+    # Good Friday 2026-04-03: no introit, but the Presanctified note
+    gf = c.get("/lent/ferial/2026-04-03")
+    assert gf.status_code == 200
+    assert b"Misereris" not in gf.data
+    assert b'class="proper-label"' not in gf.data   # no introit/collect blocks
+    assert b"Presanctified" in gf.data              # the explanatory note instead
+    # Invocavit (a Sunday, 2026-02-22): card renders without ferial propers
+    sun = c.get("/lent/ferial/2026-02-22")
+    assert sun.status_code == 200
+    assert b'class="proper-label"' not in sun.data
+    # PDF for a propers day still builds
+    pdf = c.get("/lent/ferial/2026-02-18/pdf")
+    assert pdf.status_code == 200
+    assert pdf.headers["Content-Type"] == "application/pdf"
+
+
 # --- Calendar Explorer tools ----------------------------------------------
 
 def test_weekday_finder():
