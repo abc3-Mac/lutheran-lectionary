@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ advent_year }}–{{ advent_year+1 }} Liturgical Year Wheel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>The Liturgical Year — Wheel</h1>
+  <p class="page-sub">
+    {% if lectionary == 'three_year' %}Three-Year Series <strong>{{ cal.series }}</strong>{% else %}One-Year (Historic) Series{% endif %}
+    &nbsp;|&nbsp;
+    {{ cal.advent_1.strftime('%-d %b %Y') }} &ndash; {{ cal.last_sunday.strftime('%-d %b %Y') }}
+  </p>
+</div>
+
+<div class="toolbar">
+  <form action="/wheel" method="get" class="toolbar-form">
+    <label>Year
+      <input type="number" name="year" value="{{ advent_year }}"
+             min="{{ min_year }}" max="{{ max_year }}" style="width:5rem;">
+    </label>
+    <label>Lectionary
+      <select name="lectionary">
+        {% for val, label in series_choices %}
+        <option value="{{ val }}" {% if val == lectionary %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" name="minor" value="1" {% if include_minor %}checked{% endif %}> Minor feasts
+    </label>
+    <button type="submit" class="btn btn-sm">Refresh</button>
+    <a href="/wheel.png?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}"
+       class="btn btn-sm btn-pdf">⬇ PNG (high-res)</a>
+    <a href="/wheel.svg?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}&download=1"
+       class="btn btn-sm btn-outline">⬇ SVG (vector)</a>
+    <a href="/calendar?year={{ advent_year }}&lectionary={{ lectionary }}" class="btn btn-sm btn-outline">List View</a>
+  </form>
+</div>
+
+<figure class="wheel-figure">
+  {{ svg|safe }}
+  <figcaption class="wheel-caption">
+    Each wedge is one Sunday or festival, filled with its liturgical color and grouped into seasons.
+    Use <strong>PNG (high-res)</strong> for a print-quality image of this church year, or
+    <strong>SVG</strong> for a scalable vector poster (opens in Affinity Designer).
+  </figcaption>
+</figure>
+
+
+<style>
+  .wheel-figure { margin: 1.25rem auto 2rem; max-width: 860px; }
+  .wheel-figure svg { width: 100%; height: auto; display: block;
+                      border: 1px solid rgba(0,0,0,.08); border-radius: 8px; }
+  .wheel-caption { margin-top: .75rem; text-align: center; font-size: .9rem; opacity: .75; }
+</style>
+{% endblock %}

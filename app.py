@@ -420,6 +420,80 @@ def generate_pdf():
     )
 
 
+def _wheel_params():
+    try:
+        advent_year = int(request.args.get("year", date.today().year))
+    except ValueError:
+        advent_year = date.today().year
+    advent_year   = max(MIN_YEAR, min(MAX_YEAR, advent_year))
+    lectionary    = request.args.get("lectionary", "three_year")
+    include_minor = request.args.get("minor", "0") == "1"
+    return advent_year, lectionary, include_minor
+
+
+def _build_wheel(advent_year, lectionary, include_minor):
+    from liturgical_calendar.wheel import build_wheel_svg
+    cal    = get_calendar(advent_year)
+    events = _events_for_display(cal, lectionary, include_minor)
+    svg    = build_wheel_svg(cal, events, lectionary, include_minor=include_minor)
+    return cal, svg
+
+
+@app.route("/wheel")
+def wheel_view():
+    advent_year, lectionary, include_minor = _wheel_params()
+    cal, svg = _build_wheel(advent_year, lectionary, include_minor)
+    return render_template(
+        "wheel.html",
+        cal=cal,
+        svg=svg,
+        advent_year=advent_year,
+        lectionary=lectionary,
+        include_minor=include_minor,
+        min_year=MIN_YEAR,
+        max_year=MAX_YEAR,
+        series_choices=SERIES_CHOICES,
+    )
+
+
+@app.route("/wheel.svg")
+def wheel_svg():
+    advent_year, lectionary, include_minor = _wheel_params()
+    _, svg = _build_wheel(advent_year, lectionary, include_minor)
+    resp = app.response_class(svg, mimetype="image/svg+xml")
+    if request.args.get("download") == "1":
+        resp.headers["Content-Disposition"] = (
+            f'attachment; filename="Liturgical_Year_Wheel_{advent_year}-{advent_year+1}.svg"'
+        )
+    return resp
+
+
+@app.route("/wheel.png")
+def wheel_png():
+    """High-resolution PNG of the wheel, rendered server-side so it downloads
+    reliably on every browser (including iOS Safari)."""
+    advent_year, lectionary, include_minor = _wheel_params()
+    try:
+        width = int(request.args.get("w", 3000))
+    except ValueError:
+        width = 3000
+    width = max(1000, min(6000, width))
+    _, svg = _build_wheel(advent_year, lectionary, include_minor)
+
+    from liturgical_calendar.rasterize import svg_to_png
+    try:
+        png = svg_to_png(svg, width=width)
+    except Exception as exc:  # noqa: BLE001 - surface a clean 503 to the client
+        app.logger.exception("wheel PNG rendering failed")
+        abort(503, description=f"PNG rendering is unavailable: {exc}")
+
+    resp = app.response_class(png, mimetype="image/png")
+    resp.headers["Content-Disposition"] = (
+        f'attachment; filename="Liturgical_Year_Wheel_{advent_year}-{advent_year+1}_{lectionary}.png"'
+    )
+    return resp
+
+
 @app.route("/api/version")
 def api_version():
     """Running version, used by the client to check for newer releases."""

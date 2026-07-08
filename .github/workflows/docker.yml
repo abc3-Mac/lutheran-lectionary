@@ -77,7 +77,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          # amd64 only: the wheel PNG renderer (resvg) ships an x86_64 Linux
+          # binary and has no official linux/arm64 release; the deploy target
+          # (NAS + these runners) is x86_64, so arm64 is dropped.
+          platforms: linux/amd64
           push: true
           build-args: |
             VERSION=${{ steps.version.outputs.version }}
