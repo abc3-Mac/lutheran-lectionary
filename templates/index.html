@@ -63,6 +63,27 @@
   </div>
 
   <div class="card">
+    <h2>🔄 The Liturgical Year Wheel</h2>
+    <p>See the whole church year as a circle — every Sunday and festival in its liturgical color, grouped by season, with the Agnus Dei at the center. Choose a year, then download a print-quality PNG or a scalable SVG poster.</p>
+    <form action="/wheel" method="get" class="quick-form">
+      <div class="form-row">
+        <label>Church Year
+          <input type="number" name="year" value="{{ current_advent_year }}"
+                 min="{{ min_year }}" max="{{ max_year }}">
+        </label>
+        <label>Lectionary
+          <select name="lectionary">
+            {% for val, label in series_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="btn">View Wheel</button>
+    </form>
+  </div>
+
+  <div class="card">
     <h2>📖 Daily Readings</h2>
     <p>The LSB Daily Lectionary — two readings for every day of the church year, as a chart you can browse, print, or download.</p>
     <form action="/daily" method="get" class="quick-form">
