@@ -10,6 +10,7 @@ part measures time from the preceding noon.
 """
 
 import math
+import re
 from datetime import date, datetime, timedelta
 
 
@@ -108,3 +109,45 @@ def weekday_name(d: date) -> str:
     """Day of the week for a date (works via the proleptic Gregorian datetime)."""
     return ["Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"][d.weekday()]
+
+
+_ROMAN_VALUES = [(1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
+                 (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+                 (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")]
+
+# Canonical (subtractive) Roman numerals, 1-3999: up to MMM, then one of
+# CM/CD or D + 0-3 C's, likewise for tens and units.
+_ROMAN_RE = re.compile(
+    r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")
+
+
+def arabic_to_roman(n: int) -> str:
+    """Roman numeral for an integer 1-3999 (classical subtractive notation)."""
+    if not 1 <= n <= 3999:
+        raise ValueError("Roman numerals cover 1-3999")
+    out = []
+    for value, symbol in _ROMAN_VALUES:
+        while n >= value:
+            out.append(symbol)
+            n -= value
+    return "".join(out)
+
+
+def roman_to_arabic(numeral: str) -> int:
+    """Integer value of a classical Roman numeral (e.g. MMXXVI -> 2026).
+
+    Strict: accepts only the canonical subtractive form (MMXXVI, not IIII
+    or VX). Case-insensitive.
+    """
+    s = numeral.strip().upper()
+    if not s or not _ROMAN_RE.match(s):
+        raise ValueError(f"{numeral!r} is not a valid Roman numeral")
+    values = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+    total = 0
+    for i, c in enumerate(s):
+        v = values[c]
+        if i + 1 < len(s) and values[s[i + 1]] > v:
+            total -= v
+        else:
+            total += v
+    return total

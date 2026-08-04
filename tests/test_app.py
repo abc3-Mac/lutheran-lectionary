@@ -235,6 +235,22 @@ def test_almanac_convert(client):
     assert b"valid date" in r.data
 
 
+def test_almanac_convert_roman(client):
+    # Arabic -> Roman
+    r = client.get("/almanac/convert?rn=2026")
+    assert r.status_code == 200
+    assert b"MMXXVI" in r.data
+    # Roman -> Arabic (case-insensitive)
+    r = client.get("/almanac/convert?rn=mdxvii")
+    assert b"1517" in r.data
+    assert b"MDXVII" in r.data
+    # invalid input is handled
+    r = client.get("/almanac/convert?rn=IIII")
+    assert b"1 to 3999" in r.data
+    r = client.get("/almanac/convert?rn=4000")
+    assert b"1 to 3999" in r.data
+
+
 def test_almanac_feasts(client):
     r = client.get("/almanac/feasts?year=2026")
     assert r.status_code == 200

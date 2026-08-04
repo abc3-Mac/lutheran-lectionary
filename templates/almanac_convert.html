@@ -33,4 +33,76 @@
   <div class="convert-row"><span>Julian day number</span><strong>{{ result.jdn }}</strong></div>
 </div>
 {% endif %}
+
+<div class="page-header" style="margin-top:2.5rem;">
+  <h1>Roman Numerals</h1>
+  <p class="page-sub">Two-way: type a number (1–3999) to get its Roman numeral, or a Roman numeral (MMXXVI) to get the number. Converts as you type.</p>
+</div>
+
+<div class="toolbar">
+  <form action="/almanac/convert" method="get" class="toolbar-form">
+    <label>Number or numeral <input type="text" id="rn-input" name="rn" value="{{ rn }}" placeholder="2026 or MMXXVI" autocomplete="off" spellcheck="false" style="width:11rem;"></label>
+    <button type="submit" class="btn btn-sm">Convert</button>
+  </form>
+</div>
+
+<div id="rn-error" class="alert alert-error" {% if not rn_error %}style="display:none;"{% endif %}>{% if rn_error %}{{ rn_error }}{% else %}Enter a number from 1 to 3999, or a Roman numeral like MMXXVI.{% endif %}</div>
+
+<div id="rn-card" class="card convert-result" {% if not rn_result %}style="display:none;"{% endif %}>
+  <div class="convert-row"><span>Arabic</span><strong id="rn-arabic">{{ rn_result.arabic if rn_result }}</strong></div>
+  <div class="convert-row"><span>Roman</span><strong id="rn-roman">{{ rn_result.roman if rn_result }}</strong></div>
+</div>
+
+<script>
+(function () {
+  // Mirrors almanac/convert.py: canonical subtractive numerals, 1-3999.
+  var VALUES = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+                [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  var ROMAN_RE = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+  var CHAR = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+
+  function toRoman(n) {
+    if (!(n >= 1 && n <= 3999)) return null;
+    var out = "";
+    for (var i = 0; i < VALUES.length; i++) {
+      while (n >= VALUES[i][0]) { out += VALUES[i][1]; n -= VALUES[i][0]; }
+    }
+    return out;
+  }
+  function fromRoman(s) {
+    if (!s || !ROMAN_RE.test(s)) return null;
+    var total = 0;
+    for (var i = 0; i < s.length; i++) {
+      var v = CHAR[s[i]];
+      total += (i + 1 < s.length && CHAR[s[i + 1]] > v) ? -v : v;
+    }
+    return total;
+  }
+
+  var input = document.getElementById("rn-input");
+  var card = document.getElementById("rn-card");
+  var err = document.getElementById("rn-error");
+
+  input.addEventListener("input", function () {
+    var raw = input.value.trim();
+    if (!raw) { card.style.display = "none"; err.style.display = "none"; return; }
+    var arabic = null;
+    if (/^\d+$/.test(raw)) {
+      arabic = parseInt(raw, 10);
+      if (toRoman(arabic) === null) arabic = null;
+    } else {
+      arabic = fromRoman(raw.toUpperCase());
+    }
+    if (arabic === null) {
+      card.style.display = "none";
+      err.style.display = "";
+      return;
+    }
+    err.style.display = "none";
+    card.style.display = "";
+    document.getElementById("rn-arabic").textContent = arabic;
+    document.getElementById("rn-roman").textContent = toRoman(arabic);
+  });
+})();
+</script>
 {% endblock %}

@@ -1098,9 +1098,25 @@ def almanac_convert():
         except (ValueError, TypeError):
             error = "Enter a valid date (month 1–12, day 1–31)."
 
+    # Roman numeral converter (two-way, auto-detects direction).
+    rn = request.args.get("rn", "").strip()
+    rn_result = rn_error = None
+    if rn:
+        try:
+            if rn.lstrip("-").isdigit():
+                rn_result = {"arabic": int(rn),
+                             "roman": cv.arabic_to_roman(int(rn))}
+            else:
+                n = cv.roman_to_arabic(rn)
+                rn_result = {"arabic": n, "roman": cv.arabic_to_roman(n)}
+        except ValueError:
+            rn_error = ("Enter a number from 1 to 3999, or a Roman numeral "
+                        "like MMXXVI.")
+
     return render_template("almanac_convert.html",
                            src=src, year=y or "", month=m or "", day=d or "",
-                           result=result, error=error)
+                           result=result, error=error,
+                           rn=rn, rn_result=rn_result, rn_error=rn_error)
 
 
 @app.route("/almanac/help")

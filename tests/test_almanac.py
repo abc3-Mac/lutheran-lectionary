@@ -276,3 +276,33 @@ def test_moon_icons():
     full = moon_svg(1.0, True)
     assert "<path" not in full and LIT in full and SHADOW not in full            # fully lit disc
     assert "Full moon" in phase_icon("Full moon")
+
+
+# --- Roman numerals -------------------------------------------------------
+
+def test_roman_known_values():
+    known = {1: "I", 4: "IV", 9: "IX", 14: "XIV", 40: "XL", 90: "XC",
+             400: "CD", 900: "CM", 1517: "MDXVII", 1988: "MCMLXXXVIII",
+             2026: "MMXXVI", 3999: "MMMCMXCIX"}
+    for n, numeral in known.items():
+        assert convert.arabic_to_roman(n) == numeral
+        assert convert.roman_to_arabic(numeral) == n
+
+
+def test_roman_round_trip_full_range():
+    for n in range(1, 4000):
+        assert convert.roman_to_arabic(convert.arabic_to_roman(n)) == n
+
+
+def test_roman_case_insensitive_and_whitespace():
+    assert convert.roman_to_arabic(" mmxxvi ") == 2026
+
+
+def test_roman_rejects_invalid():
+    import pytest
+    for bad in ("IIII", "VX", "IC", "MMMM", "XIIX", "ABC", "", "  "):
+        with pytest.raises(ValueError):
+            convert.roman_to_arabic(bad)
+    for bad_n in (0, -5, 4000):
+        with pytest.raises(ValueError):
+            convert.arabic_to_roman(bad_n)
