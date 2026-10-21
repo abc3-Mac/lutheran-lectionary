@@ -137,6 +137,33 @@ def test_all_events_sorted_and_unique_slots_per_date():
 
 
 # ---------------------------------------------------------------------------
+# Reformation / All Saints (regression: Sat Oct 31 2026 showed Pentecost 22)
+# LCMS 2025–26 calendar: Reformation observed Oct 25, All Saints Nov 1.
+# ---------------------------------------------------------------------------
+
+def test_reformation_and_all_saints_2026():
+    cal = cal_2025()
+    assert cal.reformation_observed == date(2026, 10, 25)
+    assert cal.all_saints_observed  == date(2026, 11, 1)
+    for lectionary in ("three_year", "one_year"):
+        assert cal.lookup(date(2026, 10, 25), lectionary)["slot"] == "reformation"
+        assert cal.lookup(date(2026, 10, 31), lectionary)["slot"] == "reformation"
+        assert cal.lookup(date(2026, 11, 1),  lectionary)["slot"] == "all_saints"
+    # The week after an observed festival belongs to the displaced Proper
+    wk = cal.lookup(date(2026, 10, 27))
+    assert wk["is_weekday"] and wk["name"] == "Twenty-second Sunday after Pentecost"
+    assert cal.lookup(date(2026, 11, 8))["name"] == "Twenty-fourth Sunday after Pentecost"
+
+
+def test_reformation_and_all_saints_never_share_a_sunday():
+    for y in range(2020, 2050):
+        cal = LiturgicalCalendar(y - 1)
+        assert cal.reformation_observed != cal.all_saints_observed
+        assert cal.lookup(date(y, 10, 31))["slot"] == "reformation"
+        assert cal.lookup(date(y, 11, 1))["slot"] == "all_saints"
+
+
+# ---------------------------------------------------------------------------
 # Bible Gateway URL cleaning (regression: PR #1, TomaceGordon)
 # ---------------------------------------------------------------------------
 

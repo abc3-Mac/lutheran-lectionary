@@ -189,9 +189,10 @@ class LiturgicalCalendar:
         self.all_saints_day  = date(cy, 11, 1)
         self.thanksgiving    = _nth_thursday(cy, 11, 4)
 
-        # Observed Sundays for moveable observances
-        self.reformation_observed = _nearest_sunday(self.reformation_day)
-        self.all_saints_observed  = _nearest_sunday(self.all_saints_day)
+        # Observed Sundays (LSB): Reformation on the last Sunday in October,
+        # All Saints on the first Sunday in November — never the same Sunday.
+        self.reformation_observed = self.reformation_day - timedelta(self.reformation_day.isoweekday() % 7)
+        self.all_saints_observed  = self.all_saints_day + timedelta((7 - self.all_saints_day.isoweekday()) % 7)
 
     # ------------------------------------------------------------------
     # Public API
@@ -217,6 +218,8 @@ class LiturgicalCalendar:
         if d == self.maundy_thursday:   return "maundy_thursday"
         if d == self.good_friday:       return "good_friday"
         if d == self.ascension:         return "ascension"
+        if d == self.reformation_day:   return "reformation"
+        if d == self.all_saints_day:    return "all_saints"
 
         # Sundays
         if d.isoweekday() != 7:
@@ -521,6 +524,16 @@ class LiturgicalCalendar:
             if prev < cal.advent_1:
                 break
             prev_slot = cal.date_to_slot(prev, lectionary=lectionary)
+            # Reformation / All Saints are single-day festivals: skip them on a
+            # weekday, and on a Sunday let the displaced Proper govern the week.
+            if prev_slot in ("reformation", "all_saints"):
+                if prev.isoweekday() != 7:
+                    continue
+                if prev in cal._pentecost_sundays:
+                    if lectionary == 'one_year':
+                        prev_slot = f"trinity_{(prev - cal.holy_trinity).days // 7}"
+                    else:
+                        prev_slot = f"proper_{get_proper(prev)}"
             if prev_slot:
                 gov_info = slot_info(prev_slot, cal.series, prev)
                 if gov_info:
