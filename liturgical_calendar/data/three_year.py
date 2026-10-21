@@ -1659,7 +1659,12 @@ THREE_YEAR_SLOTS = {
         "color": "Red",
         "feast": True,
         "minor": True,
-        "readings": None,
+        "all": _r(
+            ot="Revelation 14:6-7",
+            ps="Psalm 46 (antiphon: v. 7)",
+            ep="Romans 3:19-28",
+            go="John 8:31-36 | Matthew 11:12-19",
+        ),
     },
     "all_saints": {
         "name": "All Saints' Day",

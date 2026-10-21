@@ -248,8 +248,38 @@ def _lookup_result(d: date, lectionary: str):
         "source":          info.get("source"),
         "daily":           _daily_for_display(d),
         "hymn_of_the_day": hymn_of_the_day(slot, lectionary, info.get("series")),
+        "alternate":       None if is_weekday else _alternate_for_display(cal, d, slot, lectionary),
     }
     return result, None
+
+
+def _alternate_for_display(cal, d, slot, lectionary):
+    """For a festival observed on a Sunday after Pentecost (Reformation, All
+    Saints, St. Michael), the displaced Sunday's propers — or None."""
+    if slot not in ("reformation", "all_saints", "st_michael"):
+        return None
+    alt_slot = cal.displaced_slot(d, lectionary)
+    if alt_slot is None:
+        return None
+    from liturgical_calendar.calculator import slot_info
+    info = slot_info(alt_slot, cal.series, d) or {}
+    alt = {
+        "slot":            alt_slot,
+        "readings_parsed": parse_readings(info.get("readings")),
+        "hymn_of_the_day": hymn_of_the_day(alt_slot, lectionary, cal.series),
+        "collect": None, "introit": None, "gradual": None,
+    }
+    if lectionary == "one_year":
+        from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+        from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
+        od = ONE_YEAR_SLOTS.get(alt_slot) or {}
+        alt["readings_parsed"] = parse_readings(od.get("readings") or info.get("readings"))
+        p = ONE_YEAR_PROPERS.get(alt_slot, {})
+        alt.update(collect=p.get("collect"), introit=p.get("introit"), gradual=p.get("gradual"))
+        alt["name"] = cal._trinity_ordinal_name(d)
+    else:
+        alt["name"] = cal._pentecost_ordinal_name(d)
+    return alt
 
 
 def _daily_for_display(d: date):

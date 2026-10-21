@@ -126,6 +126,53 @@
     {% else %}
     <p class="muted">No readings assigned for this date in the selected lectionary.</p>
     {% endif %}
+
+    {% if result.alternate %}
+    {% set alt = result.alternate %}
+    <details class="alt-readings">
+      <summary class="btn btn-sm btn-outline">Alternative: readings for the {{ alt.name }}</summary>
+      <p class="muted alt-readings-note">
+        {{ result.name }} is observed on this Sunday in place of the {{ alt.name }}.
+        Use these readings if your congregation keeps the regular Sunday instead.
+      </p>
+      <div class="readings-grid">
+        {% for r in alt.readings_parsed %}
+        <div class="reading-item">
+          <div class="reading-label">{{ r.label }}</div>
+          <div class="reading-refs">
+            <a href="{{ r.url }}" class="reading-ref scripture-link"
+               onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+               title="Click to preview">{{ r.ref }}</a>
+            {% for i, a in enumerate(r.alts) %}
+            <span class="reading-or">or</span>
+            <a href="{{ r.alt_urls[i] }}" class="reading-ref scripture-link"
+               onclick="showScripture(event, '{{ a|e }}', '{{ r.alt_urls[i]|e }}'); return false;"
+               title="Click to preview">{{ a }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% if alt.hymn_of_the_day %}
+      <p class="hymn-of-day alt-readings-hymn">
+        <span class="proper-inline-label">Hymn of the Day.</span>
+        {% for h in alt.hymn_of_the_day %}
+        <span class="hymn-entry">🎵 {{ h }}</span>{% if not loop.last %}<span class="reading-or"> or </span>{% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
+      {% if alt.introit %}
+      <p class="introit-text"><span class="proper-inline-label">Introit.</span>
+        {{ alt.introit.name }} — {{ alt.introit.ref }}{% if alt.introit.text %}. {{ alt.introit.text }}{% endif %}</p>
+      {% endif %}
+      {% if alt.collect %}
+      <blockquote class="collect-text">{{ alt.collect }}</blockquote>
+      {% endif %}
+      {% if alt.gradual %}
+      <p class="gradual-text"><span class="proper-inline-label">Gradual.</span> {{ alt.gradual }}</p>
+      {% endif %}
+    </details>
+    {% endif %}
   </div>
 
   {% if result.hymn_of_the_day %}

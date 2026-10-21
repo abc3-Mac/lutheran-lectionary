@@ -288,6 +288,15 @@ class LiturgicalCalendar:
 
         return None  # unknown / unassigned
 
+    def displaced_slot(self, d: date, lectionary: str = 'three_year') -> str | None:
+        """The Proper (or Trinity) slot a festival observed on Sunday d displaces,
+        or None if d is not a Sunday after Pentecost."""
+        if d not in self._pentecost_sundays:
+            return None
+        if lectionary == 'one_year':
+            return f"trinity_{(d - self.holy_trinity).days // 7}"
+        return f"proper_{get_proper(d)}"
+
     def all_events(self, include_minor: bool = True, lectionary: str = 'three_year') -> list[dict]:
         """
         Return an ordered list of all liturgical events for this church year.
@@ -529,11 +538,7 @@ class LiturgicalCalendar:
             if prev_slot in ("reformation", "all_saints"):
                 if prev.isoweekday() != 7:
                     continue
-                if prev in cal._pentecost_sundays:
-                    if lectionary == 'one_year':
-                        prev_slot = f"trinity_{(prev - cal.holy_trinity).days // 7}"
-                    else:
-                        prev_slot = f"proper_{get_proper(prev)}"
+                prev_slot = cal.displaced_slot(prev, lectionary) or prev_slot
             if prev_slot:
                 gov_info = slot_info(prev_slot, cal.series, prev)
                 if gov_info:

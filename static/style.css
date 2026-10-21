@@ -459,6 +459,17 @@ input:focus, select:focus { outline: 2px solid var(--blue); border-color: var(--
 }
 .minor-feast-propers { margin-top: 0.6rem; }
 .minor-feast-propers .collect-text { margin-top: 0.4rem; }
+
+/* Alternative readings for a festival observed on a Sunday after Pentecost */
+.alt-readings { margin-top: 1rem; }
+.alt-readings > summary { display: inline-block; list-style: none; }
+.alt-readings > summary::-webkit-details-marker { display: none; }
+.alt-readings > summary::before { content: "▸ "; }
+.alt-readings[open] > summary::before { content: "▾ "; }
+.alt-readings[open] > summary { margin-bottom: 0.6rem; }
+.alt-readings-note { font-size: 0.82rem; margin: 0 0 0.6rem; }
+.alt-readings-hymn { margin-top: 0.8rem; }
+.alt-readings .collect-text { margin-top: 0.4rem; }
 .proper-inline-label { font-weight: 600; color: var(--text-soft); }
 blockquote.collect-text {
   margin: 0;

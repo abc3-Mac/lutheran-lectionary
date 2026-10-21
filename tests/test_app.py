@@ -426,3 +426,22 @@ def test_hymn_of_the_day_in_pages_and_api(client):
     # calendar expand row includes the hymn (one-year)
     r = client.get("/calendar?year=2025&lectionary=one_year")
     assert b"Hymn of the Day:" in r.data
+
+
+def test_observed_festival_offers_displaced_sunday_readings(client):
+    # Reformation observed Sun Oct 25 2026 displaces Pentecost 22; All Saints
+    # (Sun Nov 1) displaces Pentecost 23. Both offer the regular Sunday instead.
+    r = client.get("/day/2026-10-25?lectionary=three_year")
+    assert b"Reformation Day" in r.data
+    assert b"Alternative: readings for the Twenty-second Sunday after Pentecost" in r.data
+    r = client.get("/day/2026-11-01?lectionary=one_year")
+    assert b"All Saints" in r.data
+    assert b"Alternative: readings for the Twenty-second Sunday after Trinity" in r.data
+    # Ordinary Sundays and weekday festivals have no alternative
+    assert b"alt-readings" not in client.get("/day/2026-11-08").data
+    assert b"alt-readings" not in client.get("/day/2026-10-31").data
+
+
+def test_three_year_reformation_has_readings(client):
+    r = client.get("/day/2026-10-25?lectionary=three_year")
+    assert b"Revelation 14:6-7" in r.data and b"Romans 3:19-28" in r.data
