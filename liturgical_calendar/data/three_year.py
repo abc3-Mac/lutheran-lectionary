@@ -1641,12 +1641,14 @@ THREE_YEAR_SLOTS = {
             go="Luke 23:27-43",
         ),
     },
+    # LSB appoints the Proper 29 readings to the Last Sunday of the Church
+    # Year (it always falls Nov 20-26, i.e. in Proper 29's slot); the A/B/C
+    # readings are copied from "proper_29" just below the dict.
     "last_sunday": {
         "name": "Last Sunday of the Church Year",
         "season": "Ordinary Time",
         "color": "White",
         "feast": False,
-        "readings": None,
     },
 
     # =========================================================
@@ -1683,3 +1685,8 @@ THREE_YEAR_SLOTS = {
         "readings": None,
     },
 }
+
+# Last Sunday of the Church Year = Proper 29 readings (LSB).
+for _s in ("A", "B", "C"):
+    THREE_YEAR_SLOTS["last_sunday"][_s] = THREE_YEAR_SLOTS["proper_29"][_s]
+del _s

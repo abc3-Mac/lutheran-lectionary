@@ -52,3 +52,18 @@ def test_full_coverage():
 def test_unknown_slot_returns_none():
     assert hymn_of_the_day("not_a_slot", "one_year") is None
     assert hymn_of_the_day("not_a_slot", "three_year", "A") is None
+
+
+def test_last_sunday_three_year_has_proper_29_readings():
+    """Regression: 2026-11-22 (Last Sunday, Series A) showed 'No readings'."""
+    from datetime import date
+    from liturgical_calendar.calculator import LiturgicalCalendar, slot_info
+    from liturgical_calendar.data.three_year import THREE_YEAR_SLOTS
+    cal = LiturgicalCalendar(2025)
+    d = date(2026, 11, 22)
+    assert cal.date_to_slot(d) == "last_sunday"
+    info = slot_info("last_sunday", "A", d)
+    assert info["readings"] == THREE_YEAR_SLOTS["proper_29"]["A"]
+    assert "Matthew 25:31-46" in str(info["readings"])
+    for s in "ABC":
+        assert slot_info("last_sunday", s, d)["readings"]
