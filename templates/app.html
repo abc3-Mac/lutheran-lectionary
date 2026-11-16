@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}The App — iPhone, iPad and Mac{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Liturgical Calendar for iPhone, iPad and Mac</h1>
+  <p class="page-sub">The church year, its readings and its propers, in an app that works without a connection.</p>
+</div>
+
+<section class="app-hero">
+  <figure class="app-phone">
+    <img src="{{ url_for('static', filename='app/iphone-today.jpg') }}" width="540" height="1174"
+         alt="The app on iPhone showing the Last Sunday of the Church Year: its color, season and appointed readings">
+  </figure>
+  <div class="app-hero-text card">
+    <p>The same calendar this site has kept since 1997 now runs as a native app. It shows the Sunday or
+      festival for any date from 1583 to 2300, its liturgical color and season, and its readings, in both
+      the <em>Lutheran Service Book</em> three-year series and the historic one-year series.</p>
+    <p>Everything is computed on the device, so the app works on a plane, in a sacristy without signal,
+      or at a desk years from now. It keeps nothing about you and has no account.</p>
+    <p class="app-status">The app is being prepared for the App Store. This page will carry the download
+      link when it is available.</p>
+  </div>
+</section>
+
+<section class="app-section">
+  <h2>Today, and any day</h2>
+  <p>The day card gives the name, color, season and church year, the appointed readings, the Hymn of the Day,
+    and the LSB Daily Lectionary. In the one-year series it adds the historic introit, collect and gradual.
+    Tap a reading to preview its text. Each weekday of Lent has its own card, with the historic propers.</p>
+  <div class="app-shots app-shots-phones">
+    <figure>
+      <img src="{{ url_for('static', filename='app/iphone-lent.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="A Lenten weekday card on iPhone: Wednesday of Reminiscere, with its lesson, gospel, introit and collect">
+      <figcaption>A Lenten weekday, with its historic introit and collect</figcaption>
+    </figure>
+    <figure>
+      <img src="{{ url_for('static', filename='app/iphone-calendar.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The 2025–2026 church-year calendar on iPhone, grouped by season">
+      <figcaption>The whole church year, season by season</figcaption>
+    </figure>
+    <figure>
+      <img src="{{ url_for('static', filename='app/iphone-wheel.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The Liturgical Year Wheel on iPhone, every Sunday and festival in its color with the season dates">
+      <figcaption>The Liturgical Year Wheel, with each season's dates</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="app-section">
+  <h2>On iPad and Mac</h2>
+  <p>The larger screens show the calendar as a full table, the one-year propers for every Sunday and festival,
+    the Daily Lectionary chart, Historic Lent, and the Almanac: moon phases, the date of Easter in the West and
+    the East, and the Paschal full moon back to the Exodus.</p>
+  <div class="app-shots app-shots-wide">
+    <figure>
+      <img src="{{ url_for('static', filename='app/mac-calendar.jpg') }}" width="1100" height="920" loading="lazy"
+           alt="The church-year calendar on the Mac as a table with readings for every Sunday and festival">
+      <figcaption>The church-year calendar on the Mac</figcaption>
+    </figure>
+    <figure>
+      <img src="{{ url_for('static', filename='app/mac-moon.jpg') }}" width="1100" height="938" loading="lazy"
+           alt="The Almanac's moon phases for 2026 on the Mac">
+      <figcaption>The Almanac: every moon phase of a year</figcaption>
+    </figure>
+    <figure class="app-tablet">
+      <img src="{{ url_for('static', filename='app/ipad-propers.jpg') }}" width="760" height="1013" loading="lazy"
+           alt="The one-year propers on iPad, showing the Festivals section">
+      <figcaption>One-year propers on iPad</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="app-section">
+  <h2>A widget for the day</h2>
+  <p>Put today's Sunday or festival on the Home Screen, the Lock Screen or the Mac desktop, in its liturgical
+    color. The larger sizes add the readings, the Hymn of the Day and the Daily Lectionary. It turns over at
+    midnight.</p>
+  <div class="app-widgets">
+    <img src="{{ url_for('static', filename='app/widget-small.png') }}" width="340" height="340" loading="lazy"
+         alt="Small widget: Last Sunday of the Church Year, Ordinary Time, White">
+    <img src="{{ url_for('static', filename='app/widget-medium.png') }}" width="728" height="340" loading="lazy"
+         alt="Medium widget: First Sunday in Advent in violet, with its four readings">
+    <img src="{{ url_for('static', filename='app/widget-large.png') }}" width="728" height="764" loading="lazy"
+         alt="Large widget: First Sunday in Advent with readings, Hymn of the Day and Daily Lectionary">
+  </div>
+</section>
+
+<section class="app-section app-columns">
+  <div class="card">
+    <h2>Print and share</h2>
+    <p>PDF sheets for a day (card or plain), the church-year calendar, the one-year propers, the Daily
+      Lectionary and each Lenten weekday — the same sheets this site makes. The wheel as a PNG or SVG poster.
+      An iCal file for any year, or a calendar subscription. Print from the Mac, iPhone or iPad.</p>
+  </div>
+  <div class="card">
+    <h2>For planners and scripts</h2>
+    <p>Shortcuts actions on every device. On the Mac, AppleScript commands and an optional local MCP server,
+      so an AI assistant on your own computer can look up the church year and make the PDFs, calendars and
+      wheels.</p>
+  </div>
+  <div class="card">
+    <h2>Private by design</h2>
+    <p>No account, no analytics, no advertising and no tracking. The app goes online only to show a Scripture
+      passage you ask to preview, and nothing is stored.</p>
+  </div>
+</section>
+
+<p class="app-footnote">The app follows this site exactly: its readings, propers and calendars are checked
+  against the website for every year it covers. For sources and permissions, see <a href="/about">About</a>.</p>
+
+<style>
+  .app-hero { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 1.5rem; align-items: start;
+              margin: 1rem 0 2rem; }
+  .app-hero-text p { font-size: 0.95rem; }
+  .app-status { font-style: italic; color: var(--muted); }
+  .app-phone img, .app-shots img { width: 100%; height: auto; display: block; border-radius: 18px;
+              border: 1px solid rgba(0,0,0,.10); box-shadow: 0 4px 18px rgba(0,0,0,.12); background: var(--card-bg); }
+  .app-section { margin: 2rem 0; }
+  .app-section h2 { font-size: 1.25rem; color: var(--accent-text); margin-bottom: 0.4rem; }
+  .app-section > p { font-family: Arial, sans-serif; font-size: 0.9rem; color: var(--text-soft); max-width: 46rem;
+              margin-bottom: 1rem; }
+  .app-shots { display: grid; gap: 1.25rem; }
+  .app-shots-phones { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); max-width: 900px; }
+  .app-shots-wide { grid-template-columns: 1fr 1fr; align-items: start; }
+  .app-shots-wide img { border-radius: 10px; }
+  .app-tablet { grid-column: 1 / -1; max-width: 420px; }
+  .app-shots figure { margin: 0; }
+  .app-shots figcaption { font-family: Arial, sans-serif; font-size: 0.8rem; color: var(--muted);
+              text-align: center; margin-top: 0.5rem; }
+  .app-widgets { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+  .app-widgets img { height: auto; display: block; }
+  .app-widgets img:nth-child(1) { width: 170px; }
+  .app-widgets img:nth-child(2) { width: 364px; max-width: 100%; }
+  .app-widgets img:nth-child(3) { width: 364px; max-width: 100%; }
+  .app-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .app-columns .card { margin: 0; }
+  .app-footnote { font-family: Arial, sans-serif; font-size: 0.8rem; color: var(--muted); margin: 1.5rem 0 2rem; }
+  @media (max-width: 700px) {
+    .app-hero { grid-template-columns: 1fr; }
+    .app-phone { max-width: 260px; margin: 0 auto; }
+    .app-shots-wide { grid-template-columns: 1fr; }
+    .app-shots-phones { max-width: 260px; margin: 0 auto; }
+    .app-tablet { margin: 0 auto; }
+  }
+</style>
+{% endblock %}

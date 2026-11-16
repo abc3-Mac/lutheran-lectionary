@@ -1,0 +1,30 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["FXCB8996U3.biz.collver.liturgicalcalendar"],
+        "components": [
+          { "/": "/api/*", "exclude": true, "comment": "JSON API stays on the web" },
+          { "/": "/export/*", "exclude": true, "comment": "iCal downloads and subscriptions stay on the web" },
+          { "/": "*/pdf", "exclude": true, "comment": "PDF downloads stay on the web" },
+          { "/": "/pdf", "exclude": true },
+          { "/": "/wheel.png", "exclude": true },
+          { "/": "/wheel.svg", "exclude": true },
+          { "/": "/static/*", "exclude": true },
+          { "/": "/day/*", "comment": "a day's propers" },
+          { "/": "/lookup" },
+          { "/": "/calendar" },
+          { "/": "/wheel" },
+          { "/": "/propers" },
+          { "/": "/daily" },
+          { "/": "/lent" },
+          { "/": "/lent/*" },
+          { "/": "/search" },
+          { "/": "/almanac" },
+          { "/": "/almanac/*" },
+          { "/": "/about" }
+        ]
+      }
+    ]
+  }
+}

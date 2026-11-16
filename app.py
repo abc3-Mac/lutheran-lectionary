@@ -713,6 +713,24 @@ def about():
     return render_template("about.html")
 
 
+@app.route("/app")
+def app_page():
+    """The native app for iPhone, iPad and Mac."""
+    return render_template("app.html")
+
+
+@app.route("/.well-known/apple-app-site-association")
+def apple_app_site_association():
+    """Universal links: lets the iPhone/iPad/Mac app open this site's day and calendar
+    pages. Served as JSON with no redirect, as Apple requires."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "well-known",
+                        "apple-app-site-association")
+    with open(path, "rb") as fh:
+        resp = app.response_class(fh.read(), mimetype="application/json")
+    resp.headers["Cache-Control"] = "public, max-age=3600"
+    return resp
+
+
 @app.route("/settings")
 def settings():
     """Browser-stored preferences page (no server state)."""

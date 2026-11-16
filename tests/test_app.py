@@ -445,3 +445,29 @@ def test_observed_festival_offers_displaced_sunday_readings(client):
 def test_three_year_reformation_has_readings(client):
     r = client.get("/day/2026-10-25?lectionary=three_year")
     assert b"Revelation 14:6-7" in r.data and b"Romans 3:19-28" in r.data
+
+
+def test_app_page(client):
+    r = client.get("/app")
+    assert r.status_code == 200
+    assert b"Liturgical Calendar for iPhone, iPad and Mac" in r.data
+    for img in (b"app/iphone-today.jpg", b"app/iphone-wheel.jpg", b"app/mac-calendar.jpg",
+                b"app/widget-large.png"):
+        assert img in r.data
+    assert client.get("/static/app/iphone-today.jpg").status_code == 200
+    assert b'href="/app"' in client.get("/about").data
+
+
+def test_apple_app_site_association(client):
+    import json
+    r = client.get("/.well-known/apple-app-site-association")
+    assert r.status_code == 200
+    assert r.mimetype == "application/json"
+    data = json.loads(r.data)
+    details = data["applinks"]["details"][0]
+    assert details["appIDs"] == ["FXCB8996U3.biz.collver.liturgicalcalendar"]
+    paths = [c["/"] for c in details["components"]]
+    assert "/day/*" in paths
+    # PDFs, iCal, the API and wheel images stay on the web.
+    excluded = {c["/"] for c in details["components"] if c.get("exclude")}
+    assert {"/api/*", "/export/*", "*/pdf", "/wheel.png", "/wheel.svg"} <= excluded
