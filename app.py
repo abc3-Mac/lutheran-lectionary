@@ -458,21 +458,27 @@ def _wheel_params():
     advent_year   = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     lectionary    = request.args.get("lectionary", "three_year")
     include_minor = request.args.get("minor", "0") == "1"
-    return advent_year, lectionary, include_minor
+    from liturgical_calendar.wheel import DATE_STYLES, DEFAULT_DATE_STYLE
+    dates = request.args.get("dates", DEFAULT_DATE_STYLE)
+    if dates not in DATE_STYLES:
+        dates = DEFAULT_DATE_STYLE
+    return advent_year, lectionary, include_minor, dates
 
 
-def _build_wheel(advent_year, lectionary, include_minor):
+def _build_wheel(advent_year, lectionary, include_minor, dates="range"):
     from liturgical_calendar.wheel import build_wheel_svg
     cal    = get_calendar(advent_year)
     events = _events_for_display(cal, lectionary, include_minor)
-    svg    = build_wheel_svg(cal, events, lectionary, include_minor=include_minor)
+    svg    = build_wheel_svg(cal, events, lectionary, include_minor=include_minor,
+                             dates=dates)
     return cal, svg
 
 
 @app.route("/wheel")
 def wheel_view():
-    advent_year, lectionary, include_minor = _wheel_params()
-    cal, svg = _build_wheel(advent_year, lectionary, include_minor)
+    advent_year, lectionary, include_minor, dates = _wheel_params()
+    cal, svg = _build_wheel(advent_year, lectionary, include_minor, dates)
+    from liturgical_calendar.wheel import DATE_STYLE_CHOICES
     return render_template(
         "wheel.html",
         cal=cal,
@@ -480,6 +486,8 @@ def wheel_view():
         advent_year=advent_year,
         lectionary=lectionary,
         include_minor=include_minor,
+        dates=dates,
+        date_style_choices=DATE_STYLE_CHOICES,
         min_year=MIN_YEAR,
         max_year=MAX_YEAR,
         series_choices=SERIES_CHOICES,
@@ -488,8 +496,8 @@ def wheel_view():
 
 @app.route("/wheel.svg")
 def wheel_svg():
-    advent_year, lectionary, include_minor = _wheel_params()
-    _, svg = _build_wheel(advent_year, lectionary, include_minor)
+    advent_year, lectionary, include_minor, dates = _wheel_params()
+    _, svg = _build_wheel(advent_year, lectionary, include_minor, dates)
     resp = app.response_class(svg, mimetype="image/svg+xml")
     if request.args.get("download") == "1":
         resp.headers["Content-Disposition"] = (
@@ -502,13 +510,13 @@ def wheel_svg():
 def wheel_png():
     """High-resolution PNG of the wheel, rendered server-side so it downloads
     reliably on every browser (including iOS Safari)."""
-    advent_year, lectionary, include_minor = _wheel_params()
+    advent_year, lectionary, include_minor, dates = _wheel_params()
     try:
         width = int(request.args.get("w", 3000))
     except ValueError:
         width = 3000
     width = max(1000, min(6000, width))
-    _, svg = _build_wheel(advent_year, lectionary, include_minor)
+    _, svg = _build_wheel(advent_year, lectionary, include_minor, dates)
 
     from liturgical_calendar.rasterize import svg_to_png
     try:

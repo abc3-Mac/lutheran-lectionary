@@ -30,7 +30,7 @@ import tempfile
 from datetime import date
 
 from liturgical_calendar.calculator import LiturgicalCalendar
-from liturgical_calendar.wheel import build_wheel_svg
+from liturgical_calendar.wheel import build_wheel_svg, DATE_STYLES, DEFAULT_DATE_STYLE
 
 _CHROME_CANDIDATES = [
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -99,6 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--format", choices=["svg", "png", "pdf", "all"], default="png",
                     help="Output format(s). SVG is always written.")
     ap.add_argument("--minor", action="store_true", help="Include minor feasts.")
+    ap.add_argument("--dates", choices=list(DATE_STYLES), default=DEFAULT_DATE_STYLE,
+                    help="Dates on the wheel: season ranges (default), rim ticks, every day, or none.")
     ap.add_argument("--scale", type=float, default=2.0,
                     help="Raster size multiplier of the 1000px base (PNG/PDF).")
     ap.add_argument("--out", default="out", help="Output directory.")
@@ -113,7 +115,8 @@ def main(argv: list[str] | None = None) -> int:
 
     cal = LiturgicalCalendar(year)
     events = cal.all_events(include_minor=args.minor, lectionary=args.lectionary)
-    svg = build_wheel_svg(cal, events, args.lectionary, include_minor=args.minor)
+    svg = build_wheel_svg(cal, events, args.lectionary, include_minor=args.minor,
+                          dates=args.dates)
 
     os.makedirs(args.out, exist_ok=True)
     stem = f"Liturgical_Year_Wheel_{year}-{year + 1}_{args.lectionary}"

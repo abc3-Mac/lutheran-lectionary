@@ -27,10 +27,17 @@
     <label class="checkbox-label">
       <input type="checkbox" name="minor" value="1" {% if include_minor %}checked{% endif %}> Minor feasts
     </label>
+    <label>Dates
+      <select name="dates" id="wheel-dates">
+        {% for val, label in date_style_choices %}
+        <option value="{{ val }}" {% if val == dates %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
     <button type="submit" class="btn btn-sm">Refresh</button>
-    <a href="/wheel.png?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}"
+    <a href="/wheel.png?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}&dates={{ dates }}"
        class="btn btn-sm btn-pdf">⬇ PNG (high-res)</a>
-    <a href="/wheel.svg?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}&download=1"
+    <a href="/wheel.svg?year={{ advent_year }}&lectionary={{ lectionary }}&minor={{ '1' if include_minor else '0' }}&dates={{ dates }}&download=1"
        class="btn btn-sm btn-outline">⬇ SVG (vector)</a>
     <a href="/calendar?year={{ advent_year }}&lectionary={{ lectionary }}" class="btn btn-sm btn-outline">List View</a>
   </form>
@@ -45,6 +52,24 @@
   </figcaption>
 </figure>
 
+
+<script>
+// Wheel-dates preference: an explicit ?dates= wins and updates the store;
+// a bare /wheel visit honors the saved setting via one redirect.
+(function honorWheelDates() {
+  const KEY = 'lcms_wheel_dates';
+  const params = new URLSearchParams(location.search);
+  if (params.has('dates')) {
+    localStorage.setItem(KEY, params.get('dates'));
+    return;
+  }
+  const saved = localStorage.getItem(KEY);
+  if (saved && saved !== {{ dates|tojson }}) {
+    params.set('dates', saved);
+    location.replace('/wheel?' + params.toString());
+  }
+})();
+</script>
 
 <style>
   .wheel-figure { margin: 1.25rem auto 2rem; max-width: 860px; }

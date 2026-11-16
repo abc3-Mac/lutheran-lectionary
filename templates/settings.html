@@ -46,6 +46,15 @@
   </div>
 
   <div class="card settings-card">
+    <h2>🎡 Wheel Dates</h2>
+    <p>How dates appear on the Liturgical Year Wheel (also in its PNG and SVG downloads).</p>
+    <label class="settings-radio"><input type="radio" name="set-wheeldates" value="range"> Season date ranges — e.g. <em>Lent · 18 Feb – 28 Mar</em> (default)</label>
+    <label class="settings-radio"><input type="radio" name="set-wheeldates" value="rim"> Season start ticks — a gold mark and date at each season's start, outside the wheel</label>
+    <label class="settings-radio"><input type="radio" name="set-wheeldates" value="all"> Every day's date — each Sunday and feast with its date</label>
+    <label class="settings-radio"><input type="radio" name="set-wheeldates" value="none"> No dates</label>
+  </div>
+
+  <div class="card settings-card">
     <h2>🗓️ Civil Calendar</h2>
     <p>Show U.S. civil holidays and observances (Mother's Day, Memorial Day, Independence Day, Thanksgiving…) alongside the liturgical day, so they're visible when planning. A holiday that falls on a weekday is also flagged on its nearest Sunday (shown lighter, with the actual date) — e.g. a Saturday Independence Day surfaces on the Sunday after. These are informational only — never part of the Church's propers.</p>
     <label class="settings-radio"><input type="radio" name="set-civil" value="1"> Show civil holidays</label>
@@ -78,6 +87,7 @@
     minor:       { store: 'lcms_minor_feasts',    def: '1' },
     civil:       { store: 'lcms_civil_holidays',  def: '1' },
     translation: { store: 'lcms_translation',     def: 'ESV' },
+    wheeldates:  { store: 'lcms_wheel_dates',     def: 'range' },
   };
 
   function flash() {

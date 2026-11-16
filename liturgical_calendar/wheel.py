@@ -24,7 +24,7 @@ import base64
 import functools
 import math
 import os
-from datetime import date
+from datetime import date, timedelta
 from html import escape
 
 
@@ -146,6 +146,37 @@ def _shorten(name: str, limit: int = 52) -> str:
     return name[: limit - 1].rstrip() + "…"
 
 
+# How dates appear on the wheel (``build_wheel_svg(dates=...)``, the ``dates``
+# query parameter, and the "Wheel dates" setting):
+#   range — each season's first–last day under its name in the outer band
+#   rim   — a gold tick at each season boundary with its start date outside the rim
+#   all   — every wedge's own date ahead of its name
+#   none  — no dates (the original wheel)
+DATE_STYLES = ("range", "rim", "all", "none")
+DEFAULT_DATE_STYLE = "range"
+DATE_STYLE_CHOICES = (
+    ("range", "Season date ranges"),
+    ("rim",   "Season start ticks"),
+    ("all",   "Every day's date"),
+    ("none",  "No dates"),
+)
+
+
+def _day_mon(d: date) -> str:
+    """'18 FEB' — small-caps style for the season band."""
+    return f"{d.day} {_MONTH_ABBR[d.month - 1].upper()}"
+
+
+def _mon_day(d: date) -> str:
+    """'Feb 18' — for rim ticks and wedge labels."""
+    return f"{_MONTH_ABBR[d.month - 1]} {d.day}"
+
+
+# Fixed English abbreviations so output never depends on the server locale.
+_MONTH_ABBR = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
 # ---------------------------------------------------------------------------
 # Main renderer
 # ---------------------------------------------------------------------------
@@ -157,6 +188,7 @@ def build_wheel_svg(
     title: str = "The Liturgical Year",
     include_minor: bool = False,
     emblem_href: str | None = None,
+    dates: str = DEFAULT_DATE_STYLE,
 ) -> str:
     """
     Build the wheel as an SVG string.
@@ -176,10 +208,20 @@ def build_wheel_svg(
         URL or ``data:`` URI of a central emblem image (e.g. an Agnus Dei).
         When given it is placed in the middle of the wheel in place of the
         built-in cross-and-banner placeholder.
+    dates : str
+        One of ``DATE_STYLES`` (see above); anything else falls back to
+        ``DEFAULT_DATE_STYLE``.  Event dicts need ``date`` for any style but
+        ``none``.
     """
     evs = [e for e in events if include_minor or not e.get("minor")]
     if not evs:
         raise ValueError("no events to render")
+    if dates not in DATE_STYLES:
+        dates = DEFAULT_DATE_STYLE
+
+    # The last season runs to the Saturday before the next Advent.
+    nxt = getattr(cal, "next_advent_1", None)
+    year_end = (nxt - timedelta(days=1)) if nxt else None
 
     n = len(evs)
     # Taller than wide so the wheel clears the title band on top and the
@@ -187,10 +229,20 @@ def build_wheel_svg(
     W = 1000.0
     H = 1090.0
     cx, cy = W / 2.0, 583.0
+    if dates == "rim":
+        # Room outside the rim for the boundary dates.
+        W, H = 1100.0, 1150.0
+        cx, cy = W / 2.0, 613.0
+    elif dates == "range":
+        # Room below the bottom band's date line.
+        H = 1100.0
 
     R_band_out = 465.0
     R_band_in  = 428.0
     R_evt_out  = 422.0
+    if dates == "range":
+        # A deeper season band carries the name and the date range.
+        R_band_out, R_band_in, R_evt_out = 472.0, 421.0, 415.0
     R_evt_in   = 165.0
     R_center   = 158.0
     R_motto    = 138.0
@@ -237,10 +289,22 @@ def build_wheel_svg(
         # nothing collides with the outer season band.
         est = len(label) * LBL_SIZE * 0.5
         tl = f' textLength="{_fmt(LBL_SPAN)}" lengthAdjust="spacingAndGlyphs"' if est > LBL_SPAN else ""
+        size = str(LBL_SIZE)
+        if dates == "all":
+            # The day's own date ahead of its name: "Feb 18 · Ash Wednesday".
+            # Long labels shrink to fit instead of being squeezed, because
+            # textLength squeezing misplaces <tspan> runs in some renderers.
+            dlabel = _mon_day(ev["date"])
+            est = (len(label) + len(dlabel) + 3) * LBL_SIZE * 0.5
+            tl = ""
+            if est > LBL_SPAN * 0.93:
+                size = _fmt(LBL_SIZE * LBL_SPAN * 0.93 / est)
+            label = (f'<tspan font-weight="bold" opacity="0.85">{dlabel}</tspan>'
+                     f'<tspan opacity="0.6"> · </tspan>{label}')
         parts.append(
             f'<text x="{_fmt(bx)}" y="{_fmt(by)}" transform="rotate({_fmt(rot)} {_fmt(bx)} {_fmt(by)})" '
             f'text-anchor="{anchor}" dominant-baseline="middle"{tl} '
-            f'font-family="Georgia, \'Liberation Serif\', \'Times New Roman\', \'DejaVu Serif\', serif" font-size="{LBL_SIZE}" '
+            f'font-family="Georgia, \'Liberation Serif\', \'Times New Roman\', \'DejaVu Serif\', serif" font-size="{size}" '
             f'fill="{txt_fill}">{label}</text>'
         )
 
@@ -267,7 +331,62 @@ def build_wheel_svg(
             # Day of Pentecost wedge) so it doesn't smear across neighbours.
             arc_len = r_lbl * math.radians(a1 - a0)
             text_w = len(label_text) * 8.6 + 2 * (len(label_text) - 1)
-            if text_w <= arc_len * 0.95:
+            seg_first = evs[seg_start].get("date")
+            seg_last = (evs[i]["date"] - timedelta(days=1)) if i < n else year_end
+
+            if dates == "rim" and seg_first:
+                # Gold tick on the boundary, start date just outside the rim,
+                # anchored away from the wheel so it never sits on the tick.
+                tx0, ty0 = _polar(cx, cy, R_band_out + 3, a0)
+                tx1, ty1 = _polar(cx, cy, R_band_out + 13, a0)
+                parts.append(
+                    f'<line x1="{_fmt(tx0)}" y1="{_fmt(ty0)}" x2="{_fmt(tx1)}" y2="{_fmt(ty1)}" '
+                    f'stroke="{GOLD}" stroke-width="2"/>'
+                )
+                lx, ly = _polar(cx, cy, R_band_out + 19, a0)
+                east = math.sin(math.radians(a0))     # +1 at 3 o'clock, -1 at 9
+                south = -math.cos(math.radians(a0))   # -1 at 12 o'clock, +1 at 6
+                anc = "start" if east > 0.35 else "end" if east < -0.35 else "middle"
+                lx += 3 * east
+                ly += (9 if anc == "middle" else 4) * south
+                parts.append(
+                    f'<text x="{_fmt(lx)}" y="{_fmt(ly)}" text-anchor="{anc}" dominant-baseline="middle" '
+                    f'font-family="Georgia, \'Liberation Serif\', \'Times New Roman\', \'DejaVu Serif\', serif" '
+                    f'font-size="13" font-style="italic" fill="{INK}">{_mon_day(seg_first)}</text>'
+                )
+
+            if dates == "range" and seg_first and text_w <= arc_len * 0.95:
+                # Two lines: the season name, and under it its first–last day
+                # ("18 FEB – 28 MAR"), or just the first day if the range
+                # doesn't fit the arc.  On the bottom half the text is flipped
+                # upright, so "under" means further out.
+                date_text = _day_mon(seg_first)
+                if seg_last and seg_last != seg_first:
+                    rng = f"{date_text} – {_day_mon(seg_last)}"
+                    if len(rng) * 7.2 <= arc_len * 0.92:
+                        date_text = rng
+                bottom = 90 < (mid % 360) < 270
+                band_txt = _text_on(band)
+                lines = (
+                    (label_text, "14", "2", ' font-weight="600"', "",
+                     R_band_in + (21 if bottom else 30)),
+                    (date_text, "10.5", "1.5", "", ' opacity="0.85"',
+                     (R_band_out - 9) if bottom else (R_band_in + 10)),
+                )
+                for k, (txt, fs, ls, fw, op, rr) in enumerate(lines):
+                    if bottom:
+                        arc = _arc_between(cx, cy, rr, a1 - 1.5, a0 + 1.5, clockwise=False)
+                    else:
+                        arc = _arc_between(cx, cy, rr, a0 + 1.5, a1 - 1.5, clockwise=True)
+                    pid = f"seasonarc{seg_start}_{k}"
+                    defs.append(f'<path id="{pid}" d="{arc}" fill="none"/>')
+                    parts.append(
+                        f'<text font-family="Georgia, \'Liberation Serif\', \'Times New Roman\', \'DejaVu Serif\', serif" '
+                        f'font-size="{fs}" letter-spacing="{ls}"{fw} fill="{band_txt}"{op}>'
+                        f'<textPath href="#{pid}" xlink:href="#{pid}" startOffset="50%" text-anchor="middle">'
+                        f'{escape(txt)}</textPath></text>'
+                    )
+            elif text_w <= arc_len * 0.95:
                 if 90 < (mid % 360) < 270:
                     arc = _arc_between(cx, cy, r_lbl + 4, a1 - 1.5, a0 + 1.5, clockwise=False)
                 else:
