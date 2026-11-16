@@ -471,3 +471,57 @@ def test_apple_app_site_association(client):
     # PDFs, iCal, the API and wheel images stay on the web.
     excluded = {c["/"] for c in details["components"] if c.get("exclude")}
     assert {"/api/*", "/export/*", "*/pdf", "/wheel.png", "/wheel.svg"} <= excluded
+
+
+# --- Fixes, 16 Nov 2026 -----------------------------------------------------
+
+def test_pdf_paragraph_keeps_bare_ampersand():
+    # "&c." used to print as "&c.;" because ReportLab read it as an entity.
+    import pdf_gen as P
+    from reportlab.lib.styles import getSampleStyleSheet
+    st = getSampleStyleSheet()["Normal"]
+    assert P.Paragraph("Through our Lord, &c.", st).getPlainText() == "Through our Lord, &c."
+    # Real entities and markup still work.
+    assert P.Paragraph("a &nbsp;·&nbsp; <b>b</b> &amp; c", st).getPlainText() == "a \xa0·\xa0 b & c"
+
+
+def test_calendar_pdf_marks_feasts(monkeypatch):
+    import pdf_gen as P
+    from liturgical_calendar.calculator import LiturgicalCalendar
+    bold_names = []
+    real_cell = P._cell
+
+    def spy(text, bold=False):
+        if bold:
+            bold_names.append(text)
+        return real_cell(text, bold)
+
+    monkeypatch.setattr(P, "_cell", spy)
+    cal = LiturgicalCalendar(2025)
+    events = cal.all_events(lectionary="three_year")
+    P.build_pdf(cal, events, "three_year")
+    feasts = [e["name"] for e in events if e.get("is_feast")]
+    assert feasts and set(feasts) <= set(bold_names)
+
+
+def test_ical_content_type_has_one_charset(client):
+    r = client.get("/export/ical?year=2025")
+    assert r.status_code == 200
+    assert r.headers["Content-Type"] == "text/calendar; charset=utf-8"
+
+
+def test_default_year_is_church_year_in_progress(monkeypatch):
+    import app as A
+    from datetime import date as real_date
+
+    class FakeDate(real_date):
+        @classmethod
+        def today(cls):
+            return cls(2026, 11, 16)   # before Advent 2026 → 2025–26
+
+    monkeypatch.setattr(A, "date", FakeDate)
+    assert A._current_advent_year() == 2025
+    c = A.app.test_client()
+    assert b"2025" in c.get("/wheel").data
+    FakeDate.today = classmethod(lambda cls: cls(2026, 11, 29))  # Advent 1
+    assert A._current_advent_year() == 2026

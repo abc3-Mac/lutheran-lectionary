@@ -42,10 +42,10 @@ def test_range_style_one_year_names_season_after_trinity():
     svg = _svg("range", lect="one_year")
     assert "SEASON AFTER TRINITY" in svg
     assert "1 FEB – 17 FEB" in svg          # Pre-Lent (the Gesimas)
-    # The range follows the band as drawn.  In the one-year data Trinity Sunday
-    # and the Last Sunday of the Church Year carry season "Ordinary Time", so
-    # each is its own small unlabelled band either side of Trinity season.
-    assert "7 JUN – 21 NOV" in svg
+    # Trinity Sunday through the Last Sunday of the Church Year is one band,
+    # running to the Saturday before the next Advent.
+    assert "31 MAY – 28 NOV" in svg
+    assert "7 JUN – 21 NOV" not in svg
 
 
 def test_rim_style_marks_each_season_start_outside_the_wheel():

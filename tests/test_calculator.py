@@ -209,3 +209,17 @@ def test_bg_cleaning_never_breaks_database_refs():
         assert c, f"emptied: {r!r}"
         assert "(" not in c and ")" not in c, f"leftover parens: {r!r} -> {c!r}"
         assert not c.endswith((":", ",", ";")), f"dangling punctuation: {r!r} -> {c!r}"
+
+
+def test_one_year_trinity_season_covers_trinity_and_last_sunday():
+    from datetime import date
+    from liturgical_calendar.calculator import LiturgicalCalendar
+    cal = LiturgicalCalendar(2025)
+    evs = [e for e in cal.all_events(lectionary="one_year")
+           if cal.holy_trinity <= e["date"] < cal.next_advent_1]
+    assert evs and all(e["season"] == "Trinity" for e in evs), \
+        {e["name"]: e["season"] for e in evs if e["season"] != "Trinity"}
+    for d in (date(2026, 5, 31), date(2026, 6, 2), date(2026, 11, 22), date(2026, 11, 26)):
+        assert cal.lookup(d, "one_year")["season"] == "Trinity", d
+    # The three-year series keeps "Ordinary Time".
+    assert cal.lookup(date(2026, 11, 22), "three_year")["season"] == "Ordinary Time"

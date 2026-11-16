@@ -19,12 +19,25 @@ from reportlab.lib          import colors
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.styles   import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units    import inch
+import re
+
 from reportlab.platypus     import (
-    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    SimpleDocTemplate, Table, TableStyle, Spacer
 )
+from reportlab.platypus     import Paragraph as _RLParagraph
 from reportlab.lib.enums    import TA_CENTER, TA_LEFT
 
 from liturgical_calendar.calculator import LiturgicalCalendar
+
+# A bare "&" that does not begin an entity ("Through our Lord, &c.") is read by
+# ReportLab's markup parser as a broken entity and printed as "&c.;".
+_BARE_AMP = re.compile(r"&(?!(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+|#x[0-9A-Fa-f]+);)")
+
+
+def Paragraph(text, *args, **kwargs):
+    if isinstance(text, str):
+        text = _BARE_AMP.sub("&amp;", text)
+    return _RLParagraph(text, *args, **kwargs)
 
 # ---------------------------------------------------------------------------
 # Exact LCMS PDF colors
@@ -165,7 +178,7 @@ def build_pdf(cal: LiturgicalCalendar, events: list, lectionary: str) -> io.Byte
         color   = ev.get("color", "")
         d       = ev["date"]
         name    = ev.get("name", "")
-        is_feast= ev.get("feast", False)
+        is_feast= ev.get("is_feast", ev.get("feast", False))
         rp      = ev.get("readings_parsed", [])
 
         # Season label — only on first row of each season

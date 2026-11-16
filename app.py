@@ -89,6 +89,12 @@ def get_calendar(advent_year: int) -> LiturgicalCalendar:
     return LiturgicalCalendar(advent_year)
 
 
+def _current_advent_year() -> int:
+    """The church year in progress today, named by the year its Advent began."""
+    today = date.today()
+    return today.year if today >= advent1_for_year(today.year) else today.year - 1
+
+
 def _build_year_choices():
     current = date.today().year
     years = []
@@ -160,9 +166,9 @@ def index():
 @app.route("/calendar")
 def calendar_view():
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
 
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
 
@@ -378,9 +384,9 @@ def search():
     """Search Sundays and feasts by name, Latin introit title, or reading reference."""
     q = request.args.get("q", "").strip()
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
 
     results = []
@@ -429,9 +435,9 @@ def search():
 @app.route("/pdf")
 def generate_pdf():
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
 
     lectionary    = request.args.get("lectionary", "three_year")
     include_minor = request.args.get("minor", "1") == "1"
@@ -452,9 +458,9 @@ def generate_pdf():
 
 def _wheel_params():
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year   = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     lectionary    = request.args.get("lectionary", "three_year")
     include_minor = request.args.get("minor", "0") == "1"
@@ -646,9 +652,9 @@ def _propers_sections(advent_year: int):
 def propers():
     """One-year propers reference page — all Sundays with introit + collect."""
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     sections = _propers_sections(advent_year)
 
@@ -667,9 +673,9 @@ def propers():
 def propers_pdf():
     """Printable PDF of the one-year propers (introit + collect per Sunday)."""
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     sections = _propers_sections(advent_year)
 
@@ -743,9 +749,9 @@ def settings():
 def daily_page():
     """Full-year LSB Daily Lectionary chart."""
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     cal, months = _daily_year_days(advent_year)
     return render_template(
@@ -763,9 +769,9 @@ def daily_page():
 def daily_pdf():
     """Printable PDF of the full-year daily lectionary."""
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
     cal, months = _daily_year_days(advent_year)
 
@@ -781,9 +787,9 @@ def export_ical():
     """Download a .ics file for one complete church year."""
     from liturgical_calendar.ical_export import build_ical_year
     try:
-        advent_year = int(request.args.get("year", date.today().year))
+        advent_year = int(request.args.get("year", _current_advent_year()))
     except ValueError:
-        advent_year = date.today().year
+        advent_year = _current_advent_year()
     lectionary    = request.args.get("lectionary", "three_year")
     include_daily = request.args.get("daily", "0") == "1"
     include_civil = request.args.get("civil", "0") == "1"
@@ -795,7 +801,7 @@ def export_ical():
     filename  = f"LCMS_Lectionary_{advent_year}-{advent_year+1}_{lect_tag}.ics"
     return send_file(
         io.BytesIO(ics_bytes),
-        mimetype="text/calendar; charset=utf-8",
+        mimetype="text/calendar",
         as_attachment=True,
         download_name=filename,
     )
@@ -816,7 +822,7 @@ def export_ical_subscribe():
                                          include_civil=include_civil)
     response   = app.response_class(
         ics_bytes,
-        mimetype="text/calendar; charset=utf-8",
+        mimetype="text/calendar",
     )
     # Tell calendar clients to refresh daily
     response.headers["Content-Disposition"] = "inline"

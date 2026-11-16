@@ -67,3 +67,9 @@ def test_last_sunday_three_year_has_proper_29_readings():
     assert "Matthew 25:31-46" in str(info["readings"])
     for s in "ABC":
         assert slot_info("last_sunday", s, d)["readings"]
+
+
+def test_pentecost_hymn_has_no_stray_heading_words():
+    from liturgical_calendar.data import hymn_of_the_day as H
+    src = open(H.__file__).read()
+    assert "Day of'" not in src and 'Day of"' not in src

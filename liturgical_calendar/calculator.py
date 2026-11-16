@@ -297,6 +297,14 @@ class LiturgicalCalendar:
             return f"trinity_{(d - self.holy_trinity).days // 7}"
         return f"proper_{get_proper(d)}"
 
+    def _one_year_season(self, season: str, d: date, lectionary: str) -> str:
+        """In the one-year series every day from Holy Trinity to the end of the
+        church year belongs to the season after Trinity, not "Ordinary Time"."""
+        if (lectionary == 'one_year' and season == "Ordinary Time"
+                and self.holy_trinity <= d < self.next_advent_1):
+            return "Trinity"
+        return season
+
     def all_events(self, include_minor: bool = True, lectionary: str = 'three_year') -> list[dict]:
         """
         Return an ordered list of all liturgical events for this church year.
@@ -330,7 +338,7 @@ class LiturgicalCalendar:
                 "date":      d,
                 "slot":      slot,
                 "name":      info["name"],
-                "season":    info["season"],
+                "season":    self._one_year_season(info["season"], d, lectionary),
                 "color":     info["color"],
                 "series":    self.series,
                 "is_sunday": d.isoweekday() == 7,
@@ -524,6 +532,7 @@ class LiturgicalCalendar:
                 "is_weekday":   False,
                 "minor_feast":  minor_feast_info,
                 **info,
+                "season":       cal._one_year_season(info["season"], d, lectionary),
             }
 
         # Weekday with no direct slot — find governing Sunday
@@ -556,6 +565,7 @@ class LiturgicalCalendar:
         elif gov_slot.startswith("trinity_") and gov_date in cal._pentecost_sundays:
             governing["name"] = cal._trinity_ordinal_name(gov_date)
             governing["season"] = "Trinity"
+        governing["season"] = cal._one_year_season(governing["season"], d, lectionary)
 
         return {
             "date":          d,
