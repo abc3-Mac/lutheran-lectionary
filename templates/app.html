@@ -2,17 +2,13 @@
 {% block title %}The App — iPhone, iPad and Mac{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Liturgical Calendar for iPhone, iPad and Mac</h1>
-  <p class="page-sub">The church year, its readings and its propers, in an app that works without a connection.</p>
-</div>
+<div class="app-page">
 
 <section class="app-hero">
-  <figure class="app-phone">
-    <img src="{{ url_for('static', filename='app/iphone-today.jpg') }}" width="540" height="1174"
-         alt="The app on iPhone showing the Last Sunday of the Church Year: its color, season and appointed readings">
-  </figure>
-  <div class="app-hero-text card">
+  <div class="app-hero-text">
+    <h1>Liturgical Calendar for iPhone, iPad and Mac</h1>
+    <p class="app-lede">The church year, its readings and its propers, in an app that works without a connection.</p>
+    <div class="app-rule" aria-hidden="true"></div>
     <p>The same calendar this site has kept since 1997 now runs as a native app. It shows the Sunday or
       festival for any date from 1583 to 2300, its liturgical color and season, and its readings, in both
       the <em>Lutheran Service Book</em> three-year series and the historic one-year series.</p>
@@ -21,61 +17,73 @@
     <p class="app-status">The app is being prepared for the App Store. This page will carry the download
       link when it is available.</p>
   </div>
+  <figure class="app-device app-device-phone">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-today.jpg') }}" width="540" height="1174"
+           alt="The app on iPhone showing the Last Sunday of the Church Year: its color, season and appointed readings"></div>
+    </figure>
 </section>
 
 <section class="app-section">
-  <h2>Today, and any day</h2>
-  <p>The day card gives the name, color, season and church year, the appointed readings, the Hymn of the Day,
+  <div class="app-section-head">
+    <h2>Today, and any day</h2>
+    <p>The day card gives the name, color, season and church year, the appointed readings, the Hymn of the Day,
     and the LSB Daily Lectionary. In the one-year series it adds the historic introit, collect and gradual.
     Tap a reading to preview its text. Each weekday of Lent has its own card, with the historic propers.</p>
-  <div class="app-shots app-shots-phones">
-    <figure>
-      <img src="{{ url_for('static', filename='app/iphone-lent.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="A Lenten weekday card on iPhone: Wednesday of Reminiscere, with its lesson, gospel, introit and collect">
+  </div>
+  <div class="app-phones">
+    <figure class="app-device app-device-phone">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-lent.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="A Lenten weekday card on iPhone: Wednesday of Reminiscere, with its lesson, gospel, introit and collect"></div>
       <figcaption>A Lenten weekday, with its historic introit and collect</figcaption>
     </figure>
-    <figure>
-      <img src="{{ url_for('static', filename='app/iphone-calendar.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="The 2025–2026 church-year calendar on iPhone, grouped by season">
+    <figure class="app-device app-device-phone">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-calendar.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The 2025–2026 church-year calendar on iPhone, grouped by season"></div>
       <figcaption>The whole church year, season by season</figcaption>
     </figure>
-    <figure>
-      <img src="{{ url_for('static', filename='app/iphone-wheel.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="The Liturgical Year Wheel on iPhone, every Sunday and festival in its color with the season dates">
+    <figure class="app-device app-device-phone">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-wheel.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The Liturgical Year Wheel on iPhone, every Sunday and festival in its color with the season dates"></div>
       <figcaption>The Liturgical Year Wheel, with each season's dates</figcaption>
     </figure>
   </div>
 </section>
 
 <section class="app-section">
-  <h2>On iPad and Mac</h2>
-  <p>The larger screens show the calendar as a full table, the one-year propers for every Sunday and festival,
+  <div class="app-section-head">
+    <h2>On iPad and Mac</h2>
+    <p>The larger screens show the calendar as a full table, the one-year propers for every Sunday and festival,
     the Daily Lectionary chart, Historic Lent, and the Almanac: moon phases, the date of Easter in the West and
     the East, and the Paschal full moon back to the Exodus.</p>
-  <div class="app-shots app-shots-wide">
-    <figure>
-      <img src="{{ url_for('static', filename='app/mac-calendar.jpg') }}" width="1100" height="920" loading="lazy"
-           alt="The church-year calendar on the Mac as a table with readings for every Sunday and festival">
+  </div>
+  <div class="app-mac-lead">
+    <figure class="app-device app-device-mac">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/mac-calendar.jpg') }}" width="1100" height="920" loading="lazy"
+           alt="The church-year calendar on the Mac as a table with readings for every Sunday and festival"></div>
       <figcaption>The church-year calendar on the Mac</figcaption>
     </figure>
-    <figure>
-      <img src="{{ url_for('static', filename='app/mac-moon.jpg') }}" width="1100" height="938" loading="lazy"
-           alt="The Almanac's moon phases for 2026 on the Mac">
+  </div>
+  <div class="app-mac-pair">
+    <figure class="app-device app-device-mac">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/mac-moon.jpg') }}" width="1100" height="938" loading="lazy"
+           alt="The Almanac's moon phases for 2026 on the Mac"></div>
       <figcaption>The Almanac: every moon phase of a year</figcaption>
     </figure>
-    <figure class="app-tablet">
-      <img src="{{ url_for('static', filename='app/ipad-propers.jpg') }}" width="760" height="1013" loading="lazy"
-           alt="The one-year propers on iPad, showing the Festivals section">
+    <figure class="app-device app-device-tablet">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/ipad-propers.jpg') }}" width="760" height="1013" loading="lazy"
+           alt="The one-year propers on iPad, showing the Festivals section"></div>
       <figcaption>One-year propers on iPad</figcaption>
     </figure>
   </div>
 </section>
 
 <section class="app-section">
-  <h2>A widget for the day</h2>
-  <p>Put today's Sunday or festival on the Home Screen, the Lock Screen or the Mac desktop, in its liturgical
+  <div class="app-section-head">
+    <h2>A widget for the day</h2>
+    <p>Put today's Sunday or festival on the Home Screen, the Lock Screen or the Mac desktop, in its liturgical
     color. The larger sizes add the readings, the Hymn of the Day and the Daily Lectionary. It turns over at
     midnight.</p>
+  </div>
   <div class="app-widgets">
     <img src="{{ url_for('static', filename='app/widget-small.png') }}" width="340" height="340" loading="lazy"
          alt="Small widget: Last Sunday of the Church Year, Ordinary Time, White">
@@ -109,39 +117,115 @@
 <p class="app-footnote">The app follows this site exactly: its readings, propers and calendars are checked
   against the website for every year it covers. For sources and permissions, see <a href="/about">About</a>; for privacy, see <a href="/privacy">Privacy</a>.</p>
 
+</div>
+
 <style>
-  .app-hero { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 1.5rem; align-items: start;
-              margin: 1rem 0 2rem; }
-  .app-hero-text p { font-size: 0.95rem; }
-  .app-status { font-style: italic; color: var(--muted); }
-  .app-phone img, .app-shots img { width: 100%; height: auto; display: block; border-radius: 18px;
-              border: 1px solid rgba(0,0,0,.10); box-shadow: 0 4px 18px rgba(0,0,0,.12); background: var(--card-bg); }
-  .app-section { margin: 2rem 0; }
-  .app-section h2 { font-size: 1.25rem; color: var(--accent-text); margin-bottom: 0.4rem; }
-  .app-section > p { font-family: Arial, sans-serif; font-size: 0.9rem; color: var(--text-soft); max-width: 46rem;
-              margin-bottom: 1rem; }
-  .app-shots { display: grid; gap: 1.25rem; }
-  .app-shots-phones { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); max-width: 900px; }
-  .app-shots-wide { grid-template-columns: 1fr 1fr; align-items: start; }
-  .app-shots-wide img { border-radius: 10px; }
-  .app-tablet { grid-column: 1 / -1; max-width: 420px; }
-  .app-shots figure { margin: 0; }
-  .app-shots figcaption { font-family: Arial, sans-serif; font-size: 0.8rem; color: var(--muted);
-              text-align: center; margin-top: 0.5rem; }
-  .app-widgets { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
-  .app-widgets img { height: auto; display: block; }
+  /* ---- /app page: scoped styles ---- */
+  .app-page { max-width: 1080px; margin: 0 auto; }
+  .app-page p { font-family: Arial, sans-serif; }
+
+  /* The five liturgical colors, as a thin rule */
+  .app-rule { height: 4px; border-radius: 2px; margin: 0 auto;
+              background: linear-gradient(90deg, var(--blue) 0 20%, var(--white) 20% 40%, var(--green) 40% 60%,
+                                          var(--purple) 60% 80%, var(--scarlet) 80% 100%); }
+
+  /* Hero */
+  .app-hero { display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center;
+              padding: 2.75rem 3rem; margin: 0.25rem 0 0; border: 1px solid var(--border); border-radius: 20px;
+              background: linear-gradient(155deg, var(--card-bg) 0%, var(--quote-bg) 100%); box-shadow: var(--shadow);
+              overflow: hidden; }
+  .app-hero h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); line-height: 1.15; color: var(--accent-text);
+              letter-spacing: -0.01em; margin: 0 0 0.75rem; text-wrap: balance; }
+  .app-lede { font-family: Georgia, "Times New Roman", serif !important; font-size: 1.2rem; line-height: 1.5;
+              color: var(--text-strong); margin: 0 0 1.25rem; max-width: 34rem; text-wrap: pretty; }
+  .app-hero .app-rule { width: 9rem; margin: 0 0 1.5rem; }
+  .app-hero-text p { font-size: 0.975rem; line-height: 1.65; color: var(--text-soft); max-width: 36rem;
+              margin: 0 0 0.9rem; }
+  .app-status { display: flex; gap: 0.7rem; align-items: flex-start; margin-top: 1.5rem !important;
+              padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg);
+              font-size: 0.875rem !important; color: var(--text-soft); }
+  .app-status::before { content: ""; flex: none; width: 9px; height: 9px; margin-top: 0.45em; border-radius: 50%;
+              background: var(--white); box-shadow: 0 0 0 4px rgba(160,120,32,.18); }
+
+  /* Device frames */
+  .app-device { margin: 0; }
+  .app-device img { display: block; width: 100%; height: auto; background: var(--card-bg); }
+  .app-device-phone .app-frame { padding: 7px; border-radius: 40px; background: #17181B;
+              box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 18px 40px rgba(0,0,0,.20), 0 3px 8px rgba(0,0,0,.14); }
+  .app-device-phone img { border-radius: 33px; }
+  .app-device-tablet .app-frame { padding: 10px; border-radius: 26px; background: #17181B;
+              box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 18px 40px rgba(0,0,0,.20), 0 3px 8px rgba(0,0,0,.14); }
+  .app-device-tablet img { border-radius: 16px; }
+  .app-device-mac .app-frame { border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,.18);
+              box-shadow: 0 18px 40px rgba(0,0,0,.16), 0 3px 8px rgba(0,0,0,.10); background: var(--card-bg); }
+  .app-device-mac .app-frame::before { content: ""; display: block; height: 28px;
+              background:
+                radial-gradient(circle at 16px 14px, #FF5F57 0 5.5px, transparent 6px),
+                radial-gradient(circle at 36px 14px, #FEBC2E 0 5.5px, transparent 6px),
+                radial-gradient(circle at 56px 14px, #28C840 0 5.5px, transparent 6px),
+                #E9E7E2;
+              border-bottom: 1px solid rgba(0,0,0,.10); }
+  :root[data-theme="dark"] .app-device-mac .app-frame { border-color: rgba(255,255,255,.16); }
+  :root[data-theme="dark"] .app-device-mac .app-frame::before { background-color: #2E3136; }
+  .app-device figcaption { font-family: Arial, sans-serif; font-size: 0.82rem; line-height: 1.4; color: var(--muted);
+              text-align: center; margin-top: 0.9rem; text-wrap: balance; }
+  .app-hero .app-device-phone { width: 280px; }
+
+  /* Sections */
+  .app-section { margin: 4.5rem 0 0; }
+  .app-section-head { max-width: 44rem; margin: 0 auto 2.25rem; text-align: center; }
+  .app-section-head h2 { font-size: 1.7rem; line-height: 1.2; color: var(--accent-text); margin: 0 0 0.7rem; }
+  .app-section-head p { font-size: 1rem; line-height: 1.65; color: var(--text-soft); margin: 0; text-wrap: pretty; }
+
+  .app-phones { display: grid; grid-template-columns: repeat(3, minmax(0, 250px)); gap: 2.5rem;
+              justify-content: center; align-items: start; }
+  .app-mac-lead { max-width: 920px; margin: 0 auto; }
+  .app-mac-pair { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2.5rem; align-items: start;
+              max-width: 920px; margin: 2.75rem auto 0; }
+
+  /* Widgets */
+  .app-widgets { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; align-items: center;
+              padding: 2.5rem 1.5rem; border-radius: 20px; border: 1px solid var(--border);
+              background: linear-gradient(155deg, var(--quote-bg) 0%, var(--code-bg) 100%); }
+  .app-widgets img { display: block; height: auto; max-width: 100%;
+              filter: drop-shadow(0 10px 18px rgba(0,0,0,.18)); }
   .app-widgets img:nth-child(1) { width: 170px; }
-  .app-widgets img:nth-child(2) { width: 364px; max-width: 100%; }
-  .app-widgets img:nth-child(3) { width: 364px; max-width: 100%; }
-  .app-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
-  .app-columns .card { margin: 0; }
-  .app-footnote { font-family: Arial, sans-serif; font-size: 0.8rem; color: var(--muted); margin: 1.5rem 0 2rem; }
+  .app-widgets img:nth-child(2),
+  .app-widgets img:nth-child(3) { width: 364px; }
+
+  /* Three closing cards */
+  .app-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .app-columns .card { margin: 0; padding: 1.6rem 1.5rem 1.4rem; border-radius: 14px; border-top: 4px solid var(--blue); }
+  .app-columns .card:nth-child(2) { border-top-color: var(--green); }
+  .app-columns .card:nth-child(3) { border-top-color: var(--purple); }
+  .app-columns .card h2 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .app-columns .card p { font-size: 0.925rem; line-height: 1.6; margin: 0; }
+
+  .app-footnote { font-size: 0.85rem; line-height: 1.6; color: var(--muted); text-align: center;
+              max-width: 44rem; margin: 3.5rem auto 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+  @media (max-width: 860px) {
+    .app-hero { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1.5rem; }
+    .app-hero .app-device-phone { width: min(260px, 78%); margin: 0 auto; }
+    .app-columns { grid-template-columns: 1fr; }
+    .app-section { margin-top: 3.5rem; }
+    .app-section-head h2 { font-size: 1.45rem; }
+  }
   @media (max-width: 700px) {
-    .app-hero { grid-template-columns: 1fr; }
-    .app-phone { max-width: 260px; margin: 0 auto; }
-    .app-shots-wide { grid-template-columns: 1fr; }
-    .app-shots-phones { max-width: 260px; margin: 0 auto; }
-    .app-tablet { margin: 0 auto; }
+    /* Phones become a swipeable row rather than a tall stack */
+    .app-phones { display: flex; gap: 1.25rem; justify-content: flex-start; overflow-x: auto;
+              scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+              margin: 0 -1.5rem; padding: 0.5rem 1.5rem 1.5rem; }
+    .app-phones .app-device { flex: 0 0 68%; max-width: 250px; scroll-snap-align: center; }
+    .app-mac-pair { grid-template-columns: 1fr; gap: 2rem; }
+    .app-mac-pair .app-device-tablet { max-width: 340px; margin: 0 auto; }
+    .app-device-mac .app-frame::before { height: 20px;
+              background:
+                radial-gradient(circle at 12px 10px, #FF5F57 0 4px, transparent 4.5px),
+                radial-gradient(circle at 26px 10px, #FEBC2E 0 4px, transparent 4.5px),
+                radial-gradient(circle at 40px 10px, #28C840 0 4px, transparent 4.5px),
+                #E9E7E2; }
+    .app-widgets { padding: 1.75rem 1rem; gap: 1.1rem; }
   }
 </style>
 {% endblock %}
