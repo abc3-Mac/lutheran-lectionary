@@ -300,7 +300,9 @@ If either variable is absent the script tag is simply not rendered, so the app w
 
 ## License
 
-MIT — free for personal, parish, and educational use.
+Released under the [MIT License](LICENSE). You may use, change and redistribute the code, including in commercial work, provided the copyright notice and the license text are kept with it.
+
+The license covers this software. Scripture text fetched from the ESV API remains subject to Crossway's terms, which allow non-commercial use only; anyone running their own instance needs their own ESV API key.
 
 ---
 
