@@ -725,6 +725,12 @@ def app_page():
     return render_template("app.html")
 
 
+@app.route("/privacy")
+def privacy_page():
+    """Privacy policy for the native app (linked from the App Store)."""
+    return render_template("privacy.html")
+
+
 @app.route("/.well-known/apple-app-site-association")
 def apple_app_site_association():
     """Universal links: lets the iPhone/iPad/Mac app open this site's day and calendar

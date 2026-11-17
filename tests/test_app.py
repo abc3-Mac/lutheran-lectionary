@@ -525,3 +525,10 @@ def test_default_year_is_church_year_in_progress(monkeypatch):
     assert b"2025" in c.get("/wheel").data
     FakeDate.today = classmethod(lambda cls: cls(2026, 11, 29))  # Advent 1
     assert A._current_advent_year() == 2026
+
+
+def test_privacy_page(client):
+    r = client.get("/privacy")
+    assert r.status_code == 200
+    assert b"does not collect, store or share any personal information" in r.data
+    assert b'href="/privacy"' in client.get("/app").data
