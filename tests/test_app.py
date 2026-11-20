@@ -532,3 +532,16 @@ def test_privacy_page(client):
     assert r.status_code == 200
     assert b"does not collect, store or share any personal information" in r.data
     assert b'href="/privacy"' in client.get("/app").data
+
+
+def test_app_store_links(client):
+    store = b"https://apps.apple.com/app/id6835621427"
+    assert store in client.get("/").data
+    assert b'href="/app"' in client.get("/").data
+    app_page = client.get("/app").data
+    assert store in app_page
+    assert b"being prepared for the App Store" not in app_page
+
+
+def test_menu_links_to_app_page(client):
+    assert b'<a href="/app" title="Liturgical Calendar Explorer' in client.get("/calendar").data
