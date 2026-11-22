@@ -450,11 +450,14 @@ def test_three_year_reformation_has_readings(client):
 def test_app_page(client):
     r = client.get("/app")
     assert r.status_code == 200
-    assert b"Liturgical Calendar for iPhone, iPad and Mac" in r.data
-    for img in (b"app/iphone-today.jpg", b"app/iphone-wheel.jpg", b"app/mac-calendar.jpg",
-                b"app/widget-large.png"):
+    assert b"Liturgical Calendar for iPhone, iPad, Mac, Apple Watch and Apple TV" in r.data
+    for heading in (b"On iPhone", b"On iPad and Mac", b"On Apple Watch", b"On Apple TV"):
+        assert heading in r.data
+    for img in (b"app/iphone-sunday.jpg", b"app/iphone-wheel-zoom.jpg", b"app/mac-calendar.jpg",
+                b"app/watch-complications.jpg", b"app/tv-display.jpg", b"app/widget-large.png"):
         assert img in r.data
-    assert client.get("/static/app/iphone-today.jpg").status_code == 200
+    for name in ("iphone-sunday.jpg", "watch-today.jpg", "tv-today.jpg"):
+        assert client.get(f"/static/app/{name}").status_code == 200
     assert b'href="/app"' in client.get("/about").data
 
 
@@ -539,8 +542,17 @@ def test_app_store_links(client):
     assert store in client.get("/").data
     assert b'href="/app"' in client.get("/").data
     app_page = client.get("/app").data
-    assert store in app_page
+    assert b"https://apps.apple.com/us/app/liturgical-calendar-explorer/id6835621427" in app_page
     assert b"being prepared for the App Store" not in app_page
+
+
+def test_app_page_promo_video_hidden_until_id_set(client, monkeypatch):
+    import app as A
+    page = client.get("/app").data
+    assert b"youtube" not in page and b"PROMO VIDEO" not in page
+    monkeypatch.setattr(A, "APP_PROMO_VIDEO_ID", "abc123XYZ_-")
+    page = client.get("/app").data
+    assert b"https://www.youtube-nocookie.com/embed/abc123XYZ_-" in page
 
 
 def test_menu_links_to_app_page(client):

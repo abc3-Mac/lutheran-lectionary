@@ -719,10 +719,15 @@ def about():
     return render_template("about.html")
 
 
+# YouTube ID of the app's promo video (e.g. "dQw4w9WgXcQ"). Empty = no video
+# block on /app. Set it after the video is released.
+APP_PROMO_VIDEO_ID = ""
+
+
 @app.route("/app")
 def app_page():
-    """The native app for iPhone, iPad and Mac."""
-    return render_template("app.html")
+    """The native app for iPhone, iPad, Mac, Apple Watch and Apple TV."""
+    return render_template("app.html", promo_video_id=APP_PROMO_VIDEO_ID)
 
 
 @app.route("/privacy")
