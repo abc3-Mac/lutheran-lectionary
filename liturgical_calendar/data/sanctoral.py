@@ -226,11 +226,11 @@ SANCTORAL_SLOTS = {
         "minor": True,
         "readings": _r(ot='Isaiah 52:7-10', ps='Psalm 57', ep='Ephesians 4:7-16', go='Mark 16:14-20'),
         "collect": (
-            'O ALMIGHTY God, Who hast instructed Thy holy Church with the heavenly doctrine of '
-            'Thy Evangelists: Give us grace, that being not like children carried away with every '
-            'blast of vain doctrine, we may be established in the Truth of Thy Holy Gospel; '
-            'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
-            'Holy Ghost, ever One God, world without end. Amen.'
+            'O ALMIGHTY God, Who hast instructed Thy holy church with the heavenly doctrine of Thy '
+            'Evangelists: Give us grace, that being not like children carried away with every blast'
+            ' of vain doctrine, we may be established in the Truth of Thy holy Gospel; through '
+            'Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost,'
+            ' ever One God, world without end. Amen.'
         ),
         "introit_text": (
             'GO ye into all the world: and preach the gospel to every creature. Their sound went '
@@ -299,13 +299,12 @@ SANCTORAL_SLOTS = {
         "readings": _r(ot='Isaiah 40:1-5', ps='Psalm 85:7-13', ep='Acts 13:13-26', go='Luke 1:57-67,80'),
         "collect": (
             'O LORD God, Heavenly Father, Who, through Thy servant John the Baptist, didst bear '
-            'witness that Jesus Christ is the Lamb of God Which taketh away the sin of the world, '
+            'witness that Jesus Christ is the Lamb of God Which taketh away the sin of the world '
             'and that all who believe in Him shall inherit eternal life: We humbly pray Thee to '
-            'enlighten us by Thy Holy Spirit that we may at all times find comfort and joy in '
-            'this witness, continue steadfast in the true faith, and at last with all believers '
-            'attain unto eternal life; through the same Jesus Christ, Thy Son, our Lord, Who '
-            'liveth and reigneth with Thee and the Holy Ghost, ever One God, world without end. '
-            'Amen.'
+            'enlighten us by Thy Holy Spirit that we may at all times find comfort and joy in this '
+            'witness, continue steadfast in the true faith and at last with all believers attain '
+            'unto eternal life; through the same Jesus Christ, Thy Son, our Lord, Who liveth and '
+            'reigneth with Thee and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit_text": (
             'THE voice of him that crieth in the wilderness: Prepare ye the way of the Lord, make '
@@ -505,11 +504,11 @@ SANCTORAL_SLOTS = {
         "minor": True,
         "readings": _r(ot='Isaiah 35:5-8', ps='Psalm 147:1-11', ep='2 Timothy 4:5-18', go='Luke 10:1-9'),
         "collect": (
-            'O ALMIGHTY God, Who hast instructed Thy holy Church with the heavenly doctrine of '
-            'Thy Evangelists: Give us grace, that being not like children carried away with every '
-            'blast of vain doctrine, we may be established in the Truth of Thy Holy Gospel; '
-            'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
-            'Holy Ghost, ever One God, world without end. Amen.'
+            'O ALMIGHTY God, Who hast instructed Thy holy church with the heavenly doctrine of Thy '
+            'Evangelists: Give us grace, that being not like children carried away with every blast'
+            ' of vain doctrine, we may be established in the Truth of Thy holy Gospel; through '
+            'Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost,'
+            ' ever One God, world without end. Amen.'
         ),
         "introit_text": (
             'GO ye into all the world: and preach the gospel to every creature. Their sound went '
@@ -537,10 +536,10 @@ SANCTORAL_SLOTS = {
         "readings": _r(ot='Jeremiah 26:1-16', ps='Psalm 11', ep='1 John 4:1-6', go='John 15:17-21'),
         "collect": (
             'O ALMIGHTY God, Who hast built Thy Church upon the foundation of the Apostles and '
-            'Prophets. Jesus Christ Himself being the Head Corner-Stone: Grant us so to be joined '
+            'Prophets, Jesus Christ Himself being the Head Corner-Stone: Grant us so to be joined '
             'together in unity of spirit by their doctrine, that we may be made a holy temple '
-            'acceptable unto Thee; through the same Jesus Christ, Thy Son, our Lord, Who liveth '
-            'and reigneth with Thee and the Holy Ghost, ever One God, world without end. Amen.'
+            'acceptable unto Thee; through the same Jesus Christ, Thy Son, our Lord, Who liveth and'
+            ' reigneth with Thee and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit_text": (
             'I KNOW Whom I have believed: and am persuaded that He is able to keep that which I '
@@ -568,12 +567,12 @@ SANCTORAL_SLOTS = {
         "minor": False,
         "readings": _r(ot='Revelation 7:(2-8)9-17', ps='Psalm 149', ep='1 John 3:1-3', go='Matthew 5:1-12'),
         "collect": (
-            'O ALMIGHTY God, Who hast knit together Thine elect in one communion and fellowship '
-            'in the mystical Body of Thy Son. Christ our Lord: Grant us grace so to follow Thy '
-            'blessed Saints in all virtuous and godly living, that we may come to those '
-            'unspeakable joys which Thou hast prepared for those who unfeignedly love Thee; '
-            'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
-            'Holy Ghost, ever One God, world without end. Amen.'
+            'O ALMIGHTY God, Who hast knit together Thine elect in one communion and fellowship in '
+            'the mystical Body of Thy Son, Christ our Lord: Grant us grace so to follow Thy blessed'
+            ' Saints in all virtuous and godly living, that we may come to those unspeakable joys '
+            'which Thou hast prepared for those who unfeignedly love Thee; through Jesus Christ, '
+            'Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever One God,'
+            ' world without end. Amen.'
         ),
         "introit_text": (
             'THESE are they which have come out of great tribulation: and have washed their robes '

@@ -36,15 +36,15 @@ ONE_YEAR_PROPERS = {
             "name": 'Ad Te Levavi',
             "ref": 'Psalm 25:1–3, 5',
             "text": (
-                'UNTO Thee, O Lord, do I lift up my soul: O my God, I trust in Thee. Let me not be '
-                'ashamed: let not mine enemies triumph over me. Yea, let none that wait on Thee: be '
+                'UNTO Thee, O Lord, do I lift up my soul: O my God, I trust in Thee; Let me not be '
+                'ashamed: let not mine enemies triumph over me; Yea, let none that wait on Thee: be '
                 'ashamed. Psalm. Show me Thy ways, O Lord: teach me Thy paths.'
             ),
         },
         "gradual": (
-            'ALL they that wait for Thee: shall not be ashamed, O Lord. Verse. Show me Thy ways, '
-            'O Lord: teach me Thy paths. Hallelujah. Hallelujah. V. Show us Thy mercy, O Lord: '
-            'and grant us Thy salvation. Hallelujah.'
+            'ALL they that wait for Thee shall not be ashamed, O Lord. Verse. Show me Thy ways, O '
+            'Lord: teach me Thy paths. Hallelujah. Hallelujah. V. Show us Thy mercy, O Lord: and '
+            'grant us Thy salvation. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -68,11 +68,11 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'OUT of Zion the perfection of beauty God hath shined: Our God shall come. V. Gather '
-            'My saints together unto Me: those that have made a covenant with Me by sacrifice. '
-            'Hallelujah. Hallelujah. V. I was glad when they said unto me: Let us go into the '
-            'house of the Lord. Hallelujah. Hallelujah. V. Our feet shall stand within thy gates: '
-            'O Jerusalem. Hallelujah.'
+            'OUT of Zion the perfection of beauty God hath shined: our God shall come. V. Gather my'
+            ' saints together unto Me: those that have made a covenant with Me by sacrifice. '
+            'Hallelujah. Hallelujah. V. I was glad when they said unto me: let us go into the house'
+            ' of the Lord. Hallelujah. Hallelujah. V. Our feet shall stand within thy gates: O '
+            'Jerusalem. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -82,7 +82,7 @@ ONE_YEAR_PROPERS = {
     "advent_3": {
         "collect": (
             'Lord, we beseech Thee, give ear to our prayers, and lighten the darkness of our '
-            'hearts by Thy gracious visitation; Who livest and reignest with the Father and the '
+            'hearts, by Thy gracious visitation; Who livest and reignest with the Father and the '
             'Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
@@ -97,8 +97,8 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THOU that dwellest between the Cherubim, shine forth: Stir up Thy strength and come. '
-            'Give ear, O Shepherd of Israel: Thou that leadest Joseph like a flock. Hallelujah. '
+            'THOU that dwellest between the Cherubim, shine forth: stir up Thy strength and come. '
+            'V. Give ear, O Shepherd of Israel: Thou that leadest Joseph like a flock. Hallelujah. '
             'Hallelujah. V. Stir up Thy strength: and come and save us. Hallelujah.'
         ),
         "source": (
@@ -108,10 +108,10 @@ ONE_YEAR_PROPERS = {
     },
     "advent_4": {
         "collect": (
-            'Stir up, O Lord, we beseech Thee, Thy power, and come, and with great might succor '
-            'us, that by the help of Thy grace whatsoever is hindered by our sin may be speedily '
+            'Stir up, O Lord, we beseech Thee, Thy power, and come, and with great might succor us,'
+            ' that by the help of Thy grace whatsoever is hindered by our sins may be speedily '
             'accomplished, through Thy mercy and satisfaction; Who livest and reignest with the '
-            'Father and the Holy Ghost, ever One God, world without end. Amen.'
+            'Father, and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Rorate Caeli',
@@ -123,10 +123,10 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THE Lord is nigh unto all them that call upon Him: to all that call upon Him in '
-            'truth. My mouth shall speak the praise of the Lord: and let all flesh bless His Holy '
-            'Name. Hallelujah. Hallelujah. V. Thou art my Help and my Deliverer: make no '
-            'tarrying, my God. Hallelujah.'
+            'THE Lord is nigh unto all them that call upon Him: to all that call upon Him in truth.'
+            ' V. My mouth shall speak the praise of the Lord: and let all flesh bless His Holy '
+            'Name. Hallelujah. Hallelujah. V. Thou art my help and my deliverer: make no tarrying, '
+            'O my God. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -164,16 +164,16 @@ ONE_YEAR_PROPERS = {
             "name": 'Dominus Dixit',
             "ref": 'Psalm 2:7; Psalm 110:3',
             "text": (
-                'THE Lord hath said unto Me, Thou art My Son: this day have I begotten Thee. Psalm. '
-                'The Lord reigneth, He is clothed with majesty: the Lord is clothed with strength, '
+                'THE Lord hath said unto Me, Thou art my Son: this day have I begotten thee. Psalm. The'
+                ' Lord reigneth, He is clothed with majesty: the Lord is clothed with strength, '
                 'wherewith He hath girded Himself.'
             ),
         },
         "gradual": (
-            'THY people shall be willing in the day of Thy power: in the beauties of holiness '
-            'from the womb of the morning. V. The Lord said unto my Lord, Sit Thou at My right '
-            'hand: until I make Thine enemies Thy footstool. Hallelujah. Hallelujah. V. The Lord '
-            'hath said unto Me, Thou art Mv Son: this day have I begotten Thee. Hallelujah.'
+            'THY people shall be willing in the day of Thy power: in the beauties of holiness from '
+            'the womb of the morning. V. The Lord said unto my Lord, Sit Thou at My right hand: '
+            'until I make Thine enemies Thy footstool. Hallelujah. Hallelujah. V. The Lord hath '
+            'said unto Me, Thou art My Son: this day have I begotten Thee. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -207,18 +207,17 @@ ONE_YEAR_PROPERS = {
             "name": 'Puer Natus Est',
             "ref": 'Isaiah 9:6; Psalm 98:1',
             "text": (
-                'UNTO us a Child is born, unto us a Son is given: and the government shall be upon '
-                'His shoulder. And His Name shall be called Wonderful, Counsellor, The Mighty God: '
-                'The Everlasting Father, The Prince of Peace. Psalm. O sing unto the Lord a new song: '
-                'for He hath done marvelous things.'
+                'UNTO us a Child is born, unto us a Son is given: and the government shall be upon His '
+                'shoulder. And His Name shall be called Wonderful, Counsellor, The Mighty God: The '
+                'Everlasting Father, The Prince of Peace. Psalm. O sing unto the Lord a new song: for '
+                'He hath done marvellous things.'
             ),
         },
         "gradual": (
-            'ALL the ends of the earth have seen the salvation of our God: Make a joyful noise '
-            'unto the Lord, all the earth. V. The Lord hath made known His salvation: His '
-            'righteousness hath He openly showed in the sight of the heathen. Hallelujah. '
-            'Hallelujah. V. O come, let us sing unto the Lord: Let us worship and bow down before '
-            'Him. Hallelujah.'
+            'ALL the ends of the earth have seen the salvation of our God: make a joyful noise unto'
+            ' the Lord, all the earth. V. The Lord hath made known His salvation: His righteousness'
+            ' hath He openly showed in the sight of the heathen. Hallelujah. Hallelujah. V. O come,'
+            ' let us sing unto the Lord: let us worship and bow down before Him. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -243,11 +242,11 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THOU art fairer than the children of men: grace is poured into Thy lips. My heart is '
-            'inditing a good matter, I speak of the things which I have made touching the King: '
-            'my tongue is the pen of a ready writer. Hallelujah. Hallelujah. V. The Lord '
-            'reigneth, He is clothed with majesty: the Lord is clothed with strength, wherewith '
-            'He hath girded Himself. Hallelujah.'
+            'THOU art fairer than the children of men: grace is poured into Thy lips. V. My heart '
+            'is inditing a good matter, I speak of the things which I have made touching the King: '
+            'my tongue is the pen of a ready writer. Hallelujah. Hallelujah. V. The Lord reigneth, '
+            'He is clothed with majesty: the Lord is clothed with strength, wherewith He hath '
+            'girded Himself. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -272,11 +271,11 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THOU art fairer than the children of men: grace is poured into Thy lips. My heart is '
-            'inditing a good matter, I speak of the things which I have made touching the King: '
-            'my tongue is the pen of a ready writer. Hallelujah. Hallelujah. V. The Lord '
-            'reigneth, He is clothed with majesty: the Lord is clothed with strength, wherewith '
-            'He hath girded Himself. Hallelujah.'
+            'THOU art fairer than the children of men: grace is poured into Thy lips. V. My heart '
+            'is inditing a good matter, I speak of the things which I have made touching the King: '
+            'my tongue is the pen of a ready writer. Hallelujah. Hallelujah. V. The Lord reigneth, '
+            'He is clothed with majesty: the Lord is clothed with strength, wherewith He hath '
+            'girded Himself. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -299,18 +298,18 @@ ONE_YEAR_PROPERS = {
             "name": 'Nomen Iesu',
             "ref": 'Philippians 2:10–11; Psalm 8:1',
             "text": (
-                'O LORD our Lord, how excellent is Thy Name in all the earth: Who hast set Thy glory '
+                'O LORD, our Lord, how excellent is Thy Name in all the earth: Who hast set Thy glory '
                 'above the heavens. What is man that Thou art mindful of him: and the son of man that '
-                'Thou visitest him? Psalm. Thou, O Lord, art our Father, our Redeemer: Thy Name is '
-                'from everlasting.'
+                'Thou visitest him? Psalm. Thou, O Lord, art our Father and our Redeemer: from '
+                'everlasting is Thy Name.'
             ),
         },
         "gradual": (
-            'ALL the ends of the earth have seen the salvation of our God: Make a joyful noise '
-            'unto the Lord, all the earth. V. The Lord hath made known His salvation: His '
-            'righteousness hath He openly showed in the sight of the heathen. Hallelujah. '
-            'Hallelujah. V. God, Who of old time spake in divers ways unto the fathers by the '
-            'prophets: hath in these last days spoken unto us by His Son. Hallelujah.'
+            'ALL the ends of the earth have seen the salvation of our God: make a joyful noise unto'
+            ' the Lord, all the earth. V. The Lord hath made known His salvation: His righteousness'
+            ' hath He openly showed in the sight of the heathen. Hallelujah. Hallelujah. V. God, '
+            'Who of old time spake in divers ways unto the fathers by the prophets: hath in these '
+            'last days spoken unto us by His Son. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -329,18 +328,18 @@ ONE_YEAR_PROPERS = {
             "name": 'Nomen Iesu',
             "ref": 'Philippians 2:10–11; Psalm 8:1',
             "text": (
-                'O LORD our Lord, how excellent is Thy Name in all the earth: Who hast set Thy glory '
+                'O LORD, our Lord, how excellent is Thy Name in all the earth: Who hast set Thy glory '
                 'above the heavens. What is man that Thou art mindful of him: and the son of man that '
-                'Thou visitest him? Psalm. Thou, O Lord, art our Father, our Redeemer: Thy Name is '
-                'from everlasting.'
+                'Thou visitest him? Psalm. Thou, O Lord, art our Father and our Redeemer: from '
+                'everlasting is Thy Name.'
             ),
         },
         "gradual": (
-            'ALL the ends of the earth have seen the salvation of our God: Make a joyful noise '
-            'unto the Lord, all the earth. V. The Lord hath made known His salvation: His '
-            'righteousness hath He openly showed in the sight of the heathen. Hallelujah. '
-            'Hallelujah. V. God, Who of old time spake in divers ways unto the fathers by the '
-            'prophets: hath in these last days spoken unto us by His Son. Hallelujah.'
+            'ALL the ends of the earth have seen the salvation of our God: make a joyful noise unto'
+            ' the Lord, all the earth. V. The Lord hath made known His salvation: His righteousness'
+            ' hath He openly showed in the sight of the heathen. Hallelujah. Hallelujah. V. God, '
+            'Who of old time spake in divers ways unto the fathers by the prophets: hath in these '
+            'last days spoken unto us by His Son. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -360,15 +359,15 @@ ONE_YEAR_PROPERS = {
             "ref": 'Malachi 3:1; Psalm 72:1',
             "text": (
                 'BEHOLD the Lord, the Ruler, hath come: and the kingdom, and the power, and the glory '
-                'are in His hand. Psalm. Give the King Thy judgments, O God: and Thy righteousness '
-                'unto the King’s Son.'
+                'are in His hand. Psalm. Give the King Thy judgments, O God: and Thy righteousness unto'
+                ' the King’s Son.'
             ),
         },
         "gradual": (
-            'ALL they from Sheba shall come; they shall bring gold and incense: and they shall '
-            'show forth the praises of the Lord. V. Arise, and shine, O Jerusalem: for the glory '
-            'of the Lord is risen upon thee. Hallelujah. Hallelujah. V. We have seen His star in '
-            'the east: and we have come with our gifts to worship the Lord. Hallelujah.'
+            'ALL they from Sheba shall come; they shall bring gold and incense: and they shall show'
+            ' forth the praises of the Lord. V. Arise, and shine, O Jerusalem: for the glory of the'
+            ' Lord is risen upon thee. Hallelujah. Hallelujah. V. We have seen His star in the '
+            'East: and we have come with our gifts to worship the Lord. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -387,17 +386,16 @@ ONE_YEAR_PROPERS = {
             "name": 'In Excelso Throno',
             "ref": 'Isaiah 6:1; Psalm 100:1–2',
             "text": (
-                'I SAW also the Lord, sitting upon a throne: high and lifted up. And I heard the '
-                'voice of a great multitude, saying, Alleluia: for the Lord God Omnipotent reigneth. '
-                'Psalm. Make a joyful noise unto the Lord, all ye lands: Serve the Lord with '
-                'gladness.'
+                'I SAW also the Lord, sitting upon a throne: high and lifted up. And I heard the voice '
+                'of a great multitude, saying, Alleluia: for the Lord God Omnipotent reigneth. Psalm. '
+                'Make a joyful noise unto the Lord, all ye lands: serve the Lord with gladness.'
             ),
         },
         "gradual": (
-            'BLESSED be the Lord God, the God of Israel, Who only doeth wondrous things: And '
-            'blessed be His glorious Name forever. The mountains shall bring peace to Thy people: '
-            'and the hills righteousness. Hallelujah. Hallelujah. V. Make a joyful noise unto the '
-            'Lord, all ye lands: Serve the Lord with gladness. Hallelujah.'
+            'BLESSED be the Lord God, the God of Israel, Who only doeth wondrous things: and '
+            'blessed be His glorious Name forever. V. The mountains shall bring peace to Thy '
+            'people: and the hills righteousness. Hallelujah. Hallelujah. V. Make a joyful noise '
+            'unto the Lord, all ye lands: serve the Lord with gladness. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -449,8 +447,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -477,8 +475,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -505,8 +503,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -533,8 +531,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -561,8 +559,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -589,8 +587,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'SO the heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory, When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
-            'Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
+            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah.'
+            ' Hallelujah. V. The Lord reigneth; let the earth rejoice: let the multitude of isles '
             'be glad thereof. Hallelujah.'
         ),
         "source": (
@@ -613,14 +611,14 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 77:18; Psalm 84:1',
             "text": (
                 'THE lightnings lightened the world: the earth trembled and shook. Psalm. How amiable '
-                'are Thy tabernacles, O Lord of hosts: My soul longeth, yea, even fainteth for the '
+                'are Thy tabernacles, O Lord of hosts: my soul longeth, yea, even fainteth for the '
                 'courts of the Lord.'
             ),
         },
         "gradual": (
             'THOU art fairer than the children of men: grace is poured into Thy lips. V. The Lord '
-            'said unto my Lord. Sit Thou at My right hand: until I make Thine enemies Thy '
-            'footstool. Hallelujah. Hallelujah. V. Sing unto the Lord. bless His Name; show forth '
+            'said unto my Lord, Sit Thou at My right hand: until I make Thine enemies Thy '
+            'footstool. Hallelujah. Hallelujah. V. Sing unto the Lord, bless His Name; show forth '
             'His salvation from day to day: Declare His glory among all people. Hallelujah.'
         ),
         "source": (
@@ -644,17 +642,16 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 18:4–5; Psalm 18:1–2',
             "text": (
                 'THE sorrows of death compassed me: the sorrows of hell compassed me about. In my '
-                'distress I called upon the Lord: and He heard my voice out of His temple. Psalm. I '
-                'will love Thee, Lord my Strength: The Lord is my Rock and my Fortress.'
+                'distress, I called upon the Lord: and He heard my voice out of His temple. Psalm. I '
+                'will love Thee, O Lord my Strength: the Lord is my Rock and my Fortress.'
             ),
         },
         "gradual": (
-            'THE Lord also will be a refuge for the oppressed, a refuge in times of trouble: And '
+            'THE Lord also will be a refuge for the oppressed, a refuge in times of trouble: and '
             'they that know Thy Name will put their trust in Thee; for Thou, Lord, hast not '
             'forsaken them that seek Thee. V. For the needy shall not alway be forgotten: the '
-            'expectation of the poor shall not perish forever. Arise, O Lord; let not man '
-            'prevail. Tract. Out of the depths have I cried unto Thee, O Lord: Lord, hear my '
-            'voice.'
+            'expectation of the poor shall not perish forever. Arise, O Lord; let not man prevail. '
+            'Tract. Out of the depths have I cried unto Thee, O Lord: Lord, hear my voice.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -679,10 +676,10 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'LET the nations know that Thy Name is Jehovah: A Thou alone art the Most High over '
-            'all the earth. My God, make them like a wheel: and like chaff before the wind. '
-            'Tract. Thou hast given a banner to them that fear Thee: that it may be displayed '
-            'because of the truth.'
+            'LET the nations know that Thy Name is Jehovah: Thou alone art the Most High over all '
+            'the earth. V. O my God, make them like a wheel: and like chaff before the wind. Tract.'
+            ' Thou hast given a banner to them that fear Thee: that it may be displayed because of '
+            'the truth.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -701,14 +698,14 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 31:2–3; Psalm 31:1',
             "text": (
                 'BE Thou my strong Rock: for an house of defense to save me. Thou art my Rock and my '
-                'Fortress: therefore for Thy Name’s sake lead me and guide me. Psalm. In Thee, O '
-                'Lord, do I put my trust; let me never be ashamed: deliver me in Thy righteousness.'
+                'Fortress: therefore for Thy Name’s sake lead me and guide me. Psalm. In Thee, O Lord, '
+                'do I put my trust; let me never be ashamed: deliver me in Thy righteousness.'
             ),
         },
         "gradual": (
             'THOU art the God that doest wonders: Thou hast declared Thy strength among the '
             'peoples. V. Thou hast with Thine arm redeemed Thy people: the sons of Jacob and '
-            'Joseph. Tract. Make a joyful noise unto the Lord, all ye lands: Serve the Lord with '
+            'Joseph. Tract. Make a joyful noise unto the Lord, all ye lands: serve the Lord with '
             'gladness.'
         ),
         "source": (
@@ -733,17 +730,16 @@ ONE_YEAR_PROPERS = {
             "name": 'Miserere Mihi',
             "ref": 'Psalm 57:1; Psalm 57:1',
             "text": (
-                'I WILL cry unto God Most High: unto God that performeth all things for me. Yea, in '
-                'the shadow of Thy wings will I make my refuge I until these calamities be overpast. '
-                'Psalm. Be merciful unto me, O God, be merciful unto me: for my soul trusteth in '
-                'Thee.'
+                'I WILL cry unto God Most High: unto God that performeth all things for me. Yea, in the'
+                ' shadow of Thy wings will I make my refuge: until these calamities be overpast. Psalm.'
+                ' Be merciful unto me, O God, be merciful unto me: for my soul trusteth in Thee.'
             ),
         },
         "gradual": (
-            'BE merciful unto me, God, be merciful unto me: for my soul trusteth in Thee. V. He '
-            'shall send from heaven: and save me from the reproach of him that would swallow me '
-            'up. Tract. O Lord, deal not with us after our sins; nor reward us according to our '
-            'iniquities: Help us, O God of our salvation; for the glory of Thy Name.'
+            'BE merciful unto me, O God, be merciful unto me: for my soul trusteth in Thee. V. He '
+            'shall send from heaven: and save me from the reproach of him that would swallow me up.'
+            ' Tract. O Lord, deal not with us after our sins; nor reward us according to our '
+            'iniquities: help us, O God of our salvation; for the glory of Thy Name.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -768,7 +764,7 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'FOR He shall give His angels charge over thee: to keep thee in all thy ways. V. They '
-            'shall bear thee up in their hands: lest thou dash thy foot against a stone Tract. He '
+            'shall bear thee up in their hands: lest thou dash thy foot against a stone. Tract. He '
             'that dwelleth in the secret place of the Most High: shall abide under the shadow of '
             'the Almighty.'
         ),
@@ -789,15 +785,15 @@ ONE_YEAR_PROPERS = {
             "name": 'Reminiscere',
             "ref": 'Psalm 25:6–7; Psalm 25:1–2',
             "text": (
-                'REMEMBER, O Lord, Thy tender mercies and Thy loving-kindnesses I for they have been '
+                'REMEMBER, O Lord, Thy tender mercies and Thy loving-kindnesses: for they have been '
                 'ever of old. Let not mine enemies triumph over me: God of Israel, deliver us out of '
-                'all our troubles. Psalm. Unto Thee, O Lord, do I lift up my soul: my God, I trust in '
-                'Thee; let me not be ashamed.'
+                'all our troubles. Psalm. Unto Thee, O Lord, do I lift up my soul: O my God, I trust in'
+                ' Thee; let me not be ashamed.'
             ),
         },
         "gradual": (
-            'THE troubles of my heart are enlarged: bring Thou me out of my distresses. V. Look '
-            'upon mine affliction and my pain: and forgive all my sins. Tract. give thanks unto '
+            'THE troubles of my heart are enlarged: O bring Thou me out of my distresses. V. Look '
+            'upon mine affliction and my pain: and forgive all my sins. Tract. O give thanks unto '
             'the Lord; for He is good: for His mercy endureth forever.'
         ),
         "source": (
@@ -818,14 +814,14 @@ ONE_YEAR_PROPERS = {
             "text": (
                 'MINE eyes are ever toward the Lord: for He shall pluck my feet out of the net. Turn '
                 'Thee unto me, and have mercy upon me: for I am desolate and afflicted. Psalm. Unto '
-                'Thee, Lord, do I lift up my soul: my God, I trust in Thee; let me not be ashamed.'
+                'Thee, O Lord, do I lift up my soul: O my God, I trust in Thee; let me not be ashamed.'
             ),
         },
         "gradual": (
-            'ARISE, O Lord; let not man prevail: let the heathen be judged in Thy sight, When '
-            'mine enemies are turned back: they shall fall and perish at Thy presence. Tract. '
-            'Unto Thee lift I up mine eyes, O Thou that dwellest in the heavens: Have mercy upon '
-            'us, Lord, have mercy upon us.'
+            'ARISE, O Lord; let not man prevail: let the heathen be judged in Thy sight. V. When '
+            'mine enemies are turned back: they shall fall and perish at Thy presence. Tract. Unto '
+            'Thee lift I up mine eyes, O Thou that dwellest in the heavens: have mercy upon us, O '
+            'Lord, have mercy upon us.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -849,9 +845,9 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'I WAS glad when they said unto me I Let us go into the house of the Lord. V. Peace '
-            'be within thy walls: and prosperity within thy palaces. Tract. They that trust in '
-            'the Lord shall be as Mount Zion! which cannot be removed, but abideth forever.'
+            'I WAS glad when they said unto me: Let us go into the house of the Lord. V. Peace be '
+            'within thy walls: and prosperity within thy palaces. Tract. They that trust in the '
+            'Lord shall be as Mount Zion: which cannot be removed, but abideth forever.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -870,16 +866,16 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 43:1–2; Psalm 43:1',
             "text": (
                 'JUDGE me, O God: and plead my cause against an ungodly nation. O deliver me from the '
-                'deceitful and unjust man: for Thou art the God of my strength. Psalm. send out Thy '
+                'deceitful and unjust man: for Thou art the God of my strength. Psalm. O send out Thy '
                 'light and Thy truth: let them lead me; let them bring me unto Thy holy hill.'
             ),
         },
         "gradual": (
             'DELIVER me, O Lord, from mine enemies: teach me to do Thy will. V. He delivereth me '
             'from mine enemies; yea, Thou liftest me up above those that rise up against me: Thou '
-            'hast delivered me from the violent man. Tract. Many a time have they afflicted me '
-            'from my youth. V. May Israel now say: Many a time have they afflicted me from my '
-            'youth. V. Yet they have not prevailed against me.'
+            'hast delivered me from the violent man. Tract. Many a time have they afflicted me from'
+            ' my youth. V. May Israel now say: many a time have they afflicted me from my youth. V.'
+            ' Yet they have not prevailed against me.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -903,16 +899,16 @@ ONE_YEAR_PROPERS = {
             "name": 'Palmarum',
             "ref": 'Psalm 22:19, 21–22; Psalm 22:1',
             "text": (
-                'BE not Thou far from me, O Lord: O my Strength, haste Thee to help me. Save me from '
-                'the lion’s mouth I and deliver me from the horns of the unicorns. Psalm. My God, my '
+                'BE not Thou far from me, O Lord: O my strength, haste Thee to help me. Save me from '
+                'the lion’s mouth: and deliver me from the horns of the unicorns. Psalm. My God, my '
                 'God, why hast Thou forsaken me: why art Thou so far from helping me?'
             ),
         },
         "gradual": (
             'THOU hast holden me by my right hand: Thou shalt guide me with Thy counsel, and '
-            'afterward receive me to glory. V. Truly God is good to Israel: even to such as are '
-            'of a clean heart. Tract. My God, my God, why hast Thou forsaken me: why art Thou so '
-            'far from helping me? V. Our fathers trusted in Thee: They cried unto Thee and were '
+            'afterward receive me to glory. V. Truly God is good to Israel: even to such as are of '
+            'a clean heart. Tract. My God, my God why hast Thou forsaken me: why art Thou so far '
+            'from helping me? V. Our fathers trusted in Thee: they cried unto Thee and were '
             'delivered.'
         ),
         "source": (
@@ -969,7 +965,7 @@ ONE_YEAR_PROPERS = {
         "gradual": (
             'HE was wounded for our transgressions, He was bruised for our iniquities: the '
             'chastisement of our peace was upon Him; and with His stripes we are healed. V. He '
-            'shall see of the travail of His soul: and shall he satisfied.'
+            'shall see of the travail of His soul: and shall be satisfied.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -999,10 +995,10 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THIS is the day which the Lord hath made: we will rejoice and be glad in it. V. O '
-            'give thanks unto the Lord for He is good: for His mercy endureth forever. '
-            'Hallelujah. Hallelujah. V. Christ our Passover is sacrificed for us. Psalm. Let us '
-            'keep the feast: with the unleavened bread of sincerity and truth. Hallelujah.'
+            'THIS is the day which the Lord hath made: we will rejoice and be glad in it. V. O give'
+            ' thanks unto the Lord for He is good: for His mercy endureth forever. Hallelujah. '
+            'Hallelujah. V. Christ our Passover is sacrificed for us. V. Let us keep the feast with'
+            ' the unleavened bread of sincerity and truth. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1049,15 +1045,15 @@ ONE_YEAR_PROPERS = {
             "name": 'Misericordias Domini',
             "ref": 'Psalm 33:5–6; Psalm 33:1',
             "text": (
-                'THE earth is full of the goodness of the Lord: By the Word of the Lord were the '
-                'heavens made. Psalm. Rejoice in the Lord, O ye righteous: for praise is comely for '
-                'the upright.'
+                'THE earth is full of the goodness of the Lord: by the Word of the Lord were the '
+                'heavens made. Psalm. Rejoice in the Lord, O ye righteous: for praise is comely for the'
+                ' upright.'
             ),
         },
         "gradual": (
-            'HALLELUJAH. Hallelujah. V. Then was the Lord Jesus known of the disciples: in the '
-            'breaking of bread. Hallelujah. V. I am the Good Shepherd: and know My sheep, and am '
-            'known of Mine. Hallelujah.'
+            'HALLELUJAH. Hallelujah. V. Then was the Lord Jesus known of the disciples in the '
+            'breaking of bread. Hallelujah. V. I am the Good Shepherd: and know my sheep, and am '
+            'known of mine. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1077,15 +1073,15 @@ ONE_YEAR_PROPERS = {
             "name": 'Jubilate',
             "ref": 'Psalm 66:1–2; Psalm 66:3',
             "text": (
-                'MAKE a joyful noise unto God, all ye lands: sing forth the honor of His Name; make '
-                'His praise glorious. Psalm. Say unto God, How terrible art Thou in Thy works: '
-                'through the greatness of Thy power shall Thine enemies submit themselves unto Thee.'
+                'MAKE a joyful noise unto God, all ye lands: sing forth the honor of His Name; make His'
+                ' praise glorious. Psalm. Say unto God, how terrible art Thou in Thy works: through the'
+                ' greatness of Thy power shall Thine enemies submit themselves unto Thee.'
             ),
         },
         "gradual": (
-            'HALLELUJAH. Hallelujah. V. The Lord hath sent redemption: unto His people. '
-            'Hallelujah. V. It behooved Christ to suffer, and to rise from the dead: and thus to '
-            'enter into His glory. Hallelujah.'
+            'HALLELUJAH. Hallelujah. V. The Lord hath sent redemption unto His people. Hallelujah. '
+            'V. It behooved Christ to suffer, and to rise from the dead: and thus to enter into His'
+            ' glory. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1095,24 +1091,24 @@ ONE_YEAR_PROPERS = {
     "easter_5": {
         "collect": (
             'O God, Who makest the minds of the faithful to be of one will: Grant unto Thy people '
-            'that they may love what Thou commandest, and desire what Thou dost promise: that, '
+            'that they may love what Thou commandest, and desire what Thou dost promise; that, '
             'among the manifold changes of this world, our hearts may there be fixed where true '
-            'joys are to be found; through Jesus Christ, Thy Son, our Lord, Who liveth and '
-            'reigneth with Thee and the Holy Ghost, ever One God, world without end. Amen.'
+            'joys are to be found; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth'
+            ' with Thee and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Cantate',
             "ref": 'Psalm 98:1–2; Psalm 98:3',
             "text": (
-                'O SING unto the Lord a new song: for He hath done marvelous things. The Lord hath '
-                'made known His salvation: His righteousness hath he openly showed in the sight of '
-                'the heathen. Psalm. His right hand, and His holy arm: hath gotten Him the victory.'
+                'O SING unto the Lord a new song: for He hath done marvellous things. The Lord hath '
+                'made known His salvation: His righteousness hath he openly showed in the sight of the '
+                'heathen. Psalm. His right hand, and His holy arm: hath gotten Him the victory.'
             ),
         },
         "gradual": (
-            'HALLELUJAH. Hallelujah. V. The right hand of the Lord is exalted: The right hand of '
-            'the Lord doeth valiantly. Hallelujah. V. Christ, being raised from the dead, dieth '
-            'no more I death hath no more dominion over Him. Hallelujah.'
+            'HALLELUJAH. Hallelujah. V. The right hand of the Lord is exalted: the right hand of '
+            'the Lord doeth valiantly. Hallelujah. V. Christ, being raised from the dead, dieth no '
+            'more; death hath no more dominion over Him. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1159,9 +1155,9 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'HALLELUJAH. Hallelujah, V. God reigneth over the heathen: God sitteth upon the '
-            'throne of His holiness. Hallelujah. V. I will not leave you comfortless: I go, and I '
-            'will come again to you, and your heart shall rejoice. Hallelujah.'
+            'HALLELUJAH. Hallelujah. V. God reigneth over the heathen: God sitteth upon the throne '
+            'of His holiness. Hallelujah. V. I will not leave you comfortless: I go, and I will '
+            'come again to you, and your heart shall rejoice. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1186,8 +1182,8 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'HALLELUJAH. Hallelujah, V. God is gone up with a shout: the Lord with the sound of a '
-            'trumpet. Hallelujah. Thou hast ascended on high: Thou hast led captivity captive. '
+            'HALLELUJAH. Hallelujah. V. God is gone up with a shout: the Lord with the sound of a '
+            'trumpet. Hallelujah. V. Thou hast ascended on high: Thou hast led captivity captive. '
             'Hallelujah.'
         ),
         "source": (
@@ -1207,9 +1203,9 @@ ONE_YEAR_PROPERS = {
             "name": 'Spiritus Domini',
             "ref": 'Wisdom 1:7; Psalm 68:1',
             "text": (
-                'THE Spirit of the Lord filleth the world: Hallelujah. Let the righteous be glad: let '
+                'THE Spirit of the Lord filleth the world: Hallelujah. Let the righteous be glad; let '
                 'them rejoice before God: yea, let them exceedingly rejoice. Hallelujah. Hallelujah. '
-                'Psalm. Let God arise; let His enemies be scattered! let them also that hate Him flee '
+                'Psalm. Let God arise; let His enemies be scattered: let them also that hate Him flee '
                 'before Him.'
             ),
         },
@@ -1239,9 +1235,9 @@ ONE_YEAR_PROPERS = {
             "name": 'Benedicta Sit',
             "ref": 'Tobit 12:6; Psalm 8:1',
             "text": (
-                'BLESSED be the Holy Trinity, and the undivided Unity: Let us give glory to Him '
-                'because He hath shown His mercy to us. Psalm. O Lord, our Lord: how excellent is Thy '
-                'Name in all the earth.'
+                'BLESSED be the Holy Trinity, and the undivided Unity: Let us give glory to Him because'
+                ' He hath shown His mercy to us. Psalm. O Lord, our Lord: how excellent is Thy Name in '
+                'all the earth!'
             ),
         },
         "gradual": (
@@ -1259,11 +1255,11 @@ ONE_YEAR_PROPERS = {
     "trinity_1": {
         "collect": (
             'O God, the Strength of all them that put their trust in Thee: Mercifully accept our '
-            'prayers: and because through the weakness of our mortal nature we can do no good '
-            'thing without Thee, grant us the help of Thy grace, that in keeping Thy commandments '
-            'we may please Thee, both in will and deed; through Jesus Christ, Thy Son, our Lord, '
-            'Who liveth and reigneth with Thee and the Holy Ghost, ever One God, world without '
-            'end. Amen.'
+            'prayers; and because through the weakness of our mortal nature we can do no good thing'
+            ' without Thee, grant us the help of Thy grace, that in keeping Thy commandments we may'
+            ' please Thee, both in will and deed; through Jesus Christ, Thy Son, our Lord, Who '
+            'liveth and reigneth with Thee and the Holy Ghost, ever One God, world without end. '
+            'Amen.'
         ),
         "introit": {
             "name": 'Domine in Tua Misericordia',
@@ -1271,14 +1267,14 @@ ONE_YEAR_PROPERS = {
             "text": (
                 'O LORD, I have trusted in Thy mercy: my heart shall rejoice in Thy salvation. I will '
                 'sing unto the Lord: because He hath dealt bountifully with me. Psalm. How long wilt '
-                'Thou forget me, O Lord: how long wilt Thou hide Thy face from me?'
+                'Thou forget me, O Lord: How long wilt Thou hide Thy face from me?'
             ),
         },
         "gradual": (
-            'I SAID, Lord, be merciful unto me: heal my soul, for I have sinned against Thee. V. '
-            'Blessed is He that considereth the poor I the Lord will deliver him in time of '
-            'trouble. Hallelujah. Hallelujah. V. O Lord my God, in Thee do I put my trust: save '
-            'me from all them that persecute me, and deliver me. Hallelujah.'
+            'I SAID, Lord be merciful unto me: heal my soul, for I have sinned against Thee. V. '
+            'Blessed is He that considereth the poor: the Lord will deliver him in time of trouble.'
+            ' Hallelujah. Hallelujah. V. O Lord my God, in Thee do I put my trust: save me from all'
+            ' them that persecute me, and deliver me. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1296,16 +1292,16 @@ ONE_YEAR_PROPERS = {
             "name": 'Factus Est Dominus',
             "ref": 'Psalm 18:18–19; Psalm 18:1',
             "text": (
-                'THE Lord was my Stay: He brought me forth also into a large place. He delivered me: '
-                'because He delighted in me. Psalm. I will love Thee, Lord, my Strength: The Lord is '
+                'THE Lord was my stay: He brought me forth also into a large place. He delivered me: '
+                'because He delighted in me. Psalm. I will love Thee, O Lord, my Strength: the Lord is '
                 'my Rock, and my Fortress.'
             ),
         },
         "gradual": (
-            'IN my distress I cried unto the Lord: and He heard me. V. Deliver my soul, O Lord, '
-            'from lying lips: and from a deceitful tongue. Hallelujah. Hallelujah. V. I will '
-            'praise the Lord according to His righteousness: and will sing praise to the Name of '
-            'the Lord Most High. Hallelujah.'
+            'IN my distress I cried unto the Lord: and he heard me. V. Deliver my soul, O Lord, '
+            'from lying lips: and from a deceitful tongue. Hallelujah. Hallelujah. V. I will praise'
+            ' the Lord according to His righteousness: and will sing praise to the Name of the Lord'
+            ' Most High. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1315,25 +1311,25 @@ ONE_YEAR_PROPERS = {
     "trinity_3": {
         "collect": (
             'O God, the Protector of all that trust in Thee, without Whom nothing is strong, '
-            'nothing is holy: Increase and multiply upon us Thy mercy: that Thou being our Ruler '
-            'and Guide, we may so pass through things temporal, that we finally lose not the '
-            'things eternal; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth '
-            'with Thee and the Holy Ghost, ever One God, world without end. Amen.'
+            'nothing is holy: Increase and multiply upon us Thy mercy; that Thou being our Ruler '
+            'and Guide, we may so pass through things temporal, that we finally lose not the things'
+            ' eternal; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee '
+            'and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Respice in Me',
             "ref": 'Psalm 25:16, 18; Psalm 25:1',
             "text": (
-                'TURN Thee unto me, and have mercy upon me: for I am desolate and afflicted. Look '
-                'upon mine affliction and my pain: and forgive all my sins. Psalm. Unto Thee, O Lord, '
-                'do I lift up my soul: my God, I trust in Thee, let me not be ashamed.'
+                'TURN Thee unto me, and have mercy upon me: for I am desolate and afflicted. Look upon '
+                'mine affliction and my pain: and forgive all my sins. Psalm. Unto Thee, O Lord, do I '
+                'lift up my soul: O my God, I trust in Thee, let me not be ashamed.'
             ),
         },
         "gradual": (
-            'CAST thy burden upon the Lord: and He shall sustain thee. V. I will call upon God; '
-            'and the Lord shall save me: He hath delivered mv soul in peace. Hallelujah. '
-            'Hallelujah, V. I will love Thee, O Lord, my Strength: The Lord is my Rock, and my '
-            'Fortress, and my Deliverer. Hallelujah.'
+            'CAST thy burden upon the Lord: and He shall sustain thee. V. I will call upon God; and'
+            ' the Lord shall save me: He hath delivered my soul in peace. Hallelujah. Hallelujah. '
+            'V. I will love Thee, O Lord, my Strength: the Lord is my Rock, and my Fortress, and my'
+            ' Deliverer. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1342,26 +1338,26 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_4": {
         "collect": (
-            'Grant, Lord, we beseech Thee, that the course of this world may be so peaceably '
+            'Grant, O Lord, we beseech Thee, that the course of this world may be so peaceably '
             'ordered by Thy governance, that Thy Church may joyfully serve Thee in all godly '
-            'quietness; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with '
-            'Thee and the Holy Ghost, ever One God, world without end. Amen.'
+            'quietness; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee '
+            'and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Dominus Illuminatio',
             "ref": 'Psalm 27:1, 3; Psalm 27:4',
             "text": (
-                'THE Lord is my Light and my Salvation; whom shall I fear: The Lord is the strength '
-                'of my life; of whom shall I be afraid? When the wicked, even mine enemies and my '
-                'foes, came upon me: they stumbled and fell. Psalm. Though an host should encamp '
-                'against me: my heart shall not fear.'
+                'THE Lord is my Light and my Salvation; whom shall I fear: The Lord is the Strength of '
+                'my life; of whom shall I be afraid? When the wicked, even mine enemies and my foes, '
+                'came upon me: they stumbled and fell. Psalm. Though an host should encamp against me: '
+                'my heart shall not fear.'
             ),
         },
         "gradual": (
-            'FORGIVE our sins, O Lord: lest the heathen say, Where is their God? V. Help us, O '
-            'God of our salvation: and for the glory of Thy Name, deliver us. Hallelujah. '
-            'Hallelujah. V. The king shall joy in Thy strength, O Lord and in Thy salvation how '
-            'greatly shall he rejoice! Hallelujah.'
+            'FORGIVE our sins, O Lord: lest the heathen say, Where is their God? V. Help us, O God '
+            'of our salvation: and for the glory of Thy Name, deliver us. Hallelujah. Hallelujah. '
+            'V. The king shall joy in Thy strength, O Lord: and in Thy salvation how greatly shall '
+            'he rejoice! Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1380,14 +1376,14 @@ ONE_YEAR_PROPERS = {
             "name": 'Exaudi Domine',
             "ref": 'Psalm 27:7–8; Psalm 27:1',
             "text": (
-                'HEAR, O Lord, when I cry with my voice: Thou hast been my help. Leave me not, '
-                'neither forsake me: God of my Salvation. Psalm. The Lord is my Light and my '
-                'Salvation: whom shall I fear?'
+                'HEAR, O Lord, when I cry with my voice: Thou hast been my help. Leave me not, neither '
+                'forsake me: O God of my salvation. Psalm. The Lord is my Light and my salvation: whom '
+                'shall I fear?'
             ),
         },
         "gradual": (
-            'BEHOLD, God, our Shield: and look upon Thy servants. V. O Lord God of hosts: hear '
-            'our prayer. Hallelujah. Hallelujah. V. In Thee, O Lord, do I put my trust ; let me '
+            'BEHOLD, O God, our Shield: and look upon Thy servants. V. O Lord God of Hosts: hear '
+            'our prayer. Hallelujah. Hallelujah. V. In Thee, O Lord, do I put my trust; let me '
             'never be ashamed: deliver me in Thy righteousness. Hallelujah.'
         ),
         "source": (
@@ -1415,9 +1411,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'RETURN, O Lord, how long: and let it repent Thee concerning Thy servants. V. Lord, '
-            'Thou hast been our dwelling place: in all generations. Hallelujah. Hallelujah. V. O '
-            'clap your hands, all ye people: shout unto God with the voice of triumph. '
-            'Hallelujah.'
+            'Thou hast been our dwelling place in all generations. Hallelujah. Hallelujah. V. O '
+            'clap your hands, all ye people: shout unto God with the voice of triumph. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1442,9 +1437,9 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'COME, ye children, hearken unto me: I will teach you the fear of the Lord. V. Look '
-            'unto Him and be lightened: and let your faces not be ashamed. Hallelujah. '
-            'Hallelujah. V. Deliver me from mine enemies, my God: defend me from them that rise '
-            'up against me. Hallelujah.'
+            'unto Him and be lightened: and let your faces not be ashamed. Hallelujah. Hallelujah. '
+            'V. Deliver me from mine enemies, O my God: defend me from them that rise up against '
+            'me. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1470,9 +1465,9 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'BE Thou my strong Rock: for an house of defence to save me. V. In Thee, O Lord, do I '
-            'put my trust: let me never be ashamed. Hallelujah. Hallelujah. V. The Lord knoweth '
-            'the way of the righteous: but the way of the ungodly shall perish. Hallelujah.'
+            'BE Thou my strong rock: for an house of defense to save me. V. In Thee, O Lord, do I '
+            'put my trust: let me never be ashamed. Hallelujah. Hallelujah. V. The Lord knoweth the'
+            ' way of the righteous: but the way of the ungodly shall perish. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1481,7 +1476,7 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_9": {
         "collect": (
-            'Let Thy merciful ears, O Lord, be open to the prayers of Thy humble servants: and, '
+            'Let Thy merciful ears, O Lord, be open to the prayers of Thy humble servants; and, '
             'that they may obtain their petitions, make them to ask such things as shall please '
             'Thee; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and '
             'the Holy Ghost, ever One God, world without end. Amen.'
@@ -1497,8 +1492,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'OLORD, our Lord, how excellent is Thy Name in all the earth: Who hast set Thy glory '
-            'above the heavens. Hallelujah. Hallelujah. V. Give ear, O My people, to My law: '
-            'incline your ears to the words of My mouth. Hallelujah.'
+            'above the heavens. Hallelujah. Hallelujah. V. Give ear, O my people, to my law: '
+            'incline your ears to the words of my mouth. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1507,11 +1502,11 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_10": {
         "collect": (
-            'O God, Who declarest Thine almighty power chiefly in showing mercy and pity: '
-            'Mercifully grant unto us such a measure of Thy grace, that we, running the way of '
-            'Thy commandments, may obtain Thy gracious promises, and be made partakers of Thy '
-            'heavenly treasure; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth '
-            'with Thee and the Holy Ghost, ever One God, world without end. Amen.'
+            'O God, Who declarest Thine Almighty power chiefly in showing mercy and pity: '
+            'Mercifully grant unto us such a measure of Thy grace, that we, running the way of Thy '
+            'commandments, may obtain Thy gracious promises, and be made partakers of Thy heavenly '
+            'treasure; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee '
+            'and the Holy Ghost, ever One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Dum Clamarem',
@@ -1525,9 +1520,9 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'KEEP me, Lord, as the apple of the eye: hide me under the shadow of Thy wings. V. '
+            'KEEP me, O Lord, as the apple of the eye: hide me under the shadow of Thy wings. V. '
             'Let my sentence come forth from Thy presence: let Thine eyes behold the things that '
-            'are equal. Hallelujah. Hallelujah. V. Deliver me from mine enemies, my God I defend '
+            'are equal. Hallelujah. Hallelujah. V. Deliver me from mine enemies, O my God: defend '
             'me from them that rise up against me. Hallelujah.'
         ),
         "source": (
@@ -1555,10 +1550,9 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'MY heart trusteth in God, and I am helped: therefore my heart greatly rejoiceth; and '
-            'with my song will I praise Him. V. Unto Thee will I cry, O Lord my Rock: be not '
-            'silent to me. Hear the voice of my supplications. Hallelujah. Hallelujah. V. Praise '
-            'waiteth for Thee, God, in Sion: and unto Thee shall the vow be performed. '
-            'Hallelujah.'
+            'with my song will I praise Him. V. Unto Thee will I cry, O Lord my Rock: be not silent'
+            ' to me; hear the voice of my supplications. Hallelujah. Hallelujah. V. Praise waiteth '
+            'for Thee, O God, in Sion: and unto Thee shall the vow be performed. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1579,14 +1573,14 @@ ONE_YEAR_PROPERS = {
             "text": (
                 'MAKE haste, O God, to deliver me: make haste to help me, O Lord. Let them be ashamed '
                 'and confounded: that seek after my soul. Psalm. Let them be turned backward, and put '
-                'to confusion that desire my hurt.'
+                'to confusion: that desire my hurt.'
             ),
         },
         "gradual": (
-            'I WILL bless the Lord at all times: His praise shall continually be in my mouth. V. '
-            'My soul shall make her boast in the Lord I the humble shall hear thereof and be '
-            'glad. Hallelujah. Hallelujah. V. Sing aloud unto God our Strength: make a joyful '
-            'noise unto the God of Jacob. Hallelujah.'
+            'I WILL bless the Lord at all times: His praise shall continually be in my mouth. V. My'
+            ' soul shall make her boast in the Lord: the humble shall hear thereof and be glad. '
+            'Hallelujah. Hallelujah. V. Sing aloud unto God our Strength: make a joyful noise unto '
+            'the God of Jacob. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1605,14 +1599,14 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 74:20, 19, 23; Psalm 74:1',
             "text": (
                 'HAVE respect, O Lord, unto Thy covenant: O let not the oppressed return ashamed. '
-                'Arise, O God, plead Thine own cause: And forget not the voice of Thine enemies. '
-                'Psalm. O God, why hast Thou cast us off forever I why doth Thine anger smoke against '
-                'the sheep of Thy pasture?'
+                'Arise, O God, plead Thine own cause: and forget not the voice of Thine enemies. Psalm.'
+                ' O God, why hast Thou cast us off forever: Why doth Thine anger smoke against the '
+                'sheep of Thy pasture?'
             ),
         },
         "gradual": (
-            'HAVE respect, O Lord, unto Thy covenant: O let not the oppressed return ashamed, V. '
-            'Arise, O God, plead Thine own cause: And forget not the voice of Thine enemies. '
+            'HAVE respect, O Lord, unto Thy covenant: O let not the oppressed return ashamed. V. '
+            'Arise, O God, plead Thine own cause: and forget not the voice of Thine enemies. '
             'Hallelujah. Hallelujah. V. O Lord God of my salvation: I have cried day and night '
             'before Thee. Hallelujah.'
         ),
@@ -1635,7 +1629,7 @@ ONE_YEAR_PROPERS = {
             "text": (
                 'BEHOLD, O God our Shield: and look upon the face of Thine Anointed; For a day in Thy '
                 'courts: is better than a thousand. Psalm. How amiable are Thy tabernacles, O Lord of '
-                'Hosts: My soul longeth, yea, even fainteth for the courts of the Lord.'
+                'Hosts: my soul longeth, yea, even fainteth for the courts of the Lord.'
             ),
         },
         "gradual": (
@@ -1650,7 +1644,7 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_15": {
         "collect": (
-            'O Lord, we beseech Thee, let Thy continual pity cleanse and defend Thy Church: and '
+            'O Lord, we beseech Thee, let Thy continual pity cleanse and defend Thy Church; and '
             'because it cannot continue in safety without Thy succor, preserve it evermore by Thy '
             'help and goodness; through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth '
             'with Thee and the Holy Ghost, ever One God, world without end. Amen.'
@@ -1659,9 +1653,9 @@ ONE_YEAR_PROPERS = {
             "name": 'Inclina Domine',
             "ref": 'Psalm 86:1–3; Psalm 86:6',
             "text": (
-                'BOW down Thine ear, O Lord, hear me: O Thou, my God, save Thy servant that trusteth '
-                'in Thee. Be merciful unto me, O Lord: for I cry unto Thee daily. Psalm. Rejoice the '
-                'soul of Thy servant: for unto Thee, Lord, do I lift up my soul.'
+                'BOW down Thine ear, O Lord, hear me: O Thou, my God, save Thy servant that trusteth in'
+                ' Thee. Be merciful to me, O Lord: for I cry unto Thee daily. Psalm. Rejoice the soul '
+                'of Thy servant: for unto Thee, O Lord, do I lift up my soul.'
             ),
         },
         "gradual": (
@@ -1692,10 +1686,10 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'THE heathen shall fear the Name of the Lord: and all the kings of the earth Thy '
-            'glory. V. When the Lord shall build up Zion: He shall appear in His glory. '
-            'Hallelujah. Hallelujah. V. O sing unto the Lord a new song: for He hath done '
-            'marvelous things. Hallelujah.'
+            'THE heathen shall fear the Name of the Lord: and all the kings of the earth Thy glory.'
+            ' V. When the Lord shall build up Zion: He shall appear in His glory. Hallelujah. '
+            'Hallelujah. V. O sing unto the Lord a new song: for He hath done marvellous things. '
+            'Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1721,7 +1715,7 @@ ONE_YEAR_PROPERS = {
         "gradual": (
             'BLESSED is the nation whose God is the Lord: and the people whom He hath chosen for '
             'His own inheritance. V. By the Word of the Lord were the heavens made: and all the '
-            'host of them by the breath of His month. Hallelujah. Hallelujah. V. I love the Lord: '
+            'host of them by the breath of His mouth. Hallelujah. Hallelujah. V. I love the Lord: '
             'because He hath heard my voice and my supplications. Hallelujah.'
         ),
         "source": (
@@ -1731,23 +1725,23 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_18": {
         "collect": (
-            'O God, forasmuch as without Thee we are not able to please Thee: Mercifully grant, '
+            'O GOD, forasmuch as without Thee we are not able to please Thee: Mercifully grant, '
             'that Thy Holy Spirit may in all things direct and rule our hearts; through Jesus '
-            'Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, '
-            'ever One God, world without end. Amen.'
+            'Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever '
+            'One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Da Pacem Domine',
             "ref": 'Psalm 122:6–7; Psalm 122:1',
             "text": (
-                'REWARD them that wait for Thee, O Lord let Thy prophets be found faithful. Hear the '
-                'prayer of Thy servants: and of Thy people Israel. Psalm. I was glad when they said '
-                'unto me: Let us go into the house of the Lord.'
+                'REWARD them that wait for Thee, O Lord: and let Thy prophets be found faithful. Hear '
+                'the prayer of Thy servants: and of Thy people Israel. Psalm. I was glad when they said'
+                ' unto me: Let us go into the house of the Lord.'
             ),
         },
         "gradual": (
             'I WAS glad when they said unto me: Let us go into the house of the Lord. V. Peace be '
-            'within thy walls: and prosperity within thy palaces. Hallelujah. Hallelujah. V. O '
+            'within Thy walls: and prosperity within Thy palaces. Hallelujah. Hallelujah. V. O '
             'praise the Lord, all ye nations: praise Him, all ye people. Hallelujah.'
         ),
         "source": (
@@ -1757,24 +1751,24 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_19": {
         "collect": (
-            'O Almighty and most Merciful God, of Thy bountiful goodness keep us, we beseech '
-            'Thee, from all things that may hurt us; that we, being ready, both in body and soul, '
-            'may cheerfully accomplish those things that Thou wouldest have done; through Jesus '
-            'Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, '
-            'ever One God, world without end. Amen.'
+            'O ALMIGHTY and most Merciful God, of Thy bountiful goodness keep us, we beseech Thee, '
+            'from all things that may hurt us; that we, being ready, both in body and soul, may '
+            'cheerfully accomplish those things that Thou wouldest have done; through Jesus Christ,'
+            ' Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever One '
+            'God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Salus Populi',
             "ref": 'Psalm 38:22–23; Psalm 38:1',
             "text": (
-                'SAY unto my soul, I am thy salvation: The righteous cry, and the Lord heareth. He '
+                'SAY unto my soul, I am thy salvation: the righteous cry, and the Lord heareth. He '
                 'delivereth them out of all their troubles: He is their God forever and ever. Psalm. '
                 'Give ear, O My people, to My law: incline your ears to the words of My mouth.'
             ),
         },
         "gradual": (
             'LET my prayer be set forth before Thee as incense: and the lifting up of my hands as '
-            'the evening sacrifice. Hallelujah. Hallelujah, V. The right hand of the Lord is '
+            'the evening sacrifice. Hallelujah. Hallelujah. V. The right hand of the Lord is '
             'exalted: the right hand of the Lord doeth valiantly. Hallelujah.'
         ),
         "source": (
@@ -1794,16 +1788,16 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 48:9; Psalm 48:1',
             "text": (
                 'THE Lord our God is righteous in all His works which He doeth: for we obeyed not His '
-                'voice. Give glory to Thy Name. O Lord: and deal with us according to the multitude '
-                'of Thy mercies. Psalm. Great is the Lord, and greatly to be praised: in the city of '
-                'our God, in the mountain of His holiness.'
+                'voice. Give glory to Thy Name, O Lord: and deal with us according to the multitude of '
+                'Thy mercies. Psalm. Great is the Lord, and greatly to be praised: in the city of our '
+                'God, in the mountain of His holiness.'
             ),
         },
         "gradual": (
-            'THE eyes of all wait upon Thee, O Lord: and Thou givest them their meat in due '
-            'season. V. Thou openest Thine hand: and satisfiest the desire of every living thing. '
-            'Hallelujah. Hallelujah. V. O give thanks unto the Lord; call upon His Name: make '
-            'known His deeds among the people. Hallelujah.'
+            'THE eyes of all wait upon Thee O Lord: and Thou givest them their meat in due season. '
+            'V. Thou openest Thine hand: and satisfiest the desire of every living thing. '
+            'Hallelujah. Hallelujah. V. O give thanks unto the Lord; call upon His Name: make known'
+            ' His deeds among the people. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1829,7 +1823,7 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'LORD, Thou hast been our dwelling place: in all generations. V. Before the mountains '
+            'LORD Thou hast been our dwelling place: in all generations. V. Before the mountains '
             'were brought forth or ever Thou hadst formed the earth and the world: even from '
             'everlasting to everlasting, Thou art God. Hallelujah. Hallelujah. V. They that trust '
             'in the Lord shall be as Mount Zion: which cannot be removed, but abideth forever. '
@@ -1842,10 +1836,10 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_22": {
         "collect": (
-            'O God, our Refuge and Strength, Who art the Author of all godliness: Be ready, we '
+            'O GOD, our Refuge and Strength, Who art the Author of all godliness: Be ready, we '
             'beseech Thee, to hear the devout prayers of Thy Church; and grant that those things '
-            'which we ask faithfully, we may obtain effectually; through Jesus Christ, Thy Son, '
-            'our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever One God, world '
+            'which we ask faithfully, we may obtain effectually; through Jesus Christ, Thy Son, our'
+            ' Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever One God, world '
             'without end. Amen.'
         ),
         "introit": {
@@ -1859,9 +1853,9 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'BEHOLD how good and how pleasant it is: for brethren to dwell together in unity! V. '
-            'The Lord commanded blessing: even life for evermore. Hallelujah. Hallelujah. V. '
-            'Praise the Lord, O my soul. While I live will I praise the Lord: I will sing praises '
-            'unto my God. Hallelujah.'
+            'The Lord commanded blessing: even life for evermore. Hallelujah. Hallelujah. V. Praise'
+            ' the Lord, O my soul, while I live will I praise the Lord: I will sing praises unto my'
+            ' God. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1889,8 +1883,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'THOU hast saved us from our enemies: and hast put them to shame that hated us. V. In '
-            'God we boast all the day long: and praise Thy Name forever. Hallelujah. Hallelujah. '
-            'V. Ye that fear the Lord, trust in the Lord: He is their Help and their Shield. '
+            'God we boast all the day long: and praise Thy Name forever. Hallelujah. Hallelujah. V.'
+            ' Ye that fear the Lord, trust in the Lord: He is their help and their shield. '
             'Hallelujah.'
         ),
         "source": (
@@ -1909,17 +1903,17 @@ ONE_YEAR_PROPERS = {
             "name": 'Dicit Dominus',
             "ref": 'Psalm 95:6–7; Psalm 95:1',
             "text": (
-                'O COME, let us worship and bow down I let us kneel before the Lord our Maker. For He '
-                'is our God: and we are the people of His pasture, and the sheep of His hand. Psalm. '
-                'O come, let us sing unto the Lord: let us make a joyful noise to the Rock of our '
+                'O COME, let us worship and bow down: let us kneel before the Lord our Maker. For He is'
+                ' our God: and we are the people of His pasture, and the sheep of His hand. Psalm. O '
+                'come, let us sing unto the Lord: let us make a joyful noise to the Rock of our '
                 'salvation.'
             ),
         },
         "gradual": (
-            'BLESSED is the man: that walketh not in the counsel of the ungodly. V. His delight '
-            'is in the law of the Lord: and in His law doth he meditate day and night. '
-            'Hallelujah. Hallelujah, V. He shall call upon Me and I will answer him: with long '
-            'life will I satisfy him and show him My salvation. Hallelujah.'
+            'BLESSED is the man: that walketh not in the counsel of the ungodly. V. His delight is '
+            'in the law of the Lord: and in His law doth he meditate day and night. Hallelujah. '
+            'Hallelujah. V. He shall call upon Me and I will answer him: with long life will I '
+            'satisfy him and show him My salvation. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1939,16 +1933,15 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 31:9–10; Psalm 31:1',
             "text": (
                 'HAVE mercy upon me, O Lord, for I am in trouble: deliver me from the hand of mine '
-                'enemies, and from them that persecute me. Let me not be ashamed, O Lord I for I have '
-                'called upon Thee. Psalm. In Thee, O Lord, do I put my trust: let me never be '
-                'ashamed.'
+                'enemies, and from them that persecute me. Let me not be ashamed, O Lord: for I have '
+                'called upon Thee. Psalm. In Thee, O Lord, do I put my trust: let me never be ashamed.'
             ),
         },
         "gradual": (
-            'I WILL say of the Lord, He is my Refuge and my Fortress: my God, in Him will I '
-            'trust, V. His truth: shall be thy shield and buckler. Hallelujah. Hallelujah. V. He '
-            'that dwelleth in the secret place of the Most High: shall abide under the shadow of '
-            'the Almighty. Hallelujah.'
+            'I WILL say of the Lord, He is my refuge and my fortress: my God, in Him will I trust. '
+            'V. His truth: shall be thy shield and buckler. Hallelujah. Hallelujah. V. He that '
+            'dwelleth in the secret place of the Most High: shall abide under the shadow of the '
+            'Almighty. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -1957,26 +1950,26 @@ ONE_YEAR_PROPERS = {
     },
     "trinity_26": {
         "collect": (
-            'God, so rule and govern our hearts and minds by Thy Holy Spirit, that being ever '
-            'mindful of the end of all things, and the day of Thy just judgment, we may be '
-            'stirred up to holiness of living here, and dwell with Thee forever hereafter; '
-            'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
-            'Holy Ghost, ever One God, world without end. Amen.'
+            'O God, so rule and govern our hearts and minds by Thy Holy Spirit, that being ever '
+            'mindful of the end of all things, and the day of Thy just judgment, we may be stirred '
+            'up to holiness of living here, and dwell with Thee forever hereafter; through Jesus '
+            'Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever '
+            'One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Ego Autem',
             "ref": 'Psalm 54:4–5; Psalm 54:1',
             "text": (
-                'SAVE me, O God, by Thy Name: and judge me by Thy strength. Hear my prayer, O God: '
-                'give ear to the words of my mouth. Psalm. He shall reward evil to mine enemies I cut '
-                'them off in Thy truth.'
+                'SAVE me, O God, by Thy Name: and judge me by Thy strength. Hear my prayer, O God: give'
+                ' ear to the words of my mouth. Psalm. He shall reward evil to mine enemies: cut them '
+                'off in Thy truth.'
             ),
         },
         "gradual": (
             'WHO shall ascend into the hill of the Lord: or who shall stand in His holy place? V. '
-            'He that hath clean hands and a pure heart: He shall receive the blessing from the '
+            'He that hath clean hands and a pure heart: he shall receive the blessing from the '
             'Lord. Hallelujah. Hallelujah. V. Fear not, for I have redeemed thee: I have called '
-            'thee by thy name; thou art Mine. Hallelujah.'
+            'thee by name; thou art Mine. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -2067,11 +2060,11 @@ ONE_YEAR_PROPERS = {
             ),
         },
         "gradual": (
-            'GREAT is the Lord, and greatly to be praised: in the city of our God, in the '
-            'mountain of His holiness. V. Walk about Zion; tell the towers thereof. Mark well her '
-            'bulwarks, consider her palaces: that ye may tell it to the generation following. '
-            'Hallelujah. Hallelujah. V. For this God is our God for ever and ever: He will be our '
-            'guide even unto death. Hallelujah.'
+            'GREAT is the Lord, and greatly to be praised: in the city of our God, in the mountain '
+            'of His holiness. V. Walk about Zion; tell the towers thereof; mark well her bulwarks, '
+            'consider her palaces: that ye may tell it to the generation following. Hallelujah. '
+            'Hallelujah. V. For this God is our God for ever and ever: He will be our guide even '
+            'unto death. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -2099,13 +2092,8 @@ ONE_YEAR_PROPERS = {
         },
         "gradual": (
             'O FEAR the Lord, ye His saints: for there is no want to them that fear Him. V. They '
-            'that seek the Lord ; shall not want any good thing. Hallelujah. Hallelujah. V. Come '
-            'unto Me, all ye that labor and are heavy laden: and I will give you rest. '
-            'Hallelujah. THE eyes of all wait upon Thee: and Thou givest them their meat in due '
-            'season. V. Thou openest Thine hand: and satisfiest the desire of every living thing. '
-            'Hallelujah. Hallelujah. V. Bless the Lord, O my soul, and all that is within me, '
-            'bless His holy Name: Bless the Lord, O my soul, and forget not all His benefits. '
-            'Hallelujah.'
+            'that seek the Lord: shall not want any good thing. Hallelujah. Hallelujah. V. Come '
+            'unto Me, all ye that labor and are heavy laden: and I will give you rest. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -2114,11 +2102,11 @@ ONE_YEAR_PROPERS = {
     },
     "st_michael": {
         "collect": (
-            'O Everlasting God, Who hast ordained and constituted the services of angels and men '
-            'in a wonderful order: Mercifully grant, that as Thy holy angels always do Thee '
-            'service in Heaven, so by Thy appointment they may succor and defend us on earth; '
-            'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
-            'Holy Ghost, ever One God, world without end. Amen.'
+            'O EVERLASTING God, Who hast ordained and constituted the services of angels and men in'
+            ' a wonderful order: Mercifully grant, that as Thy holy angels always do Thee service '
+            'in Heaven, so by Thy appointment they may succor and defend us on earth; through Jesus'
+            ' Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the Holy Ghost, ever'
+            ' One God, world without end. Amen.'
         ),
         "introit": {
             "name": 'Benedicite Dominum',
@@ -2126,17 +2114,17 @@ ONE_YEAR_PROPERS = {
             "text": (
                 'BLESS the Lord, ye His angels, that excel in strength: that do His commandments, '
                 'hearkening unto the voice of His word. Bless ye the Lord, all ye His hosts: ye '
-                'ministers of His that do His pleasure. Psalm. Bless the Lord, my soul I and all that '
+                'ministers of His that do His pleasure. Psalm. Bless the Lord, O my soul: and all that '
                 'is within me bless His holy Name.'
             ),
         },
         "gradual": (
             'BLESS the Lord, ye His angels, that excel in strength: that do His commandments, '
-            'hearkening unto the voice of His word. V. God hath given His angels charge over '
-            'thee: to keep thee in all thy ways. Hallelujah. Hallelujah. V. Bless the Lord, O my '
-            'soul: and all that is within me, bless His holy Name. Hallelujah. V. And one cried '
-            'unto another, and said: Holy, Holy, Holy, is the Lord of Hosts: the whole earth is '
-            'full of His glory. Hallelujah.'
+            'hearkening unto the voice of His word. V. God hath given His angels charge over thee: '
+            'to keep thee in all thy ways. Hallelujah. Hallelujah. V. Bless the Lord, O my soul: '
+            'and all that is within me, bless His holy Name. Hallelujah. V. And one cried unto '
+            'another, and said: Holy, holy, holy, is the Lord of Hosts: the whole earth is full of '
+            'His glory. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -2158,16 +2146,15 @@ ONE_YEAR_PROPERS = {
             "ref": 'Psalm 150:6, 2; Psalm 150:1',
             "text": (
                 'LET every thing that hath breath praise the Lord: Praise ye the Lord. Praise Him for '
-                'His mighty acts: praise Him according to His excellent greatness. Psalm. Praise ye '
-                'the Lord. Praise God in His sanctuary: praise Him in the firmament of His power.'
+                'His mighty acts: Praise Him according to His excellent greatness. Psalm. Praise ye the'
+                ' Lord; praise God in His sanctuary: Praise Him in the firmament of His power.'
             ),
         },
         "gradual": (
-            'THE eyes of all wait upon Thee: and Thou givest them their meat in due season. V. '
-            'Thou openest Thine hand: and satisfiest the desire of every living thing. '
-            'Hallelujah. Hallelujah. V. Bless the Lord, O my soul, and all that is within me, '
-            'bless His holy Name: Bless the Lord, O my soul, and forget not all His benefits. '
-            'Hallelujah. LESSONS. Deuteronomy 8:1-20. Isaiah 26:1-12. 1 Timothy 2:1-8'
+            'THE eyes of all wait upon Thee: and Thou givest them their meat in due season. V. Thou'
+            ' openest Thine hand: and satisfiest the desire of every living thing. Hallelujah. '
+            'Hallelujah. V. Bless the Lord, O my soul, and all that is within me, bless His holy '
+            'Name: Bless the Lord, O my soul, and forget not all His benefits. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
