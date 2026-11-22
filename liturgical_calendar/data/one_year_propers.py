@@ -2005,8 +2005,8 @@ ONE_YEAR_PROPERS = {
         "gradual": (
             'I AM the Light of the world: he that followeth Me shall not walk in darkness, but '
             'shall have the light of life. V. The Spirit and the bride say, Come, and let him '
-            'that heareth say, Come land let him that is athirst come. Hallelujah. Hallelujah. V. '
-            'Even so, come: Lord Jesus. Hallelujah.'
+            'that heareth say Come: and let him that is athirst come. Hallelujah. Hallelujah. V. '
+            'Even so, come, Lord Jesus. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -2035,8 +2035,8 @@ ONE_YEAR_PROPERS = {
         "gradual": (
             'I AM the Light of the world: he that followeth Me shall not walk in darkness, but '
             'shall have the light of life. V. The Spirit and the bride say, Come, and let him '
-            'that heareth say, Come land let him that is athirst come. Hallelujah. Hallelujah. V. '
-            'Even so, come: Lord Jesus. Hallelujah.'
+            'that heareth say Come: and let him that is athirst come. Hallelujah. Hallelujah. V. '
+            'Even so, come, Lord Jesus. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
