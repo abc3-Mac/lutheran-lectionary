@@ -249,3 +249,82 @@ def test_thanksgiving_eve_points_to_the_day_and_friday_returns_to_the_week():
     fri = cal.lookup(date(2026, 11, 27), "three_year")
     assert fri["is_weekday"] and fri["name"] == "Last Sunday of the Church Year"
     assert fri["eve_of"] is None
+
+
+def test_weekdays_with_their_own_propers_are_their_own_days():
+    """LSB Propers of the Day: Holy Week, Easter and Pentecost weekdays."""
+    cal = LiturgicalCalendar(2026)        # Easter 28 March 2027, Pentecost 16 May
+    expected = {
+        date(2026, 12, 24): "The Nativity of Our Lord (Christmas Eve)",
+        date(2027, 3, 22): "Monday in Holy Week",
+        date(2027, 3, 23): "Tuesday in Holy Week",
+        date(2027, 3, 24): "Wednesday in Holy Week",
+        date(2027, 3, 27): "Holy Saturday",
+        date(2027, 3, 29): "Easter Monday",
+        date(2027, 3, 30): "Easter Tuesday",
+        date(2027, 3, 31): "Easter Wednesday",
+        date(2027, 5, 15): "Pentecost Eve",
+        date(2027, 5, 17): "Pentecost Monday",
+        date(2027, 5, 18): "Pentecost Tuesday",
+    }
+    for lectionary in ("three_year", "one_year"):
+        for d, name in expected.items():
+            day = cal.lookup(d, lectionary)
+            assert (day["name"], day["is_weekday"]) == (name, False), (d, lectionary)
+            assert day["readings"]
+        # none of them governs the days after it
+        assert cal.lookup(date(2027, 4, 1), lectionary)["slot"] == "easter"
+        assert cal.lookup(date(2027, 5, 19), lectionary)["slot"] == "pentecost"
+        # listed with the minor feasts, never without, never on the wheel
+        slots = {e["slot"] for e in cal.all_events(False, lectionary)}
+        assert "easter_monday" not in slots and "holy_saturday" not in slots
+        slots = {e["slot"] for e in cal.all_events(True, lectionary)}
+        assert {"monday_holy_week", "holy_saturday", "easter_wednesday", "pentecost_tuesday"} <= slots
+
+
+def test_three_year_holy_week_weekdays_match_the_book():
+    cal = LiturgicalCalendar(2026)
+    assert cal.lookup(date(2027, 3, 22))["readings"] == {
+        "ot": "Isaiah 50:5-10", "ps": "Psalm 36:5-10 (antiphon: v. 9)",
+        "ep": "Hebrews 9:11-15", "go": "Matthew 26:1-27:66 | John 12:1-23"}
+    assert cal.lookup(date(2027, 3, 24))["readings"]["go"] == "Luke 22:1-23:56 | John 13:16-38"
+
+
+def test_other_services_of_the_great_feasts():
+    cal = LiturgicalCalendar(2026)
+    names = lambda d, l="three_year": [o["name"] for o in cal.lookup(d, l)["other_services"]]
+    assert names(date(2026, 12, 25)) == ["Christmas Midnight", "Christmas Dawn"]
+    assert names(date(2027, 3, 28)) == ["Easter Sunrise", "Easter Evening"]
+    assert names(date(2027, 5, 16)) == ["Pentecost Evening"]
+    assert names(date(2027, 3, 29)) == []
+    # one-year Christmas Dawn has its own Old Testament reading
+    dawn = cal.lookup(date(2026, 12, 25), "one_year")["other_services"][1]
+    assert dawn["readings"]["ot"] == "Micah 5:2-5a"
+    # December 24 on a Sunday (2028) is Advent 4, with Christmas Eve beside it
+    cal28 = LiturgicalCalendar(2028)
+    day = cal28.lookup(date(2028, 12, 24))
+    assert day["slot"] == "advent_4" and [o["name"] for o in day["other_services"]] == ["Christmas Eve"]
+
+
+def test_ten_more_feasts_fall_on_their_dates():
+    cal = LiturgicalCalendar(2026)
+    expected = {
+        date(2026, 12, 26): "St. Stephen, Martyr",
+        date(2026, 12, 27): "St. John, Apostle and Evangelist",
+        date(2027, 1, 24): "St. Timothy, Pastor and Confessor",
+        date(2027, 1, 26): "St. Titus, Pastor and Confessor",
+        date(2027, 3, 19): "St. Joseph, Guardian of Jesus",
+        date(2027, 8, 15): "St. Mary, Mother of Our Lord",
+        date(2027, 8, 29): "The Martyrdom of St. John the Baptist",
+        date(2027, 9, 14): "Holy Cross Day",
+        date(2027, 10, 23): "St. James of Jerusalem, Brother of Jesus and Martyr",
+    }
+    for lectionary in ("three_year", "one_year"):
+        for d, name in expected.items():
+            mf = cal.lookup(d, lectionary)["minor_feast"]
+            assert mf and mf["name"] == name and mf["readings"], (d, lectionary)
+    # The Visitation: May 31 in the three-year lectionary, July 2 in the one-year
+    assert cal.lookup(date(2027, 5, 31), "three_year")["minor_feast"]["name"] == "The Visitation"
+    assert cal.lookup(date(2027, 7, 2), "three_year")["minor_feast"] is None
+    assert cal.lookup(date(2027, 7, 2), "one_year")["minor_feast"]["name"] == "The Visitation"
+    assert cal.lookup(date(2027, 5, 31), "one_year")["minor_feast"] is None

@@ -606,6 +606,44 @@ THREE_YEAR_SLOTS = {
             go="Luke 22:1-23:56 | Luke 23:1-56 | John 12:20-43",
         ),
     },
+    # Monday-Wednesday in Holy Week: one set for Series A, B and C
+    # (LSB Propers of the Day; the Passion or the Gospel from St. John).
+    "monday_holy_week": {
+        "name": "Monday in Holy Week",
+        "season": "Holy Week",
+        "color": "Scarlet",
+        "feast": True,
+        "all": _r(
+            ot="Isaiah 50:5-10",
+            ps="Psalm 36:5-10 (antiphon: v. 9)",
+            ep="Hebrews 9:11-15",
+            go="Matthew 26:1-27:66 | John 12:1-23",
+        ),
+    },
+    "tuesday_holy_week": {
+        "name": "Tuesday in Holy Week",
+        "season": "Holy Week",
+        "color": "Scarlet",
+        "feast": True,
+        "all": _r(
+            ot="Isaiah 49:1-7",
+            ps="Psalm 71:1-14 (antiphon: v. 12)",
+            ep="1 Corinthians 1:18-25 (26-31)",
+            go="Mark 14:1-15:47 | John 12:23-50",
+        ),
+    },
+    "wednesday_holy_week": {
+        "name": "Wednesday in Holy Week",
+        "season": "Holy Week",
+        "color": "Scarlet",
+        "feast": True,
+        "all": _r(
+            ot="Isaiah 62:11-63:7",
+            ps="Psalm 70 (antiphon: v. 5)",
+            ep="Romans 5:6-11",
+            go="Luke 22:1-23:56 | John 13:16-38",
+        ),
+    },
     "holy_saturday": {
         "name": "Holy Saturday",
         "season": "Holy Week",

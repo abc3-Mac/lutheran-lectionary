@@ -592,3 +592,34 @@ SANCTORAL_SLOTS = {
         ),
     },
 }
+
+
+# ---------------------------------------------------------------------------
+# Ten further fixed-date feasts of the LSB calendar. Readings only, as printed
+# in LSB Propers of the Day ("Feasts and Festivals"); the entries are shared
+# with the one-year table so the two cannot drift apart. The Visitation falls
+# on May 31 in the three-year lectionary and on July 2 in the one-year.
+# ---------------------------------------------------------------------------
+def _add_lsb_feasts():
+    from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+    for key, date_str, one_year_date_str in (
+        ("st_stephen",             "Dec 26", None),
+        ("st_john_apostle",        "Dec 27", None),
+        ("st_timothy",             "Jan 24", None),
+        ("st_titus",               "Jan 26", None),
+        ("st_joseph",              "Mar 19", None),
+        ("visitation",             "May 31", "Jul 2"),
+        ("mary_mother_lord",       "Aug 15", None),
+        ("martyrdom_john_baptist", "Aug 29", None),
+        ("holy_cross",             "Sep 14", None),
+        ("st_james_jerusalem",     "Oct 23", None),
+    ):
+        entry = dict(ONE_YEAR_SLOTS[key])
+        entry["date_str"] = date_str
+        if one_year_date_str:
+            entry["date_str_one_year"] = one_year_date_str
+        entry["source"] = "Lutheran Service Book: Propers of the Day (readings)"
+        SANCTORAL_SLOTS[key] = entry
+
+
+_add_lsb_feasts()

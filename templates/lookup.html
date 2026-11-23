@@ -53,6 +53,21 @@
     </div>
   </div>
 
+  {% for svc in result.other_services %}
+  <div class="minor-feast-banner">
+    <span class="minor-feast-label">Also appointed:</span>
+    <span class="minor-feast-name {{ result.color_class }}">{{ svc.name }}</span>
+    <span class="minor-feast-readings">
+      —
+      {% for r in svc.readings_parsed %}
+      <a href="{{ r.url }}" class="reading-ref scripture-link"
+         onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+         title="Click to preview {{ r.ref }}">{{ r.ref }}</a>{% if not loop.last %} <span class="reading-or">·</span> {% endif %}
+      {% endfor %}
+    </span>
+  </div>
+  {% endfor %}
+
   {% if result.minor_feast %}
   <div class="minor-feast-banner">
     <span class="minor-feast-label">Also today:</span>
