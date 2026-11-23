@@ -661,9 +661,13 @@ def _propers_sections(advent_year: int):
     if festivals:
         festivals.sort(key=lambda e: (e["date"].month, e["date"].day))
         sections.append({"season": "Festivals", "events": festivals})
+    return sections
 
-    # Occasions without a date of their own (LSB Propers of the Day,
-    # "Occasions"): readings and Hymn of the Day, the same in both lectionaries.
+
+def _occasions_section():
+    """Occasions without a date of their own (LSB Propers of the Day,
+    "Occasions"): readings and Hymn of the Day, the same in both lectionaries."""
+    from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
     occasions = []
     for slot in OCCASION_SLOTS:
         sd = ONE_YEAR_SLOTS.get(slot)
@@ -679,9 +683,7 @@ def _propers_sections(advent_year: int):
             "readings_parsed": parse_readings(sd.get("readings")),
             "hymn_of_the_day": hymn_of_the_day(slot, "one_year"),
         })
-    if occasions:
-        sections.append({"season": "Occasions", "events": occasions})
-    return sections
+    return {"season": "Occasions", "events": occasions}
 
 
 @app.route("/propers")
@@ -692,7 +694,7 @@ def propers():
     except ValueError:
         advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
-    sections = _propers_sections(advent_year)
+    sections = _propers_sections(advent_year) + [_occasions_section()]
 
     return render_template(
         "propers.html",
@@ -713,7 +715,7 @@ def propers_pdf():
     except ValueError:
         advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
-    sections = _propers_sections(advent_year)
+    sections = _propers_sections(advent_year) + [_occasions_section()]
 
     from pdf_gen import build_propers_pdf
     violet = request.args.get("historic", "1") != "0"   # Advent color pref
