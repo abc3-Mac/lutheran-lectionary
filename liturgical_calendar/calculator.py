@@ -220,6 +220,8 @@ class LiturgicalCalendar:
         if d == self.ascension:         return "ascension"
         if d == self.reformation_day:   return "reformation"
         if d == self.all_saints_day:    return "all_saints"
+        # Thanksgiving is observed on the Thursday itself; no Sunday slot.
+        if d == self.thanksgiving:      return "thanksgiving"
 
         # Sundays
         if d.isoweekday() != 7:
@@ -275,8 +277,6 @@ class LiturgicalCalendar:
         michael = _nearest_sunday(date(self.civil_year, 9, 29))
         if d == michael:                return "st_michael"
 
-        # Thanksgiving (observed on the Thursday itself; no Sunday slot)
-        # — handled separately in calendar output
 
         # Season after Pentecost
         if d in self._pentecost_sundays:
@@ -544,6 +544,9 @@ class LiturgicalCalendar:
             prev_slot = cal.date_to_slot(prev, lectionary=lectionary)
             # Reformation / All Saints are single-day festivals: skip them on a
             # weekday, and on a Sunday let the displaced Proper govern the week.
+            # Thanksgiving is likewise a single day and never governs a week.
+            if prev_slot == "thanksgiving":
+                continue
             if prev_slot in ("reformation", "all_saints"):
                 if prev.isoweekday() != 7:
                     continue
@@ -567,12 +570,22 @@ class LiturgicalCalendar:
             governing["season"] = "Trinity"
         governing["season"] = cal._one_year_season(governing["season"], d, lectionary)
 
+        # The Day of Thanksgiving has no propers of its own for the evening
+        # before; the Day's propers serve (LSB Propers of the Day, p. 438).
+        eve_of = None
+        if d + timedelta(1) == cal.thanksgiving:
+            t_info = slot_info("thanksgiving", cal.series, cal.thanksgiving)
+            if t_info:
+                eve_of = {"date": cal.thanksgiving, "slot": "thanksgiving",
+                          "label": "Thanksgiving Eve", **t_info}
+
         return {
             "date":          d,
             "slot":          gov_slot,
             "church_year":   f"{ay}–{ay+1}",
             "series":        cal.series,
             "is_weekday":    True,
+            "eve_of":        eve_of,
             "governing_date": gov_date,
             "minor_feast":   minor_feast_info,
             **{k: v for k, v in governing.items() if k not in ("date", "slot")},

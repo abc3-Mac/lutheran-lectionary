@@ -1676,13 +1676,20 @@ THREE_YEAR_SLOTS = {
         "minor": True,
         "readings": None,
     },
+    # LSB Propers of the Day, pp. 438-439 (Occasions): one set of propers,
+    # indexed under both the three-year and the one-year lectionary.
     "thanksgiving": {
         "name": "Day of Thanksgiving",
         "season": "Ordinary Time",
         "color": "White",
         "feast": True,
         "minor": True,
-        "readings": None,
+        "all": _r(
+            ot="Deuteronomy 8:1-10",
+            ps="Psalm 67 (antiphon: v. 7)",
+            ep="Philippians 4:6-20 | 1 Timothy 2:1-4",
+            go="Luke 17:11-19",
+        ),
     },
 }
 

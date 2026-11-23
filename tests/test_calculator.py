@@ -223,3 +223,29 @@ def test_one_year_trinity_season_covers_trinity_and_last_sunday():
         assert cal.lookup(d, "one_year")["season"] == "Trinity", d
     # The three-year series keeps "Ordinary Time".
     assert cal.lookup(date(2026, 11, 22), "three_year")["season"] == "Ordinary Time"
+
+
+def test_thanksgiving_has_its_own_day_and_readings_in_both_lectionaries():
+    """LSB Propers of the Day, pp. 438-439: one set of propers for both series."""
+    cal = LiturgicalCalendar(2025)
+    for lectionary in ("three_year", "one_year"):
+        day = cal.lookup(date(2026, 11, 26), lectionary)
+        assert day["name"] == "Day of Thanksgiving"
+        assert day["is_weekday"] is False
+        assert day["readings"] == {
+            "ot": "Deuteronomy 8:1-10",
+            "ps": "Psalm 67 (antiphon: v. 7)",
+            "ep": "Philippians 4:6-20 | 1 Timothy 2:1-4",
+            "go": "Luke 17:11-19",
+        }
+        ev = [e for e in cal.all_events(True, lectionary) if e["slot"] == "thanksgiving"]
+        assert ev and ev[0]["readings"]["go"] == "Luke 17:11-19"
+
+
+def test_thanksgiving_eve_points_to_the_day_and_friday_returns_to_the_week():
+    cal = LiturgicalCalendar(2025)
+    eve = cal.lookup(date(2026, 11, 25), "three_year")
+    assert eve["is_weekday"] and eve["eve_of"]["name"] == "Day of Thanksgiving"
+    fri = cal.lookup(date(2026, 11, 27), "three_year")
+    assert fri["is_weekday"] and fri["name"] == "Last Sunday of the Church Year"
+    assert fri["eve_of"] is None

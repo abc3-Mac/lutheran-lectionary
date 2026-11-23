@@ -241,6 +241,7 @@ def _lookup_result(d: date, lectionary: str):
         "sun_name":        sun_name,
         "governing_date":  gov_date,
         "is_weekday":      is_weekday,
+        "eve_of":          info.get("eve_of"),
         "season":          info.get("season", ""),
         "color":           info.get("color", ""),
         "color_class":     season_color_class(info.get("color", "")),
