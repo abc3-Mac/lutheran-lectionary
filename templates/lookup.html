@@ -38,6 +38,9 @@
     {% if result.is_weekday %}
     <div class="result-week-note">Readings appointed for {{ result.governing_date.strftime('%A, %B %-d') }}</div>
     {% endif %}
+    {% if result.eve_of %}
+    <div class="result-week-note">{{ result.eve_of.label }}: the propers of the <a href="/day/{{ result.eve_of.date.isoformat() }}?lectionary={{ lectionary }}" style="color:inherit;text-decoration:underline;">{{ result.eve_of.name }}</a> serve this evening.</div>
+    {% endif %}
     <div class="result-meta">
       <span>{{ result.season }}</span>
       {% if lectionary == 'three_year' and not result.is_weekday %}
@@ -49,6 +52,21 @@
       {% endif %}
     </div>
   </div>
+
+  {% for svc in result.other_services %}
+  <div class="minor-feast-banner">
+    <span class="minor-feast-label">Also appointed:</span>
+    <span class="minor-feast-name {{ result.color_class }}">{{ svc.name }}</span>
+    <span class="minor-feast-readings">
+      —
+      {% for r in svc.readings_parsed %}
+      <a href="{{ r.url }}" class="reading-ref scripture-link"
+         onclick="showScripture(event, '{{ r.ref|e }}', '{{ r.url|e }}'); return false;"
+         title="Click to preview {{ r.ref }}">{{ r.ref }}</a>{% if not loop.last %} <span class="reading-or">·</span> {% endif %}
+      {% endfor %}
+    </span>
+  </div>
+  {% endfor %}
 
   {% if result.minor_feast %}
   <div class="minor-feast-banner">

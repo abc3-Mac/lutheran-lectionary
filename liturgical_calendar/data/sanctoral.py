@@ -44,7 +44,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -76,7 +76,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -126,7 +126,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -184,7 +184,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -233,15 +233,15 @@ SANCTORAL_SLOTS = {
             ' ever One God, world without end. Amen.'
         ),
         "introit_text": (
-            'GO ye into all the world: and preach the gospel to every creature. Their sound went '
-            'forth through all the earth: and their words to the end of the world. Psalm. Thy '
-            'Word is a lamp unto my feet: and a light unto my path.'
+            'THEIR sound went forth through all the earth: and their words to the end of the world. '
+            'Thy Word is a lamp unto my feet: and a light unto my path. Psalm. Go ye into all the '
+            'world: and preach the Gospel to every creature.'
         ),
         "gradual": (
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -273,7 +273,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -313,7 +313,7 @@ SANCTORAL_SLOTS = {
             'praises unto Thy Name, O Most High.'
         ),
         "gradual": (
-            'AND thou, child, shalt be called the prophet of the Highest: for thou shalt go '
+            'AND thou child shalt be called the prophet of the Highest: for thou shalt go '
             'before the face of the Lord to prepare His ways. V. John bare witness of Him, and '
             'cried saying, This was He of Whom I spake, He that cometh after me is preferred '
             'before me: for He was before me. Hallelujah. Hallelujah. V. Behold the Lamb of God: '
@@ -350,7 +350,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -391,7 +391,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -423,7 +423,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -454,7 +454,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -479,16 +479,16 @@ SANCTORAL_SLOTS = {
         "introit_text": (
             'BLESS the Lord, ye His angels, that excel in strength: that do His commandments, '
             'hearkening unto the voice of His word. Bless ye the Lord, all ye His hosts: ye '
-            'ministers of His that do His pleasure. Psalm. Bless the Lord, my soul I and all that '
+            'ministers of His that do His pleasure. Psalm. Bless the Lord, O my soul: and all that '
             'is within me bless His holy Name.'
         ),
         "gradual": (
             'BLESS the Lord, ye His angels, that excel in strength: that do His commandments, '
-            'hearkening unto the voice of His word. V. God hath given His angels charge over '
-            'thee: to keep thee in all thy ways. Hallelujah. Hallelujah. V. Bless the Lord, O my '
-            'soul: and all that is within me, bless His holy Name. Hallelujah. V. And one cried '
-            'unto another, and said: Holy, Holy, Holy, is the Lord of Hosts: the whole earth is '
-            'full of His glory. Hallelujah.'
+            'hearkening unto the voice of His word. V. God hath given His angels charge over thee: '
+            'to keep thee in all thy ways. Hallelujah. Hallelujah. V. Bless the Lord, O my soul: '
+            'and all that is within me, bless His holy Name. Hallelujah. V. And one cried unto '
+            'another, and said: Holy, holy, holy, is the Lord of Hosts: the whole earth is full of '
+            'His glory. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -511,15 +511,15 @@ SANCTORAL_SLOTS = {
             ' ever One God, world without end. Amen.'
         ),
         "introit_text": (
-            'GO ye into all the world: and preach the gospel to every creature. Their sound went '
-            'forth through all the earth: and their words to the end of the world. Psalm. Thy '
-            'Word is a lamp unto my feet: and a light unto my path.'
+            'THEIR sound went forth through all the earth: and their words to the end of the world. '
+            'Thy Word is a lamp unto my feet: and a light unto my path. Psalm. Go ye into all the '
+            'world: and preach the Gospel to every creature.'
         ),
         "gradual": (
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -551,7 +551,7 @@ SANCTORAL_SLOTS = {
             'THEIR sound went forth through all the earth: and their words to the end of the '
             'world. V. The heavens declare the glory of God: and the firmament showeth His '
             'handiwork. Hallelujah. Hallelujah. V. I have chosen you out of the world: that ye '
-            'should go and bring forth fruit, and that your fruit should remain. Hallelujah.'
+            'should go and bring forth fruit, and your fruit should remain. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -582,9 +582,8 @@ SANCTORAL_SLOTS = {
         ),
         "gradual": (
             'O FEAR the Lord, ye His saints: for there is no want to them that fear Him. V. They '
-            'that seek the Lord ; shall not want any good thing. Hallelujah. Hallelujah. V. Come '
-            'unto Me, all ye that labor and are heavy laden: and I will give you rest. '
-            'Hallelujah.'
+            'that seek the Lord: shall not want any good thing. Hallelujah. Hallelujah. V. Come '
+            'unto Me, all ye that labor and are heavy laden: and I will give you rest. Hallelujah.'
         ),
         "source": (
             'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, '
@@ -592,3 +591,97 @@ SANCTORAL_SLOTS = {
         ),
     },
 }
+
+
+# ---------------------------------------------------------------------------
+# Ten further fixed-date feasts of the LSB calendar. Readings only, as printed
+# in LSB Propers of the Day ("Feasts and Festivals"); the entries are shared
+# with the one-year table so the two cannot drift apart. The Visitation falls
+# on May 31 in the three-year lectionary and on July 2 in the one-year.
+# ---------------------------------------------------------------------------
+# Introits, collects and graduals of the Common Service Book (1917) for the three of
+# these feasts it provides for, read against the scan (commonserviceboo1917phil,
+# pp. 153-158 = leaves n156-n161) on 23 Nov 2026. St. John takes the Introit and
+# Gradual of Apostles' Days and his proper Collect (p. 154); the Visitation takes
+# the Introit of the Annunciation and has no Gradual. The print omits "Ps." before
+# the psalm verse of St. Stephen's Introit; "Psalm." is kept here as elsewhere.
+def _csb_1917_propers():
+    andrew = SANCTORAL_SLOTS["st_andrew"]
+    return {
+        "st_stephen": {
+            "introit_text": (
+                'PRINCES also did sit and speak against me: The wicked have waited for me to destroy '
+                'me. Help me, O Lord God: for I have kept Thy testimonies. Psalm. Blessed are the '
+                'undefiled in the way: who walk in the law of the Lord.'
+            ),
+            "collect": (
+                'GRANT, O Lord, that, in all our sufferings here upon earth for the testimony of Thy '
+                'truth, we may steadfastly look up to heaven, and by faith behold the glory that shall '
+                'be revealed; and, being filled with the Holy Ghost, may learn to love and bless our '
+                'persecutors by the example of Thy first Martyr, Saint Stephen, who prayed for his '
+                'murderers to Thee, O Blessed Jesus, Who standest at the right hand of God to succor '
+                'all those that suffer for Thee, our only Mediator and Advocate, Who livest and '
+                'reignest with the Father and the Holy Ghost, ever One God, world without end. Amen.'
+            ),
+            "gradual": (
+                'BLESSED are they who are persecuted for righteousness’ sake: for their’s is the '
+                'Kingdom of Heaven. V. Be thou faithful unto death: and I will give thee the crown of '
+                'life. Hallelujah. Hallelujah. V. I see the heavens opened: and Jesus standing at the '
+                'Right Hand of God. Hallelujah.'
+            ),
+            "source": 'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, Epistles, Graduals and Gospels — St. Stephen, Martyr',
+        },
+        "st_john_apostle": {
+            "introit_text": andrew["introit_text"],
+            "collect": (
+                'MERCIFUL Lord, we beseech Thee to cast the bright beams of Thy light upon Thy Church, '
+                'that it being instructed by the doctrine of the blessed Apostles, may so walk in the '
+                'light of Thy truth, that it may at length attain to the light of everlasting life; '
+                'through Jesus Christ, Thy Son, our Lord, Who liveth and reigneth with Thee and the '
+                'Holy Ghost, ever One God, world without end. Amen.'
+            ),
+            "gradual": andrew["gradual"],
+            "source": 'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, Epistles, Graduals and Gospels — St. John, Apostle, Evangelist',
+        },
+        "visitation": {
+            "introit_text": SANCTORAL_SLOTS["annunciation"]["introit_text"],
+            "collect": (
+                'ALMIGHTY God, Who hast dealt wonderfully with Thy handmaiden the Virgin Mary, and hast '
+                'chosen her to be the mother of Thy Son, and hast graciously made known that Thou '
+                'regardest the poor and the lowly and the despised: Grant us grace in all humility and '
+                'meekness to receive Thy Word with hearty faith, and so to be made one with Thy dear '
+                'Son; Who liveth and reigneth with Thee and the Holy Ghost, ever One God, world without '
+                'end. Amen.'
+            ),
+            "source": 'Common Service Book of the Lutheran Church (Philadelphia, 1917), Introits, Collects, Epistles, Graduals and Gospels — The Visitation',
+        },
+    }
+
+
+_CSB_1917_PROPERS = _csb_1917_propers()
+
+
+def _add_lsb_feasts():
+    from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+    for key, date_str, one_year_date_str in (
+        ("st_stephen",             "Dec 26", None),
+        ("st_john_apostle",        "Dec 27", None),
+        ("st_timothy",             "Jan 24", None),
+        ("st_titus",               "Jan 26", None),
+        ("st_joseph",              "Mar 19", None),
+        ("visitation",             "May 31", "Jul 2"),
+        ("mary_mother_lord",       "Aug 15", None),
+        ("martyrdom_john_baptist", "Aug 29", None),
+        ("holy_cross",             "Sep 14", None),
+        ("st_james_jerusalem",     "Oct 23", None),
+    ):
+        entry = dict(ONE_YEAR_SLOTS[key])
+        entry["date_str"] = date_str
+        if one_year_date_str:
+            entry["date_str_one_year"] = one_year_date_str
+        entry["source"] = "Lutheran Service Book: Propers of the Day (readings)"
+        entry.update(_CSB_1917_PROPERS.get(key, {}))
+        SANCTORAL_SLOTS[key] = entry
+
+
+_add_lsb_feasts()

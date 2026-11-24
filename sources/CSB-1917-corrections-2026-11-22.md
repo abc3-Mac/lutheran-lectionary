@@ -189,3 +189,22 @@ Checked 22 Nov 2026 against the Internet Archive scan `commonserviceboo1917phil`
 | sanctoral:st_luke collect | n157 | capital letter | the Truth of Thy | Holy | holy |
 | sanctoral:simon_and_jude collect | n157 | punctuation | the Apostles and Prophets | . | , |
 | sanctoral:all_saints collect | n163 | punctuation | Body of Thy Son | . | , |
+
+## 23 Nov 2026: feast-day texts read against the scan (pp. 153–158, leaves n156–n161)
+
+Read by eye on the page images and checked against the scan's OCR. Yesterday's pass corrected the one-year copies of St. Michael and All Saints but not the copies in `sanctoral.py`, and did not catch the first two rows below.
+
+| Day and proper | Leaf | Kind | Was | Print |
+|---|---|---|---|---|
+| Apostles' Days gradual (12 feasts) | n157 | wording | and that your fruit should remain | and your fruit should remain |
+| Evangelists' Days introit (St. Mark, St. Luke) | n157 | order, capital | Go ye… / Their sound… / Psalm. Thy Word… ; gospel | Their sound… / Thy Word… / Psalm. Go ye… ; Gospel |
+| Nativity of St. John the Baptist gradual | n160 | punctuation | AND thou, child, shalt | AND thou child shalt |
+| St. Michael introit (sanctoral copy) | n161 | wording | Bless the Lord, my soul I and | Bless the Lord, O my soul: and |
+| St. Michael gradual (sanctoral copy) | n162 | capital letter | Holy, Holy, Holy | Holy, holy, holy |
+| All Saints gradual (sanctoral copy) | n163 | punctuation | seek the Lord ; shall | seek the Lord: shall |
+
+New from the scan (not in the data before): St. Stephen (introit, collect, gradual; n158), St. John (proper collect, n157; introit and gradual of Apostles' Days), the Visitation (collect, n161; introit of the Annunciation; no gradual in the book).
+
+Against the 2017 transcription these differ: St. Stephen introit "Help me, O Lord God"; collect "and, being filled" and "O Blessed Jesus"; gradual "their’s" and "the crown of life"; St. John collect "that it being instructed" (no comma); Visitation collect "Thy dear Son; Who".
+
+Notes: the Philadelphia print has no "Ps." before the psalm verse of St. Stephen's introit (another printing, `commonserviceb00unknuoft`, has it, and reads "a crown of life"); "Psalm." is kept, and "the crown" follows the Philadelphia print.

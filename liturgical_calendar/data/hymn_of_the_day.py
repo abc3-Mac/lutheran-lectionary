@@ -221,4 +221,8 @@ def hymn_of_the_day(slot, lectionary, series=None):
     entry = HOTD_THREE_YEAR.get(slot)
     if entry and series:
         return entry.get(series) or None
+    if entry is None:
+        # Feasts, festivals and occasions have one Hymn of the Day for both
+        # lectionaries; the three-year table lists only its own Sundays.
+        return HOTD_ONE_YEAR.get(slot)
     return None

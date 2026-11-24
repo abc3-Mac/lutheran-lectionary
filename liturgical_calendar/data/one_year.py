@@ -338,7 +338,7 @@ ONE_YEAR_SLOTS = {
         ),
     },
     "st_timothy": {
-        "name": "St. Timothy, Pastor",
+        "name": "St. Timothy, Pastor and Confessor",
         "season": "Epiphany",
         "color": "White",
         "feast": True,
@@ -364,7 +364,7 @@ ONE_YEAR_SLOTS = {
         ),
     },
     "st_titus": {
-        "name": "St. Titus, Pastor",
+        "name": "St. Titus, Pastor and Confessor",
         "season": "Epiphany",
         "color": "White",
         "feast": True,
@@ -1280,7 +1280,7 @@ ONE_YEAR_SLOTS = {
         ),
     },
     "mary_mother_lord": {
-        "name": "Mary, Mother of Our Lord",
+        "name": "St. Mary, Mother of Our Lord",
         "season": "Ordinary Time",
         "color": "White",
         "feast": True,
@@ -1436,7 +1436,7 @@ ONE_YEAR_SLOTS = {
     "anniversary": {
         "name": "Anniversary of a Congregation",
         "season": "Ordinary Time",
-        "color": "White",
+        "color": "Red",
         "feast": True,
         "minor": True,
         "readings": _r(
@@ -1449,7 +1449,7 @@ ONE_YEAR_SLOTS = {
     "mission": {
         "name": "Mission Observance",
         "season": "Ordinary Time",
-        "color": "Red",
+        "color": "White",
         "feast": True,
         "minor": True,
         "readings": _r(

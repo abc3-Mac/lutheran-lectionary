@@ -220,6 +220,11 @@ class LiturgicalCalendar:
         if d == self.ascension:         return "ascension"
         if d == self.reformation_day:   return "reformation"
         if d == self.all_saints_day:    return "all_saints"
+        # Thanksgiving is observed on the Thursday itself; no Sunday slot.
+        if d == self.thanksgiving:      return "thanksgiving"
+        # Weekdays with propers of their own (LSB Propers of the Day).
+        weekday_slot = self._weekday_observances().get(d)
+        if weekday_slot:                return weekday_slot
 
         # Sundays
         if d.isoweekday() != 7:
@@ -275,8 +280,6 @@ class LiturgicalCalendar:
         michael = _nearest_sunday(date(self.civil_year, 9, 29))
         if d == michael:                return "st_michael"
 
-        # Thanksgiving (observed on the Thursday itself; no Sunday slot)
-        # — handled separately in calendar output
 
         # Season after Pentecost
         if d in self._pentecost_sundays:
@@ -287,6 +290,48 @@ class LiturgicalCalendar:
             return f"proper_{p}"
 
         return None  # unknown / unassigned
+
+    def _weekday_observances(self) -> dict:
+        """{date: slot} for the weekdays that have propers of their own."""
+        m = {
+            self.palm_sunday + timedelta(1): "monday_holy_week",
+            self.palm_sunday + timedelta(2): "tuesday_holy_week",
+            self.palm_sunday + timedelta(3): "wednesday_holy_week",
+            self.easter - timedelta(1):      "holy_saturday",
+            self.easter + timedelta(1):      "easter_monday",
+            self.easter + timedelta(2):      "easter_tuesday",
+            self.easter + timedelta(3):      "easter_wednesday",
+            self.pentecost - timedelta(1):   "pentecost_eve",
+            self.pentecost + timedelta(1):   "pentecost_monday",
+            self.pentecost + timedelta(2):   "pentecost_tuesday",
+        }
+        eve = date(self.advent_year, 12, 24)
+        if eve.isoweekday() != 7:            # on a Sunday it is Advent 4
+            m[eve] = "christmas_eve"
+        return m
+
+    def other_services(self, d: date, lectionary: str = 'three_year') -> list[dict]:
+        """Further services appointed for the same day, each with its own
+        readings: Christmas Midnight and Dawn, Easter Sunrise and Evening,
+        Pentecost Evening, and Christmas Eve when December 24 is a Sunday."""
+        if d == date(self.advent_year, 12, 24) and d.isoweekday() == 7:
+            wanted = [("christmas_eve", "Christmas Eve")]
+        elif d == self.christmas:
+            wanted = [("christmas_midnight", "Christmas Midnight"),
+                      ("christmas_dawn", "Christmas Dawn")]
+        elif d == self.easter:
+            wanted = [("easter_sunrise", "Easter Sunrise"),
+                      ("easter_monday", "Easter Evening")]
+        elif d == self.pentecost:
+            wanted = [("pentecost_monday", "Pentecost Evening")]
+        else:
+            return []
+        out = []
+        for slot, name in wanted:
+            readings = slot_readings(slot, self.series, d, lectionary)
+            if readings:
+                out.append({"slot": slot, "name": name, "readings": readings})
+        return out
 
     def displaced_slot(self, d: date, lectionary: str = 'three_year') -> str | None:
         """The Proper (or Trinity) slot a festival observed on Sunday d displaces,
@@ -316,10 +361,15 @@ class LiturgicalCalendar:
         """
         events = []
 
-        def add(d: date, slot: str):
+        def add(d: date, slot: str, minor: bool | None = None):
             info = slot_info(slot, self.series, d)
             if info is None:
                 return
+            if minor is not None or slot in _DAY_NAMES:
+                info = dict(info)
+                if minor is not None:
+                    info["minor"] = minor
+                info["name"] = _DAY_NAMES.get(slot, info["name"])
             if not include_minor and info.get("minor"):
                 return
             # Merge one-year propers (collect + introit + gradual) for shared slots
@@ -391,9 +441,16 @@ class LiturgicalCalendar:
         add(self.lent_4, "lent_4")
         add(self.lent_5, "lent_5")
         add(self.palm_sunday, "palm_sunday")
+        add(self.palm_sunday + timedelta(1), "monday_holy_week", minor=True)
+        add(self.palm_sunday + timedelta(2), "tuesday_holy_week", minor=True)
+        add(self.palm_sunday + timedelta(3), "wednesday_holy_week", minor=True)
         add(self.maundy_thursday, "maundy_thursday")
         add(self.good_friday, "good_friday")
+        add(self.easter - timedelta(1), "holy_saturday", minor=True)
         add(self.easter, "easter")
+        add(self.easter + timedelta(1), "easter_monday", minor=True)
+        add(self.easter + timedelta(2), "easter_tuesday", minor=True)
+        add(self.easter + timedelta(3), "easter_wednesday", minor=True)
         add(self.easter_2, "easter_2")
         add(self.easter_3, "easter_3")
         add(self.easter_4, "easter_4")
@@ -401,7 +458,10 @@ class LiturgicalCalendar:
         add(self.easter_6, "easter_6")
         add(self.ascension, "ascension")
         add(self.easter_7, "easter_7")
+        add(self.pentecost - timedelta(1), "pentecost_eve", minor=True)
         add(self.pentecost, "pentecost")
+        add(self.pentecost + timedelta(1), "pentecost_monday", minor=True)
+        add(self.pentecost + timedelta(2), "pentecost_tuesday", minor=True)
         add(self.holy_trinity, "holy_trinity")
 
         # Season after Pentecost
@@ -497,7 +557,7 @@ class LiturgicalCalendar:
         cal = LiturgicalCalendar(ay) if ay != self.advent_year else self
 
         # Check for a sanctoral feast on this exact calendar date (by month/day)
-        minor_feast_info = _sanctoral_feast_for_date(d.month, d.day)
+        minor_feast_info = _sanctoral_feast_for_date(d.month, d.day, lectionary)
 
         slot = cal.date_to_slot(d, lectionary=lectionary)
 
@@ -511,6 +571,9 @@ class LiturgicalCalendar:
                 info = dict(info)
                 info["name"] = cal._trinity_ordinal_name(d)
                 info["season"] = "Trinity"
+            if slot in _DAY_NAMES:
+                info = dict(info)
+                info["name"] = _DAY_NAMES[slot]
             # Merge one-year propers (collect + introit) for any slot when using one-year
             if lectionary == 'one_year' and not info.get("collect"):
                 from liturgical_calendar.data.one_year_propers import ONE_YEAR_PROPERS
@@ -531,6 +594,7 @@ class LiturgicalCalendar:
                 "series":       cal.series,
                 "is_weekday":   False,
                 "minor_feast":  minor_feast_info,
+                "other_services": cal.other_services(d, lectionary),
                 **info,
                 "season":       cal._one_year_season(info["season"], d, lectionary),
             }
@@ -544,6 +608,10 @@ class LiturgicalCalendar:
             prev_slot = cal.date_to_slot(prev, lectionary=lectionary)
             # Reformation / All Saints are single-day festivals: skip them on a
             # weekday, and on a Sunday let the displaced Proper govern the week.
+            # Thanksgiving and the weekdays with their own propers are single
+            # days and never govern a week.
+            if prev_slot in SINGLE_DAY_SLOTS:
+                continue
             if prev_slot in ("reformation", "all_saints"):
                 if prev.isoweekday() != 7:
                     continue
@@ -567,12 +635,23 @@ class LiturgicalCalendar:
             governing["season"] = "Trinity"
         governing["season"] = cal._one_year_season(governing["season"], d, lectionary)
 
+        # The Day of Thanksgiving has no propers of its own for the evening
+        # before; the Day's propers serve (LSB Propers of the Day, p. 438).
+        eve_of = None
+        if d + timedelta(1) == cal.thanksgiving:
+            t_info = slot_info("thanksgiving", cal.series, cal.thanksgiving)
+            if t_info:
+                eve_of = {"date": cal.thanksgiving, "slot": "thanksgiving",
+                          "label": "Thanksgiving Eve", **t_info}
+
         return {
             "date":          d,
             "slot":          gov_slot,
             "church_year":   f"{ay}–{ay+1}",
             "series":        cal.series,
             "is_weekday":    True,
+            "eve_of":        eve_of,
+            "other_services": [],
             "governing_date": gov_date,
             "minor_feast":   minor_feast_info,
             **{k: v for k, v in governing.items() if k not in ("date", "slot")},
@@ -664,12 +743,16 @@ def _nth_thursday(year: int, month: int, n: int) -> date:
 _MONTH_ABBR = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,
                'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
 
-def _sanctoral_date_map():
-    """Build {(month, day): slot_key} from SANCTORAL_SLOTS date_str fields."""
+def _sanctoral_date_map(lectionary: str = 'three_year'):
+    """Build {(month, day): slot_key} from SANCTORAL_SLOTS date_str fields.
+    A feast kept on another day in the one-year lectionary (the Visitation)
+    carries that day in ``date_str_one_year``."""
     from liturgical_calendar.data.sanctoral import SANCTORAL_SLOTS
     result = {}
     for key, info in SANCTORAL_SLOTS.items():
         ds = info.get("date_str", "")
+        if lectionary == 'one_year':
+            ds = info.get("date_str_one_year") or ds
         parts = ds.strip().split()
         if len(parts) == 2:
             m = _MONTH_ABBR.get(parts[0])
@@ -681,14 +764,14 @@ def _sanctoral_date_map():
                 result[(m, day)] = key
     return result
 
-_SANCTORAL_MAP_CACHE = None
+_SANCTORAL_MAP_CACHE: dict = {}
 
-def _sanctoral_feast_for_date(month: int, day: int) -> dict | None:
+def _sanctoral_feast_for_date(month: int, day: int, lectionary: str = 'three_year') -> dict | None:
     """Return sanctoral slot info for a given month/day, or None."""
-    global _SANCTORAL_MAP_CACHE
-    if _SANCTORAL_MAP_CACHE is None:
-        _SANCTORAL_MAP_CACHE = _sanctoral_date_map()
-    slot_key = _SANCTORAL_MAP_CACHE.get((month, day))
+    key = 'one_year' if lectionary == 'one_year' else 'three_year'
+    if key not in _SANCTORAL_MAP_CACHE:
+        _SANCTORAL_MAP_CACHE[key] = _sanctoral_date_map(key)
+    slot_key = _SANCTORAL_MAP_CACHE[key].get((month, day))
     if slot_key is None:
         return None
     from liturgical_calendar.data.sanctoral import SANCTORAL_SLOTS
@@ -696,6 +779,34 @@ def _sanctoral_feast_for_date(month: int, day: int) -> dict | None:
     if info:
         return {"slot": slot_key, **info}
     return None
+
+
+# Weekdays with propers of their own. They are single days: none governs the
+# days after it, and none is drawn on the wheel.
+WEEKDAY_OBSERVANCE_SLOTS = frozenset({
+    "monday_holy_week", "tuesday_holy_week", "wednesday_holy_week",
+    "holy_saturday", "easter_monday", "easter_tuesday", "easter_wednesday",
+    "pentecost_eve", "pentecost_monday", "pentecost_tuesday",
+})
+SINGLE_DAY_SLOTS = WEEKDAY_OBSERVANCE_SLOTS | {"thanksgiving", "christmas_eve"}
+
+# The data files name two of these for both of their services; on the day
+# itself the weekday name is the right one.
+_DAY_NAMES = {
+    "easter_monday":    "Easter Monday",
+    "pentecost_monday": "Pentecost Monday",
+}
+
+
+def slot_readings(slot: str, series: str, d: date, lectionary: str = 'three_year') -> dict | None:
+    """The readings of a slot in the given lectionary."""
+    if lectionary == 'one_year':
+        from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+        entry = ONE_YEAR_SLOTS.get(slot)
+        if entry and entry.get("readings"):
+            return entry["readings"]
+    info = slot_info(slot, series, d)
+    return info.get("readings") if info else None
 
 
 # ---------------------------------------------------------------------------

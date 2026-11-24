@@ -42,11 +42,10 @@ def test_full_coverage():
     missing1 = [s for s in ONE_YEAR_SLOTS if s not in HOTD_ONE_YEAR]
     assert not missing1, missing1
     # Every three-year slot has hymns for all of A, B, C
+    # (days with one hymn for both lectionaries come from the one-year table)
     for s in THREE_YEAR_SLOTS:
-        entry = HOTD_THREE_YEAR.get(s)
-        assert entry, f"no hymns for {s}"
         for yr in "ABC":
-            assert entry[yr], f"no year-{yr} hymn for {s}"
+            assert hymn_of_the_day(s, "three_year", yr), f"no year-{yr} hymn for {s}"
 
 
 def test_unknown_slot_returns_none():

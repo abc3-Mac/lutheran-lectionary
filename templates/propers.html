@@ -81,6 +81,12 @@
         </div>
       </div>
       {% endif %}
+      {% if ev.get('hymn_of_the_day') %}
+      <div class="propers-entry-readings">
+        <span class="proper-label-block">Hymn of the Day</span>
+        <div class="propers-readings-list">{% for h in ev.hymn_of_the_day %}<span class="propers-reading">{{ h }}</span>{% endfor %}</div>
+      </div>
+      {% endif %}
     </div>
     {% endfor %}
   </section>

@@ -241,6 +241,13 @@ def _lookup_result(d: date, lectionary: str):
         "sun_name":        sun_name,
         "governing_date":  gov_date,
         "is_weekday":      is_weekday,
+        "eve_of":          info.get("eve_of"),
+        "other_services":  [
+            {"slot": o["slot"], "name": o["name"],
+             "readings_parsed": parse_readings(o["readings"]),
+             "hymn_of_the_day": hymn_of_the_day(o["slot"], lectionary, info.get("series"))}
+            for o in info.get("other_services", [])
+        ],
         "season":          info.get("season", ""),
         "color":           info.get("color", ""),
         "color_class":     season_color_class(info.get("color", "")),
@@ -594,6 +601,15 @@ def api_today():
     })
 
 
+OCCASION_SLOTS = ("anniversary", "mission", "christian_education", "harvest",
+                  "day_of_prayer", "national_tragedy")
+# The book appoints the color of the season for two of them.
+OCCASION_NOTES = {
+    "christian_education": "No fixed date · color of the season",
+    "harvest":             "No fixed date · color of the season",
+}
+
+
 def _propers_sections(advent_year: int):
     """One-year Sundays and feast days with propers, grouped by season."""
     from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
@@ -648,6 +664,28 @@ def _propers_sections(advent_year: int):
     return sections
 
 
+def _occasions_section():
+    """Occasions without a date of their own (LSB Propers of the Day,
+    "Occasions"): readings and Hymn of the Day, the same in both lectionaries."""
+    from liturgical_calendar.data.one_year import ONE_YEAR_SLOTS
+    occasions = []
+    for slot in OCCASION_SLOTS:
+        sd = ONE_YEAR_SLOTS.get(slot)
+        if not sd:
+            continue
+        occasions.append({
+            "date":            None,
+            "slot":            slot,
+            "name":            sd["name"],
+            "color_class":     season_color_class(sd.get("color", "White")),
+            "date_str":        OCCASION_NOTES.get(slot, "No fixed date"),
+            "collect":         None, "introit": None, "gradual": None, "source": None,
+            "readings_parsed": parse_readings(sd.get("readings")),
+            "hymn_of_the_day": hymn_of_the_day(slot, "one_year"),
+        })
+    return {"season": "Occasions", "events": occasions}
+
+
 @app.route("/propers")
 def propers():
     """One-year propers reference page — all Sundays with introit + collect."""
@@ -656,7 +694,7 @@ def propers():
     except ValueError:
         advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
-    sections = _propers_sections(advent_year)
+    sections = _propers_sections(advent_year) + [_occasions_section()]
 
     return render_template(
         "propers.html",
@@ -677,7 +715,7 @@ def propers_pdf():
     except ValueError:
         advent_year = _current_advent_year()
     advent_year = max(MIN_YEAR, min(MAX_YEAR, advent_year))
-    sections = _propers_sections(advent_year)
+    sections = _propers_sections(advent_year) + [_occasions_section()]
 
     from pdf_gen import build_propers_pdf
     violet = request.args.get("historic", "1") != "0"   # Advent color pref

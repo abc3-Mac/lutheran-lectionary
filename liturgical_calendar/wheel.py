@@ -213,7 +213,12 @@ def build_wheel_svg(
         ``DEFAULT_DATE_STYLE``.  Event dicts need ``date`` for any style but
         ``none``.
     """
-    evs = [e for e in events if include_minor or not e.get("minor")]
+    # Weekdays with their own propers are never drawn: the wheel is a wheel of
+    # Sundays and festivals.
+    from liturgical_calendar.calculator import WEEKDAY_OBSERVANCE_SLOTS
+    evs = [e for e in events
+           if (include_minor or not e.get("minor"))
+           and e.get("slot") not in WEEKDAY_OBSERVANCE_SLOTS]
     if not evs:
         raise ValueError("no events to render")
     if dates not in DATE_STYLES:
