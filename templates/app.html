@@ -1,61 +1,110 @@
 {% extends "base.html" %}
-{% block title %}The App — iPhone, iPad and Mac{% endblock %}
+{% block title %}The App for iPhone, iPad, Mac, Apple Watch and Apple TV{% endblock %}
 
 {% block content %}
 <div class="app-page">
 
 <section class="app-hero">
   <div class="app-hero-text">
-    <h1>Liturgical Calendar for iPhone, iPad and Mac</h1>
-    <p class="app-lede">The church year, its readings and its propers, in an app that works without a connection.</p>
+    <h1>Liturgical Calendar for iPhone, iPad, Mac, Apple Watch and Apple TV</h1>
+    <p class="app-lede">The Lutheran church year, its readings and its propers, in an app that works without a connection.</p>
     <div class="app-rule" aria-hidden="true"></div>
-    <p>The same calendar this site has kept since 1997 now runs as a native app. It shows the Sunday or
+    <p>The same calendar this site has kept since 1997 runs as a native app. It shows the Sunday or
       festival for any date from 1583 to 2300, its liturgical color and season, and its readings, in both
       the <em>Lutheran Service Book</em> three-year series and the historic one-year series.</p>
     <p>Everything is computed on the device, so the app works on a plane, in a sacristy without signal,
-      or at a desk years from now. It keeps nothing about you and has no account.</p>
+      or at a desk years from now. It collects nothing and has no account.</p>
     <p class="app-status"><span><strong>Liturgical Calendar Explorer</strong> is free on the App Store for iPhone,
-      iPad and Mac. One download covers all three.</span></p>
-    <p><a class="btn" href="https://apps.apple.com/app/id6835621427">Download on the App Store</a></p>
+      iPad, Mac, Apple Watch and Apple TV.</span></p>
+    <p><a class="btn" href="https://apps.apple.com/us/app/liturgical-calendar-explorer/id6835621427">Download on the App Store</a></p>
   </div>
   <figure class="app-device app-device-phone">
-      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-today.jpg') }}" width="540" height="1174"
-           alt="The app on iPhone showing the Last Sunday of the Church Year: its color, season and appointed readings"></div>
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-sunday.jpg') }}" width="540" height="1174"
+           alt="Today on iPhone: the First Sunday in Advent in blue, with its season, series, progress through the church year and appointed readings"></div>
     </figure>
+</section>
+
+<section class="app-video">
+  <div class="app-video-frame">
+  {% if promo_video_id %}
+    <iframe src="https://www.youtube-nocookie.com/embed/{{ promo_video_id }}" title="Liturgical Calendar Explorer: a short tour"
+            loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+  {% else %}
+    <video controls playsinline preload="none" poster="https://news.collver.biz/content/images/2026/11/feature-1-1.jpg"
+           aria-label="Liturgical Calendar Explorer on every screen, an 80-second tour">
+      <source src="https://news.collver.biz/content/media/2026/11/liturgical-calendar-explorer-1-1.mp4" type="video/mp4">
+    </video>
+  {% endif %}
+  </div>
+  <p class="app-video-caption">A short tour of the app on every screen (80 seconds)</p>
 </section>
 
 <section class="app-section">
   <div class="app-section-head">
-    <h2>Today, and any day</h2>
-    <p>The day card gives the name, color, season and church year, the appointed readings, the Hymn of the Day,
+    <h2>On iPhone</h2>
+    <p>Five tabs run along the bottom: Today, Calendar, Wheel, Daily and More. The day card gives the name,
+    color, season and church year, how far the church year has come, the appointed readings, the Hymn of the Day,
     and the LSB Daily Lectionary. In the one-year series it adds the historic introit, collect and gradual.
-    Tap a reading to preview its text. Each weekday of Lent has its own card, with the historic propers.</p>
+    On a weekday it also shows the coming Sunday or festival. Tap a reading to preview its text. Each weekday
+    of Lent has its own card, with the historic propers.</p>
+    <p>The calendar shows the church year as a list or a month at a time, each day in its color. Pinch the
+    Liturgical Year Wheel to enlarge it, and tap a Sunday or festival to open its day. The introit, collect,
+    gradual and Scripture text can be set larger, up to a Lectern size for reading aloud. In Settings you can
+    choose an app icon for each season of the church year, or let the icon follow the season.</p>
   </div>
   <div class="app-phones">
     <figure class="app-device app-device-phone">
-      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-lent.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="A Lenten weekday card on iPhone: Wednesday of Reminiscere, with its lesson, gospel, introit and collect"></div>
-      <figcaption>A Lenten weekday, with its historic introit and collect</figcaption>
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-month.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The calendar on iPhone in month view: November 2026, each day tinted in its liturgical color, with the Sundays named"></div>
+      <figcaption>The calendar a month at a time, each day in its color</figcaption>
     </figure>
     <figure class="app-device app-device-phone">
-      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-calendar.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="The 2025–2026 church-year calendar on iPhone, grouped by season"></div>
-      <figcaption>The whole church year, season by season</figcaption>
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-wheel-zoom.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The Liturgical Year Wheel on iPhone enlarged three times, showing the Sundays of Advent and the end of the church year"></div>
+      <figcaption>The wheel enlarged, with today marked</figcaption>
     </figure>
     <figure class="app-device app-device-phone">
-      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-wheel.jpg') }}" width="540" height="1174" loading="lazy"
-           alt="The Liturgical Year Wheel on iPhone, every Sunday and festival in its color with the season dates"></div>
-      <figcaption>The Liturgical Year Wheel, with each season's dates</figcaption>
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/iphone-propers-lectern.jpg') }}" width="540" height="1174" loading="lazy"
+           alt="The one-year propers on iPhone at Lectern text size: the introit Ad Te Levavi for the First Sunday in Advent"></div>
+      <figcaption>The one-year propers at Lectern text size</figcaption>
     </figure>
   </div>
 </section>
 
 <section class="app-section">
   <div class="app-section-head">
+    <h2>On iPhone Duo</h2>
+    <p>Closed, the outer screen shows the app as on any iPhone. Open it, and the large inner screen shows the
+    full layout, with the sidebar beside the day, the calendar or the wheel, and the readings two by two. Fold or
+    unfold it as you go and the app keeps your place.</p>
+  </div>
+  <div class="app-duo">
+    <figure class="app-device app-device-phone app-duo-closed">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/duo-closed-today.jpg') }}" width="540" height="786" loading="lazy"
+           alt="The First Sunday in Advent on the closed iPhone Duo's outer screen, with the tabs down the side"></div>
+      <figcaption>Closed: the iPhone layout</figcaption>
+    </figure>
+    <figure class="app-device app-device-tablet app-duo-open">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/duo-open-today.jpg') }}" width="1100" height="774" loading="lazy"
+           alt="The First Sunday in Advent on the open iPhone Duo: the sidebar on the left, the day in blue with the Thanksgiving note and its four readings two by two"></div>
+      <figcaption>Open: the sidebar and the full day</figcaption>
+    </figure>
+  </div>
+  <div class="app-tv-lead app-duo-wheel">
+    <figure class="app-device app-device-tablet">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/duo-open-wheel.jpg') }}" width="1100" height="774" loading="lazy"
+           alt="The Liturgical Year Wheel for 2026–2027 on the open iPhone Duo"></div>
+      <figcaption>The wheel on the open screen</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="app-section">
+  <div class="app-section-head">
     <h2>On iPad and Mac</h2>
-    <p>The larger screens show the calendar as a full table, the one-year propers for every Sunday and festival,
-    the Daily Lectionary chart, Historic Lent, and the Almanac: moon phases, the date of Easter in the West and
-    the East, and the Paschal full moon back to the Exodus.</p>
+    <p>The larger screens show the calendar as a full table or a month at a time, the one-year propers for every
+    Sunday and festival, the Daily Lectionary chart, Historic Lent, and the Almanac: moon phases, the date of
+    Easter in the West and the East, and the Paschal full moon back to the Exodus. The wheel enlarges with a pinch
+    or the scroll wheel, and a click on a Sunday or festival opens its day.</p>
   </div>
   <div class="app-mac-lead">
     <figure class="app-device app-device-mac">
@@ -80,10 +129,75 @@
 
 <section class="app-section">
   <div class="app-section-head">
+    <h2>On Apple Watch</h2>
+    <p>The watch shows today's Sunday or festival in its liturgical color, with its readings, the Hymn of the Day
+    and the Daily Lectionary. Tap a reading to read the passage. Coming Up lists the next Sundays and festivals,
+    and the church-year wheel shows how far the year has come.</p>
+    <p>Complications put the day on the watch face. The round one shows the Sunday's short name, such as ADV&nbsp;1
+    or PALM&nbsp;SUN, inside a ring of the church year's colors; another marks your place in the church year.
+    The wider ones give the date, the day's name and its Gospel.</p>
+  </div>
+  <figure class="app-device app-device-strip">
+    <img src="{{ url_for('static', filename='app/watch-complications.jpg') }}" width="1100" height="331" loading="lazy"
+         alt="Four Apple Watch faces with the app's complications for the First Sunday in Advent, Christmas Day, Palm Sunday and the Fourth Sunday after Pentecost">
+    <figcaption>Complications for Advent 1, Christmas Day, Palm Sunday and Pentecost 4</figcaption>
+  </figure>
+  <div class="app-watches">
+    <figure class="app-device app-device-watch">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/watch-today.jpg') }}" width="416" height="496" loading="lazy"
+           alt="Today on Apple Watch: the Week of the Twenty-fifth Sunday after Pentecost in green, Ordinary Time"></div>
+      <figcaption>Today, in its color</figcaption>
+    </figure>
+    <figure class="app-device app-device-watch">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/watch-coming-up.jpg') }}" width="416" height="496" loading="lazy"
+           alt="Coming Up on Apple Watch: the Last Sunday of the Church Year tomorrow, then the First and Second Sundays in Advent"></div>
+      <figcaption>The coming Sundays and festivals</figcaption>
+    </figure>
+    <figure class="app-device app-device-watch">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/watch-wheel.jpg') }}" width="416" height="496" loading="lazy"
+           alt="The church-year wheel on Apple Watch for 2025–2026, at 98 percent of the church year"></div>
+      <figcaption>The church-year wheel</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="app-section">
+  <div class="app-section-head">
+    <h2>On Apple TV</h2>
+    <p>Display mode is made for a narthex or a parish hall. It fills the screen with the day in its color,
+    then its readings and the coming Sundays, one after another, and turns over at midnight.</p>
+    <p>The Today screen gives the readings and the Hymn of the Day in large print, and a reading opens its full
+    text. The calendar, Historic Lent and Go to Date are on the top menu. The wheel can be enlarged and moved with
+    the remote. The Top Shelf shows today and the coming Sundays.</p>
+  </div>
+  <div class="app-tv-lead">
+    <figure class="app-device app-device-tv">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/tv-display.jpg') }}" width="1200" height="675" loading="lazy"
+           alt="Display mode on Apple TV: Friday, December 25, 2026, The Nativity of Our Lord (Day), Christmas, White, Series B"></div>
+      <figcaption>Display mode on Christmas Day</figcaption>
+    </figure>
+  </div>
+  <div class="app-tv-pair">
+    <figure class="app-device app-device-tv">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/tv-today.jpg') }}" width="1100" height="619" loading="lazy"
+           alt="Today on Apple TV: the First Sunday in Advent in blue, with its four readings and the Hymn of the Day"></div>
+      <figcaption>Today, with the readings in large print</figcaption>
+    </figure>
+    <figure class="app-device app-device-tv">
+      <div class="app-frame"><img src="{{ url_for('static', filename='app/tv-wheel-zoom.jpg') }}" width="1100" height="619" loading="lazy"
+           alt="The Liturgical Year Wheel on Apple TV enlarged two times, showing Advent, Christmas and Easter around the Lamb"></div>
+      <figcaption>The wheel enlarged with the remote</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="app-section">
+  <div class="app-section-head">
     <h2>A widget for the day</h2>
     <p>Put today's Sunday or festival on the Home Screen, the Lock Screen or the Mac desktop, in its liturgical
-    color. The larger sizes add the readings, the Hymn of the Day and the Daily Lectionary. It turns over at
-    midnight.</p>
+    color. The larger sizes add the readings, the Hymn of the Day and the Daily Lectionary. On the iPhone Lock
+    Screen a round widget shows the Sunday's short name in a ring of the church year's colors, and in StandBy the
+    small widget fills with the day's color. Widgets turn over at midnight.</p>
   </div>
   <div class="app-widgets">
     <img src="{{ url_for('static', filename='app/widget-small.png') }}" width="340" height="340" loading="lazy"
@@ -99,18 +213,27 @@
   <div class="card">
     <h2>Print and share</h2>
     <p>PDF sheets for a day (card or plain), the church-year calendar, the one-year propers, the Daily
-      Lectionary and each Lenten weekday — the same sheets this site makes. The wheel as a PNG or SVG poster.
-      An iCal file for any year, or a calendar subscription. Print from the Mac, iPhone or iPad.</p>
+      Lectionary and each Lenten weekday, the same sheets this site makes. Share as Image makes a picture of
+      any day in its color, with its readings and Hymn of the Day, for a message, a post or a bulletin. The wheel
+      as a PNG or SVG poster. An iCal file for any year, or a calendar subscription.</p>
+  </div>
+  <div class="card">
+    <h2>Settings and a Sunday reminder</h2>
+    <p>Choose the lectionary, violet or blue Advent, and the Bible translation once. Your other Apple devices
+      and the widgets follow the same settings through your own iCloud. On iPhone, iPad and Mac you can turn on
+      a reminder the evening before each Sunday and festival, with its readings and Hymn of the Day, at a time
+      you choose.</p>
   </div>
   <div class="card">
     <h2>For planners and scripts</h2>
-    <p>Shortcuts actions on every device. On the Mac, AppleScript commands and an optional local MCP server,
-      so an AI assistant on your own computer can look up the church year and make the PDFs, calendars and
-      wheels.</p>
+    <p>Shortcuts actions on iPhone, iPad and Mac. On the Mac, AppleScript commands and an optional local MCP
+      server, so an AI assistant on your own computer can look up the church year and make the PDFs, calendars
+      and wheels.</p>
   </div>
   <div class="card">
     <h2>Private by design</h2>
-    <p>No account, no analytics, no advertising and no tracking. The app goes online only to show a Scripture
+    <p>No account, no analytics, no advertising and no tracking. The app collects nothing. Settings stay in
+      your own iCloud, and reminders are scheduled on the device. The app goes online only to show a Scripture
       passage you ask to preview, and nothing is stored.</p>
   </div>
 </section>
@@ -135,7 +258,7 @@
               padding: 2.75rem 3rem; margin: 0.25rem 0 0; border: 1px solid var(--border); border-radius: 20px;
               background: linear-gradient(155deg, var(--card-bg) 0%, var(--quote-bg) 100%); box-shadow: var(--shadow);
               overflow: hidden; }
-  .app-hero h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); line-height: 1.15; color: var(--accent-text);
+  .app-hero h1 { font-size: clamp(1.9rem, 3.6vw, 2.5rem); line-height: 1.15; color: var(--accent-text);
               letter-spacing: -0.01em; margin: 0 0 0.75rem; text-wrap: balance; }
   .app-lede { font-family: Georgia, "Times New Roman", serif !important; font-size: 1.2rem; line-height: 1.5;
               color: var(--text-strong); margin: 0 0 1.25rem; max-width: 34rem; text-wrap: pretty; }
@@ -177,6 +300,7 @@
   .app-section-head { max-width: 44rem; margin: 0 auto 2.25rem; text-align: center; }
   .app-section-head h2 { font-size: 1.7rem; line-height: 1.2; color: var(--accent-text); margin: 0 0 0.7rem; }
   .app-section-head p { font-size: 1rem; line-height: 1.65; color: var(--text-soft); margin: 0; text-wrap: pretty; }
+  .app-section-head p + p { margin-top: 0.8rem; }
 
   .app-phones { display: grid; grid-template-columns: repeat(3, minmax(0, 250px)); gap: 2.5rem;
               justify-content: center; align-items: start; }
@@ -194,11 +318,40 @@
   .app-widgets img:nth-child(2),
   .app-widgets img:nth-child(3) { width: 364px; }
 
-  /* Three closing cards */
-  .app-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  /* Apple Watch */
+  .app-device-strip { max-width: 920px; margin: 0 auto; }
+  .app-device-strip img { border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.18), 0 3px 8px rgba(0,0,0,.12); }
+  .app-watches { display: grid; grid-template-columns: repeat(3, minmax(0, 190px)); gap: 2.5rem;
+              justify-content: center; align-items: start; margin-top: 2.75rem; }
+  .app-device-watch .app-frame { padding: 9px; border-radius: 46px; background: #17181B;
+              box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 18px 40px rgba(0,0,0,.20), 0 3px 8px rgba(0,0,0,.14); }
+  .app-device-watch img { border-radius: 37px; background: #000; }
+
+  /* Apple TV */
+  .app-device-tv .app-frame { padding: 6px; border-radius: 12px; background: #17181B;
+              box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 18px 40px rgba(0,0,0,.20), 0 3px 8px rgba(0,0,0,.14); }
+  .app-device-tv img { border-radius: 7px; }
+  .app-tv-lead { max-width: 760px; margin: 0 auto; }
+  .app-tv-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;
+              max-width: 920px; margin: 2.75rem auto 0; }
+
+  /* Promo video (shown only when a YouTube ID is set) */
+  .app-video { max-width: 920px; margin: 3rem auto 0; }
+  .app-video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; }
+  .app-video-caption { font-size: 0.82rem; color: var(--muted); text-align: center; margin: 0.8rem 0 0; }
+  .app-duo { display: grid; grid-template-columns: minmax(0, 230px) minmax(0, 1fr); gap: 2.5rem;
+              align-items: center; max-width: 920px; margin: 0 auto; }
+  .app-duo-wheel { margin-top: 2.5rem; }
+  .app-video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden;
+              background: #000; box-shadow: var(--shadow); }
+  .app-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* Closing cards, two by two */
+  .app-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
   .app-columns .card { margin: 0; padding: 1.6rem 1.5rem 1.4rem; border-radius: 14px; border-top: 4px solid var(--blue); }
   .app-columns .card:nth-child(2) { border-top-color: var(--green); }
   .app-columns .card:nth-child(3) { border-top-color: var(--purple); }
+  .app-columns .card:nth-child(4) { border-top-color: var(--scarlet); }
   .app-columns .card h2 { font-size: 1.2rem; margin-bottom: 0.6rem; }
   .app-columns .card p { font-size: 0.925rem; line-height: 1.6; margin: 0; }
 
@@ -220,6 +373,14 @@
     .app-phones .app-device { flex: 0 0 68%; max-width: 250px; scroll-snap-align: center; }
     .app-mac-pair { grid-template-columns: 1fr; gap: 2rem; }
     .app-mac-pair .app-device-tablet { max-width: 340px; margin: 0 auto; }
+    .app-tv-lead { max-width: 760px; margin: 0 auto; }
+    .app-tv-pair { grid-template-columns: 1fr; gap: 2rem; }
+    .app-duo { grid-template-columns: 1fr; gap: 2rem; }
+    .app-duo-closed { max-width: 220px; margin: 0 auto; }
+    .app-watches { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
+    .app-device-watch .app-frame { padding: 5px; border-radius: 26px; }
+    .app-device-watch img { border-radius: 21px; }
+    .app-device-strip img { border-radius: 10px; }
     .app-device-mac .app-frame::before { height: 20px;
               background:
                 radial-gradient(circle at 12px 10px, #FF5F57 0 4px, transparent 4.5px),
